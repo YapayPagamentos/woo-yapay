@@ -1,0 +1,35 @@
+ul li.tcPaymentMethod{
+    float: left;
+    padding: 5px;
+    width: 120px;
+    height: 60px;
+    list-style: none;
+}
+ul li input{
+    float: left;
+    margin-right: 5px;
+}
+ul li img.tcPaymentFlag{
+    float: left;
+    width: 76px;
+    height: 49px;
+    background-repeat: no-repeat;
+    border-radius: 3px;
+    background-color: #f3f3f3;
+    box-shadow: 1px 1px 2px #ececec;
+    opacity:0.30;
+    -moz-opacity: 0.30;
+    filter: alpha(opacity=30);
+}
+ul li img.tcPaymentFlagSelected{
+    opacity:1 !important;
+    -moz-opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+}
+
+ul li img.tcPaymentFlag:hover{
+    opacity:1 !important;
+    -moz-opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+    cursor: pointer;
+}
