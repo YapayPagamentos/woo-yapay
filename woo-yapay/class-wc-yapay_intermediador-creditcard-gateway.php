@@ -59,6 +59,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 
         wp_enqueue_style( 'yapay_intermediador-checkout', plugins_url( 'woo-yapay/assets/css/styles.css', plugin_dir_path( __FILE__ ) ), array(), $version );
         wp_enqueue_script( 'yapay_intermediador-checkout', plugins_url( 'woo-yapay/assets/js/yapay_intermediador.js', plugin_dir_path( __FILE__ ) ), array( ), $version, true );
+
     } // End __construct()
     
     // Build the administration fields for this specific Gateway
@@ -239,7 +240,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $order = new WC_Order( $order_id );
         
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.1";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.2";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];

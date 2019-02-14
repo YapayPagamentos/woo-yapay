@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.0.2
-Stable tag: 0.2.1
+Stable tag: 0.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,3 +64,8 @@ Correção bug combo box de parcelamento.
 = 0.2.1 = 20/12/2018
 
 Correção bug combo box de parcelamento devido ao retorno da API de Parcelamento .
+
+
+= 0.2.2 = 14/02/2019
+
+Ajuste no frontend do campo de Data de Vencimento do Cartão de crédito.
