@@ -95,15 +95,15 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
                 'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-tef' ),
                 'default'   => 'no',
             ),
-            'bt_config' => array(
-                'title'             => __( 'Configuração Yapay Intermediador', 'wc-yapay_intermediador-tef' ),
-                'type'              => 'text',
-                'default'           => 'Configurar',
-                'desc_tip'          => __( 'Clique no botão para configurar o Yapay Intermediador.', 'wc-yapay_intermediador-tef' ),
-                'custom_attributes' => array('onclick'=>'window.open("http://developers.tray.com.br/authLoginWc.php?environment="+document.getElementById("woocommerce_wc_yapay_intermediador_tef_environment").checked+"&path='.  urlencode(get_site_url()) .'&type=cc", "", "width=650,height=550")'),
-                'class' => 'button-primary',
-                'css' => 'text-align:center'
-            ),
+            // 'bt_config' => array(
+            //     'title'             => __( 'Configuração Yapay Intermediador', 'wc-yapay_intermediador-tef' ),
+            //     'type'              => 'text',
+            //     'default'           => 'Configurar',
+            //     'desc_tip'          => __( 'Clique no botão para configurar o Yapay Intermediador.', 'wc-yapay_intermediador-tef' ),
+            //     'custom_attributes' => array('onclick'=>'window.open("http://developers.tray.com.br/authLoginWc.php?environment="+document.getElementById("woocommerce_wc_yapay_intermediador_tef_environment").checked+"&path='.  urlencode(get_site_url()) .'&type=cc", "", "width=650,height=550")'),
+            //     'class' => 'button-primary',
+            //     'css' => 'text-align:center'
+            // ),
             'token_account' => array(
                 'title'     => __( 'Token da Conta', 'wc-yapay_intermediador-tef' ),
                 'type'      => 'text',
@@ -183,7 +183,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         $order = new WC_Order( $order_id );
         
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.2";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.4";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];

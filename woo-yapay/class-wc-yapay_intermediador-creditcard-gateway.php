@@ -109,15 +109,15 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
                 'default'   => 'no',
             ),
 
-            'bt_config' => array(
-                'title'             => __( 'Configuração Yapay Intermediador', 'wc-yapay_intermediador-cc' ),
-                'type'              => 'text',
-                'default'           => 'Configurar',
-                'desc_tip'          => __( 'Clique no botão para configurar o Yapay Intermediador.', 'wc-yapay_intermediador-cc' ),
-                'custom_attributes' => array('onclick'=>'window.open("http://developers.tray.com.br/authLoginWc.php?environment="+document.getElementById("woocommerce_wc_yapay_intermediador_cc_environment").checked+"&path='.  urlencode(get_site_url()) .'&type=cc", "", "width=650,height=550")'),
-                'class' => 'button-primary',
-                'css' => 'text-align:center'
-            ),
+            // 'bt_config' => array(
+            //     'title'             => __( 'Configuração Yapay Intermediador', 'wc-yapay_intermediador-cc' ),
+            //     'type'              => 'text',
+            //     'default'           => 'Configurar',
+            //     'desc_tip'          => __( 'Clique no botão para configurar o Yapay Intermediador.', 'wc-yapay_intermediador-cc' ),
+            //     'custom_attributes' => array('onclick'=>'window.open("http://developers.tray.com.br/authLoginWc.php?environment="+document.getElementById("woocommerce_wc_yapay_intermediador_cc_environment").checked+"&path='.  urlencode(get_site_url()) .'&type=cc", "", "width=650,height=550")'),
+            //     'class' => 'button-primary',
+            //     'css' => 'text-align:center'
+            // ),
 
             // 'bt_config' => array(
             //     'title'             => __( 'Configuração Yapay Intermediador', 'wc-yapay_intermediador-cc' ),
@@ -240,7 +240,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $order = new WC_Order( $order_id );
         
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.2";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.4";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];
