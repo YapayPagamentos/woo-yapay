@@ -80,4 +80,4 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 </fieldset>
 
-<script>window.yapay.FingerPrint({ env: 'sandbox' });</script>
+<script>window.yapay.FingerPrint({});</script>
