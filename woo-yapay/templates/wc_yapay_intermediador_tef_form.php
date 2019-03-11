@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
+
 <fieldset id="wc-yapay_intermediador-tef-payment-form">
     
     <input type="hidden" id="tctPaymentMethod" name="wc-yapay_intermediador-tef-payment-method" class="required-entry" value="" autocomplete="off">
@@ -33,3 +34,4 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="clear"></div>
 
 </fieldset>
+

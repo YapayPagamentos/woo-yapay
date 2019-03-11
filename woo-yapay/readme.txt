@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.0.2
-Stable tag: 0.2.4
+Stable tag: 0.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,3 +77,7 @@ Ajuste no frontend do campo de Data de Vencimento do Cartão de crédito.
 = 0.2.4 = 19/02/2019
 
 Retirada botão Configurar Yapay.
+
+= 0.2.5 = 11/03/2019
+
+Adicionado fingerprint.

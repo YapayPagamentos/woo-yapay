@@ -239,8 +239,11 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 
         $order = new WC_Order( $order_id );
         
+        // Finger
+        $params["finger_print"] = $_POST["finger_print"];
+
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.4";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.5";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];
@@ -293,7 +296,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         
         $params["transaction[customer_ip]"] = $order->customer_ip_address;
         $params["transaction[order_number]"] = $this->get_option("prefixo").$order_id;
-        
+
         $shippingData = $order->get_shipping_methods();
         $shipping_type = "";
         foreach ($shippingData as $shipping){            
@@ -321,9 +324,10 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
                 $params["transaction_product[$i][quantity]"] = $product['qty'];
                 $i++;
             }
-        }
+        }      
         
         
+   
         $card_expiry = explode("/",preg_replace('/\s/', "", $_POST["wc-yapay_intermediador-cc_card_expiry"]));
         
         $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-cc-payment-method"];
@@ -489,10 +493,10 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $html .= "Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong>";
         $html .= "</li>";
         $html .= "</ul>";
-        $html .= "<script src='https://static.traycheckout.com.br/js/finger_print.js' type='text/javascript'></script>";
-        $html .= "<script type='text/javascript'>"
-                . "jQuery(document).FingerPrint({token_account: '".$this->get_option("token_account")."', order_number: '".$this->get_option("prefixo").$order_id."', production: 'true'});"
-                . "</script>";
+        // $html .= "<script src='https://static.traycheckout.com.br/js/finger_print.js' type='text/javascript'></script>";
+        // $html .= "<script type='text/javascript'>"
+        //         . "jQuery(document).FingerPrint({token_account: '".$this->get_option("token_account")."', order_number: '".$this->get_option("prefixo").$order_id."', production: 'true'});"
+        //         . "</script>";
         
         echo $html;
 

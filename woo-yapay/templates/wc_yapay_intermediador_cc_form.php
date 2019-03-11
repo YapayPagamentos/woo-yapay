@@ -5,7 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<fieldset id="wc-yapay_intermediador-cc-payment-form">
+
+<script src="https://static.traycheckout.com.br/js/finger_print.js" type="text/javascript"></script>
+
+
+<fieldset id="wc-yapay_intermediador-cc-payment-form" data-yapay="payment-form">
     
     <input type="hidden" id="wc-yapay_intermediador-cc-cart-total" value="<?php echo number_format( $cart_total, 2, '.', '' ); ?>" />
     <input type="hidden" id="tcPaymentMethod" name="wc-yapay_intermediador-cc-payment-method" class="required-entry" value="" autocomplete="off">
@@ -62,7 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         </p>
         <p class="form-row form-row-last">
             <label for="wc-yapay_intermediador-cc-card-cvc"><?php _e( 'Código de Segurança', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
-            <input id="wc-yapay_intermediador-cc-card-cvc" name="wc-yapay_intermediador-cc_card_cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" placeholder="<?php _e( 'CVV', 'woocommerce-wc-yapay_intermediador-cc' ); ?>" style="font-size: 1.5em; padding: 8px;" />
+            <input id="wc-yapay_intermediador-cc-card-cvc" name="wc-yapay_intermediador-cc_card_cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" maxlength="4" placeholder="<?php _e( 'CVV', 'woocommerce-wc-yapay_intermediador-cc' ); ?>" style="font-size: 1.5em; padding: 8px;" />
         </p>
         <div class="clear"></div>
         <p class="form-row form-row-first">
@@ -75,3 +79,5 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="clear"></div>
     </div>
 </fieldset>
+
+<script>window.yapay.FingerPrint({ env: 'sandbox' });</script>

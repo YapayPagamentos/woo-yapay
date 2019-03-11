@@ -182,8 +182,9 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         
         $order = new WC_Order( $order_id );
         
+       
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.4";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.5";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];
