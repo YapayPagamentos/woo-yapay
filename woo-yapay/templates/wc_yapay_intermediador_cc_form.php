@@ -68,6 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <label for="wc-yapay_intermediador-cc-card-cvc"><?php _e( 'Código de Segurança', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
             <input id="wc-yapay_intermediador-cc-card-cvc" name="wc-yapay_intermediador-cc_card_cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" maxlength="4" placeholder="<?php _e( 'CVV', 'woocommerce-wc-yapay_intermediador-cc' ); ?>" style="font-size: 1.5em; padding: 8px;" />
         </p>
+        <input type="hidden" name="finger_print" id="finger_print">
         <div class="clear"></div>
         <p class="form-row form-row-first">
             <label for="wc-yapay_intermediador-cc-card-installments"><?php _e( 'Parcelamento', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <small>(<?php _e( 'valor mínimo de parcela - R$ 10,00', 'woocommerce-wc-yapay_intermediador-cc' ); ?>)</small> <span class="required">*</span></label>
@@ -80,4 +81,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 </fieldset>
 
-<script>window.yapay.FingerPrint({});</script>
+<script>
+    var fp = window.yapay.FingerPrint({ env: 'production' });
+    document.getElementById('finger_print').value = fp.getFingerPrint();
+</script>
