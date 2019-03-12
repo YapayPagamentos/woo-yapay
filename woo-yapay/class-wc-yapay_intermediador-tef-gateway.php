@@ -184,7 +184,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         
        
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.6";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.7";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];
@@ -235,7 +235,12 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $params["customer[addresses][1][state]"] = $_POST["billing_state"];
         }
         
-        $params["transaction[customer_ip]"] = $order->customer_ip_address;
+        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+          $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+        }
+
+        $params["transaction[customer_ip]"] = $_SERVER['REMOTE_ADDR'];        
+
         $params["transaction[order_number]"] = $this->get_option("prefixo").$order_id;
         $shippingData = $order->get_shipping_methods();
         $shipping_type = "";
