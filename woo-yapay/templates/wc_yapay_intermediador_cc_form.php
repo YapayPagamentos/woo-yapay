@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+    exit; // Exit if accessed directly.
 }
 ?>
 
@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     
     <input type="hidden" id="wc-yapay_intermediador-cc-cart-total" value="<?php echo number_format( $cart_total, 2, '.', '' ); ?>" />
     <input type="hidden" id="tcPaymentMethod" name="wc-yapay_intermediador-cc-payment-method" class="required-entry" value="" autocomplete="off">
-    <label for="tcPaymentMethod">Selecione a forma de pagamento <span class="required">*</span></label>
-    <ul>
+    <label for="tcPaymentMethod">Formas de pagamento</label>
+    <ul style="margin: 30px 0;">
         <?php
             $imgSrc = "";
             foreach ($payment_methods as $idTcPayment){
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 }
         ?>
         <li class="tcPaymentMethod">
-            <img src="<?php echo $url_images.$imgSrc; ?>-flag.svg" class="tcPaymentFlag" id="tcPaymentFlag<?php echo $idTcPayment;?>" onclick="selectCreditCardTc('<?php echo $idTcPayment;?>')">
+            <img src="<?php echo $url_images.$imgSrc; ?>-flag.svg" class="tcPaymentFlag" id="tcPaymentFlag<?php echo $idTcPayment;?>" >
         </li>
 
         <?php
@@ -43,25 +43,29 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="clear"></div>
 
     <div id="wc-yapay_intermediador-cc-credit-card-form" class="wc-yapay_intermediador-cc-method-form">
-        <p class="form-row form-row-first">
-            <label for="wc-yapay_intermediador-cc-card-holder-name"><?php _e( 'Nome do Titular do Cartão', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
-            <input id="wc-yapay_intermediador-cc-card-holder-name" name="wc-yapay_intermediador-cc_card_holder_name" class="input-text" type="text" autocomplete="off" style="font-size: 1.5em; padding: 8px;" />
-        </p>
-        <p class="form-row form-row-last">
-            <label for="wc-yapay_intermediador-cc-card-number"><?php _e( 'Número do Cartão', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
-            <input id="wc-yapay_intermediador-cc-card-number" name="wc-yapay_intermediador-cc_card_number" class="input-text " type="text" maxlength="20" autocomplete="off" placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;" style="font-size: 1.5em; padding: 8px;" onkeyup="identifyCreditCardTc(this.value)" onblur="getSplits(document.getElementById('tcPaymentMethod').value)" />
-        </p>
+        <div class="form-row form-row-wide linha1">
+            
+        
+            <p class="form-row form-row-first">
+                <label for="wc-yapay_intermediador-cc-card-holder-name"><?php _e( 'Nome do portador', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
+                <input id="wc-yapay_intermediador-cc-card-holder-name" name="wc-yapay_intermediador-cc_card_holder_name" class="input-text" type="text" autocomplete="off" style="font-size: 1.5em; padding: 8px;" />
+            </p>
+            <p class="form-row form-row-last">
+                <label for="wc-yapay_intermediador-cc-card-number"><?php _e( 'Número do Cartão', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
+                <input id="wc-yapay_intermediador-cc-card-number" name="wc-yapay_intermediador-cc_card_number" class="input-text " type="text" maxlength="20" autocomplete="off" placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;" style="font-size: 1.5em; padding: 8px;" onkeyup="identifyCreditCardTc(this.value)" onblur="getSplits(document.getElementById('tcPaymentMethod').value)" />
+            </p>
+        </div>
         <div class="clear"></div>
         <p class="form-row form-row-first">
             <label for="wc-yapay_intermediador-cc-card-expiry"><?php _e( 'Data de Expiração (MM/YYYY)', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
-            <input id="wc-yapay_intermediador-cc-card-expiry" name="wc-yapay_intermediador-cc_card_expiry" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="<?php _e( 'MM / YYYY', 'woocommerce-wc-yapay_intermediador-cc' ); ?>" onkeyup="
+            <input id="wc-yapay_intermediador-cc-card-expiry" name="wc-yapay_intermediador-cc_card_expiry" class="input-text wc-credit-card-form-card-expiry" type="text"  autocomplete="off" placeholder="<?php _e( 'MM / YYYY', 'woocommerce-wc-yapay_intermediador-cc' ); ?>" onkeyup="
                     var v = this.value;
                     if (v.match(/^\d{2}$/) !== null) {
-                        this.value = v + '/';
+                        this.value = v + ' / ';
                     } else if (v.match(/^\d{2}\/\d{4}$/) !== null) {
                         this.value = v;
                     }"
-                    maxlength="7"  
+                    maxlength="9"  
                     style="font-size: 1.5em; padding: 8px;" />
         </p>
         <p class="form-row form-row-last">
@@ -70,7 +74,8 @@ if ( ! defined( 'ABSPATH' ) ) {
         </p>
         <input type="hidden" name="finger_print" id="finger_print">
         <div class="clear"></div>
-        <p class="form-row form-row-first">
+
+        <p class="form-row form-row-wide">
             <label for="wc-yapay_intermediador-cc-card-installments"><?php _e( 'Parcelamento', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <small>(<?php _e( 'valor mínimo de parcela - R$ 10,00', 'woocommerce-wc-yapay_intermediador-cc' ); ?>)</small> <span class="required">*</span></label>
             <select id="wc-yapay_intermediador-cc-card-installments" name="wc-yapay_intermediador-cc_card_installments" style="font-size: 1.5em; padding: 4px; width: 100%;" disabled="disabled">
                 <option value="0">--</option>
