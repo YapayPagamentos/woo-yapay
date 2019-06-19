@@ -163,7 +163,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.2.8";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.3.0";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];
@@ -263,6 +263,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
             $transactionData = new WC_Yapay_Intermediador_Transactions();
             
             $transactionParams["order_id"] = (string)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["order_wp"] = $order_id;
             $transactionParams["transaction_id"] = (int)$tcResponse->data_response->transaction->transaction_id;
             $transactionParams["split_number"] = (int)$tcResponse->data_response->transaction->order_number;
             $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;

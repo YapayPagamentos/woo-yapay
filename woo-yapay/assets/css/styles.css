@@ -14,6 +14,7 @@ ul li input{
     margin-right: 5px;
 }
 ul li img.tcPaymentFlag{
+    display: inline-block !important;
     float: left;
     width: 76px;
     height: 49px;
@@ -41,3 +42,81 @@ ul li img.tcPaymentFlagSelected{
 .linha1 {
     margin-top: 30px;
 }
+
+/*.btnYapayRastreio {
+    padding: 10px 20px; 
+    background-color: #204078; 
+    border: 2px solid #204078; 
+    color: #FFF; 
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+    margin-bottom: 10px;
+    outline: none;
+}
+
+.btnYapayRastreio:hover {
+    background-color: #FFF;
+    border: 2px solid #204078; 
+    color: #204078;
+}*/
+
+
+.textRateio {
+    font-weight: bold;  
+    margin: 10px 0;  
+}
+
+.textRateio strong {
+    font-weight: 400;
+    color: red;
+}
+
+.listaRastreioYapay {
+    margin: 10px 0;
+}
+
+.listaRastreioYapay ul li {
+
+    list-style-position: inside;
+    list-style-type: square
+}
+
+.listaRastreioYapay ul li span {
+    padding-left: 10px;
+}
+.listaRastreioYapay .dashicons-dismiss {
+    color: #a00;
+    font-size: 13px;
+    margin-left: .4em;
+    text-decoration: none;
+    vertical-align: baseline;
+}
+
+.listaRastreioYapay .dashicons-dismiss:hover {
+    color: white;
+    text-decoration: none; 
+    color: red;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+    transition: all 0.4s ease 0s;
+}
+
+
+.listaRastreioYapay .dashicons-dismiss::before {
+    font-family: "Dashicons";
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+
+.obsYapay p {
+    margin-top: 40px;
+    font-size: 11px;
+    color: #565656;
+    font-style: italic;
+    text-align: center;
+}
+
+

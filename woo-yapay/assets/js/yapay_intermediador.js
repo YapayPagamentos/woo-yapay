@@ -163,3 +163,64 @@ function selectTefTc(idPaymentTC){
     document.getElementById('tctPaymentFlag'+idPaymentTC).className = 'tcPaymentFlag tcPaymentFlagSelected';
 }
 
+
+
+function onkeyupYapay() {
+    var input = document.getElementById("inputYapayRastreio");
+    var inputURL = document.getElementById("inputYapayRastreioURL"); 
+
+    if (input.value == "" && input.value.length == 0) {
+        document.getElementById("btnYapayRastreio").disabled = true;        
+    }
+    else {
+        document.getElementById("btnYapayRastreio").disabled = false;
+    }
+}
+
+
+function sendRastreio(order_id, code, url){
+    if (document.getElementById("inputYapayRastreio").value == "") {
+        window.alert("O campo não pode estar em branco.");
+        document.getElementById("inputYapayRastreio").focus();
+
+    } else {
+        if (window.confirm("Deseja enviar o código de rastreio para Yapay?")) {
+            var text = document.getElementById("inputYapayRastreio").value; 
+            // var li = "<li>" + text + "<a href='#'<span class='dashicons dashicons-dismiss' onclick='remove(this)'></span></a></li>";
+            var li = "<li>" + text + "</li>";
+            document.getElementById("list").innerHTML = li;
+
+            jQuery.ajax({
+                url: ajaxurl, 
+                type: 'POST',
+                data: {
+                    'action': 'sendRastreioYapay',
+                    'order_id': order_id,
+                    'code': jQuery('#inputYapayRastreio').val(),
+                    'url': jQuery('#inputYapayRastreioURL').val()
+                },
+                success: function( response ){
+                },
+            });
+            document.getElementById("inputYapayRastreio").value = '';
+            document.getElementById("inputYapayRastreioURL").value = ''; 
+            document.getElementById("btnYapayRastreio").disabled = true;           
+        }        
+
+      }
+}
+
+
+// Remove Rastreio
+// function remove(link) { 
+
+// jQuery.ajax({
+//         url: ajaxurl, 
+//         type: 'POST',
+//         data: {
+//             'action': 'removeRastreioYapay'
+//         },
+//     });
+
+//     link.parentNode.parentNode.removeChild(link.parentNode);
+// }

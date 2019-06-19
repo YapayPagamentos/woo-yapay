@@ -34,6 +34,7 @@ function woocommerce_yapay_intermediador_install () {
     $sql_table_transaction = "CREATE TABLE IF NOT EXISTS $table_transaction (
     control_id bigint(20) NOT NULL auto_increment,
     order_id varchar(50) NOT NULL,
+    order_wp varchar(50) NOT NULL,
     transaction_id bigint(20) NOT NULL,
     split_number int(11) NOT NULL,
     payment_method int(11) NOT NULL,
@@ -59,10 +60,12 @@ function woocommerce_yapay_intermediador_install () {
     PRIMARY KEY  (control_id)
 ) $charset_collate;";
 
+
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $sql_table_transaction );
     dbDelta( $sql_table_request );
     dbDelta( $sql_table_response );
+
 
     add_option( 'woocommerce_yapay_intermediador_db_version', $woocommerce_yapay_intermediador_db_version );
 }

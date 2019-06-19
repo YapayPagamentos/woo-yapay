@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.2.8
+ * Version: 0.3.0
  * Text Domain: woo-yapay
  */
 
@@ -302,3 +302,156 @@ function wc_yapay_intermediador_rewrites_init() {
 
 	wc_yapay_intermediador_add_rewrite_rules();
 }
+
+
+// Adicionar campo Correios na tela de pedido
+
+// Adding Meta container admin shop_order pages
+add_action( 'add_meta_boxes', 'mv_add_meta_boxes' );
+if ( ! function_exists( 'mv_add_meta_boxes' ) )
+{
+    function mv_add_meta_boxes()
+    {
+        add_meta_box( 'mv_other_fields', __('Yapay - Código de Rastreio','woocommerce'), 'mv_add_other_fields_for_packaging', 'shop_order', 'side', 'core' );
+    }
+}
+
+// Adiciona o container metafield na página de pedido
+if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
+{
+    function mv_add_other_fields_for_packaging()
+    {
+        global $post;
+
+        if ($post->post_status == 'wc-processing') {
+            $meta_field_data = get_post_meta( $post->ID, '_my_field_slug', true ) ? get_post_meta( $post->ID, '_my_field_slug', true ) : '';
+            $urlRastreio = get_post_meta( $post->ID, '_url_rastreio_yapay', true ) ? get_post_meta( $post->ID, '_url_rastreio_yapay', true ) : '';
+
+            echo '
+                <div id="RastreioYapay" class="listaRastreioYapay">
+                    <ul id="list">
+                        <li>' . $meta_field_data . '  </li>
+                    </ul>
+                
+                    <input type="hidden" name="mv_other_meta_field_nonce" value="' . wp_create_nonce() . '">
+                    <p style="border-bottom:solid 1px #eee;padding-bottom:15px;">
+                    <p>Enviar código de rastreio:</p>
+                        <span class="textRateio">Código<strong>*</strong>: </span><input type="text" id="inputYapayRastreio" maxlength="45" style="width:250px;" onkeyup="onkeyupYapay()" name="wp_woocommerce_rastreio">
+
+                        
+                    </p>
+                    <p>
+                        <span class="textRateio">URL Transp.: </span><input type="text" id="inputYapayRastreioURL" onkeyup="onkeyupYapay()" maxlength="255" style="width:250px;" name="wp_woocommerce_rastreio" >
+
+                    </p>
+                    <div style="text-align: center;">
+                    <button type="button" disabled id="btnYapayRastreio" class="button-secondary btnYapayRastreio" onClick="sendRastreio('. $post->ID .')" >Enviar Yapay</button>
+                    </div>
+                </div>
+
+                <div class="obsYapay">
+                    <p><strong>Observação:</strong> É importante enviar a URL da Transportadora.</p>
+                </div>
+                ';
+// <li>' .$meta_field_data . ' <a href="#"<span class="dashicons dashicons-dismiss" onclick="remove(this)"></span></a> </li>
+                    
+        }
+        else {
+            echo 'Status não permite envio de código de rastreio'; 
+        }
+    }
+}
+// Fim container metafield
+
+// // Save the data of the Meta field
+// add_action( 'save_post', 'mv_save_wc_order_other_fields', 10, 1 );
+// if ( ! function_exists( 'mv_save_wc_order_other_fields' ) )
+// {
+
+//     function mv_save_wc_order_other_fields( $post_id ) {
+
+//         // We need to verify this with the proper authorization (security stuff).
+
+//         // Check if our nonce is set.
+//         if ( ! isset( $_POST[ 'mv_other_meta_field_nonce' ] ) ) {
+//             return $post_id;
+//         }
+//         $nonce = $_REQUEST[ 'mv_other_meta_field_nonce' ];
+
+//         //Verify that the nonce is valid.
+//         if ( ! wp_verify_nonce( $nonce ) ) {
+            
+//             return $post_id;
+//         }
+
+//         // If this is an autosave, our form has not been submitted, so we don't want to do anything.
+//         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {          
+//             return $post_id;
+//         }
+
+//         // Check the user's permissions.
+//         if ( 'page' == $_POST[ 'post_type' ] ) {
+
+//             if ( ! current_user_can( 'edit_page', $post_id ) ) {
+//                 return $post_id;
+//             }
+//         } else {
+
+//             if ( ! current_user_can( 'edit_post', $post_id ) ) {
+//                 return $post_id;
+//             }
+//         }
+
+//         // --- Its safe for us to save the data ! --- //f
+
+//         // Sanitize user input  and update the meta field in the database.
+//         update_post_meta( $post_id, '_my_field_slug', $_POST[ 'wp_woocommerce_rastreio' ] );
+
+//     }
+// }
+
+// Fim correios
+
+
+function sendRastreioYapay($order_id, $code, $url) {
+
+    $order_id = $_POST['order_id'];
+    $code = $_POST['code'];
+    $url = $_POST['url'];
+
+    $order  = new WC_Order( $order_id );
+
+
+    include_once("includes/class-wc-yapay_intermediador-transactions.php");
+    include_once("includes/class-wc-yapay_intermediador-request.php");
+    
+    $transactionData = new WC_Yapay_Intermediador_Transactions();
+    $tcTransaction = $transactionData->getTransactionByOrder($order_id);
+
+    $token_transaction = $tcTransaction->token_transaction;
+    $idTransacao = $tcTransaction->transaction_id;
+
+    $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();
+    $token_account = $tcConfig->get_option("token_account");
+    $environment = $tcConfig->get_option("environment");
+
+    $params["token_account"] = $token_account;
+    $params["id"] = $idTransacao;
+    $params["transaction_token"] = $token_transaction;
+    $params["code"] = $code;
+    $params["url"] = $url;
+    $params["posted_date"] = time();
+
+    $tcRequest = new WC_Yapay_Intermediador_Request();        
+    $tcResponse = $tcRequest->requestData("v3/sales/trace",$params,$environment);
+
+
+    $order->add_order_note('Enviado para Yapay o código de rastreio: ' . $code);
+
+    update_post_meta( $order_id, '_my_field_slug', $_POST[ 'code' ] );
+    update_post_meta( $order_id, 'urlRastreio', $_POST[ 'url' ] );
+
+}
+
+add_action( 'wp_ajax_sendRastreioYapay', 'sendRastreioYapay' );
+add_action( 'wp_ajax_nopriv_sendRastreioYapay', 'sendRastreioYapay' );
