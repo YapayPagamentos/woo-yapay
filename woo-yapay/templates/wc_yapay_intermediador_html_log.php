@@ -61,7 +61,7 @@ add_thickbox();
 					</td>
 					<td class="title column-title has-row-actions column-primary page-title" data-colname="Título">
 						<?php 
-							echo str_replace("https://api.traycheckout.com.br/", "", str_replace("https://api.sandbox.traycheckout.com.br/", "", $requestData->request_url));
+							echo str_replace("https://api.intermediador.yapay.com.br/", "", str_replace("https://api.intermediador.sandbox.yapay.com.br/", "", $requestData->request_url));
 						?>
 					</td>
 					<td class="title column-title has-row-actions column-primary page-title" data-colname="Título">
@@ -132,7 +132,7 @@ add_thickbox();
 					</td>
 					<td class="title column-title has-row-actions column-primary page-title" data-colname="Título">
 						<?php 
-							echo str_replace("https://api.traycheckout.com.br/", "", str_replace("https://api.sandbox.traycheckout.com.br/", "", $responseData->response_url));
+							echo str_replace("https://api.intermediador.yapay.com.br/", "", str_replace("https://api.intermediador.sandbox.yapay.com.br/", "", $responseData->response_url));
 						?>
 					</td>
 					<td class="title column-title has-row-actions column-primary page-title" data-colname="Título">

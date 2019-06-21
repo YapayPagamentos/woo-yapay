@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.0.2
-Stable tag: 0.3.0
+Stable tag: 0.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,3 +93,9 @@ Ajuste no parâmetro de criação da transação customer_ip.
 = 0.2.7 = 26/03/2019
 
 Ajuste no layout quebrado do checkout.
+
+= 0.4.1 = 21/06/2019
+
+Adicionada a opção de enviar para a Yapay o código de rastreio do pedido. Essa informaço é importante para liberação do saque do vendedor.
+
+Corrigido a variável de desconto enviada na transação para a Yapay.

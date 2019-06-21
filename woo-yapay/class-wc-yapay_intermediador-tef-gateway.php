@@ -184,7 +184,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         
        
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.3.0";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.1";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];
@@ -285,7 +285,6 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $transactionData = new WC_Yapay_Intermediador_Transactions();
             
             $transactionParams["order_id"] = (string)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["order_wp"] = $order_id;
             $transactionParams["transaction_id"] = (int)$tcResponse->data_response->transaction->transaction_id;
             $transactionParams["split_number"] = (int)$tcResponse->data_response->transaction->order_number;
             $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
@@ -374,10 +373,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         $html .= "<a href='{$tcTransaction->url_payment}' target='_blank' class='button'>Efetuar Transferência Online</a>";
         $html .= "</li>";
         $html .= "</ul>";
-        $html .= "<script src='https://static.traycheckout.com.br/js/finger_print.js' type='text/javascript'></script>";
-        $html .= "<script type='text/javascript'>"
-                . "jQuery(document).FingerPrint({token_account: '".$this->get_option("token_account")."', order_number: '".$this->get_option("prefixo").$order_id."', production: 'true'});"
-                . "</script>";
+ 
         
         echo $html;
 

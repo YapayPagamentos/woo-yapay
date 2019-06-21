@@ -10,7 +10,7 @@ include_once("class-wc-yapay_intermediador-responses.php");
 class WC_Yapay_Intermediador_Request{
     
     public function getUrlEnvironment($environment){
-        return ($environment == 'yes') ? "https://api.sandbox.traycheckout.com.br/" : "https://api.traycheckout.com.br/";
+        return ($environment == 'yes') ? "https://api.intermediador.sandbox.yapay.com.br/" : "https://api.intermediador.yapay.com.br/";
     }
     
     public function requestData($pathPost, $dataRequest, $environment = "yes", $strResponse = false)

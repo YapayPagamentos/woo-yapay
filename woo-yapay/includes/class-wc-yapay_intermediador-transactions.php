@@ -21,14 +21,7 @@ class WC_Yapay_Intermediador_Transactions{
         
     }
 
-    public function getTransactionByOrder($order_wp) {
-        global $wpdb;
-        
-        $responses = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}woocommerce_yapay_intermediador_transactions WHERE order_wp = '$order_wp'");
-        
-        return $responses;
-        
-    }       
+
     
     public function getTransactionById($transaction_id) {
         global $wpdb;

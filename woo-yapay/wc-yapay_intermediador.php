@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.3.0
+ * Version: 0.4.1
  * Text Domain: woo-yapay
  */
 
@@ -419,19 +419,23 @@ function sendRastreioYapay($order_id, $code, $url) {
     $code = $_POST['code'];
     $url = $_POST['url'];
 
+    var_dump($_POST);
+
     $order  = new WC_Order( $order_id );
 
 
     include_once("includes/class-wc-yapay_intermediador-transactions.php");
     include_once("includes/class-wc-yapay_intermediador-request.php");
-    
+
+
+    $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();    
     $transactionData = new WC_Yapay_Intermediador_Transactions();
-    $tcTransaction = $transactionData->getTransactionByOrder($order_id);
+    $tcTransaction = $transactionData->getTransactionByOrderId($tcConfig->get_option("prefixo").$order_id);
 
     $token_transaction = $tcTransaction->token_transaction;
     $idTransacao = $tcTransaction->transaction_id;
 
-    $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();
+
     $token_account = $tcConfig->get_option("token_account");
     $environment = $tcConfig->get_option("environment");
 

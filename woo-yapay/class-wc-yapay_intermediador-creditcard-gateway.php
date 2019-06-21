@@ -67,7 +67,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         add_thickbox();
         $payment_methods = array();
         
-        $payment_methods["2"] = "Diners Club International";
+        // $payment_methods["2"] = "Diners Club International";
         $payment_methods["3"] = "Visa";
         $payment_methods["4"] = "Mastercard";
         $payment_methods["5"] = "American Express";
@@ -243,7 +243,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.3.0";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.1";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
         $params["customer[trade_name]"] = $_POST["billing_company"];
@@ -359,7 +359,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $transactionData = new WC_Yapay_Intermediador_Transactions();
             
             $transactionParams["order_id"] = (string)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["order_wp"] = $order_id;
             $transactionParams["transaction_id"] = (int)$tcResponse->data_response->transaction->transaction_id;
             $transactionParams["split_number"] = (int)$tcResponse->data_response->transaction->payment->split;
             $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
@@ -485,7 +484,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $html .= "<li>";
         $strPaymentMethod = "";
         switch (intval($tcTransaction->payment_method)){
-            case 2: $strPaymentMethod = "Diners Club International";break;
+            // case 2: $strPaymentMethod = "Diners Club International";break;
             case 3: $strPaymentMethod = "Visa";break;
             case 4: $strPaymentMethod = "Mastercard";break;
             case 5: $strPaymentMethod = "American Express";break;
@@ -502,10 +501,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $html .= "Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong>";
         $html .= "</li>";
         $html .= "</ul>";
-        // $html .= "<script src='https://static.traycheckout.com.br/js/finger_print.js' type='text/javascript'></script>";
-        // $html .= "<script type='text/javascript'>"
-        //         . "jQuery(document).FingerPrint({token_account: '".$this->get_option("token_account")."', order_number: '".$this->get_option("prefixo").$order_id."', production: 'true'});"
-        //         . "</script>";
         
         echo $html;
 
