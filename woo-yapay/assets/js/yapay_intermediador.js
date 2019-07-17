@@ -6,6 +6,7 @@
 
 
 function getSplits(payment_method,ta,ev){
+
     jQuery('#wc-yapay_intermediador-cc-card-installments').html("<option value='0'>--</option>");
     jQuery.ajax({
         url: ajaxurl, 
@@ -205,19 +206,30 @@ function sendRastreio(order_id, code, url){
         }        
 
       }
-}
+};
+
+function somenteNumeros(num) {
+    var er = /[^0-9]/;
+    er.lastIndex = 0;
+    var campo = num;
+    if (er.test(campo.value)) {
+      campo.value = "";
+    }
+};
 
 
-// Remove Rastreio
-// function remove(link) { 
+// jQuery(document).ready(function() {
 
-// jQuery.ajax({
-//         url: ajaxurl, 
-//         type: 'POST',
-//         data: {
-//             'action': 'removeRastreioYapay'
-//         },
-//     });
+//     jQuery(document).on('change', '#billing_persontype', function(){
+//         if(this.value == '2'){
+//             document.getElementById('cpf_yapayB').style.display = 'block';
+//             document.getElementById('cpf_yapayT').style.display = 'block';
+//             document.getElementById('cpf_yapayC').style.display = 'block';
+//         } else {
+//           document.getElementById('cpf_yapayB').style.display = 'none';
+//           document.getElementById('cpf_yapayT').style.display = 'none';  
+//           document.getElementById('cpf_yapayC').style.display = 'none';    
+//         }
+//     });     
 
-//     link.parentNode.parentNode.removeChild(link.parentNode);
-// }
+// });

@@ -14,9 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
         <li class="tcbPaymentMethod">
             <img src="<?php echo $url_images; ?>boleto-flag.svg" class="tcPaymentFlag tcPaymentFlagSelected" id="tcbPaymentMethod">
         </li>
-
-
     </ul>
+
+
+    <div id="cpf_yapayB" class="cpf_yapay">  	
+	    <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
+        <input type="" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" id="yapay_cpfB" name="yapay_cpfB" maxlength="11">
+    </div>
+
+
     <div class="clear"></div>
 
 </fieldset>
+

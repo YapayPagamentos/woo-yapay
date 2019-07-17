@@ -30,7 +30,15 @@ if ( ! defined( 'ABSPATH' ) ) {
             }
         ?>
 
+
      </ul>
+
+    <div id="cpf_yapayT" class="cpf_yapay">      
+        <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
+        <input type="" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" id="yapay_cpfT" name="yapay_cpfT" maxlength="11">
+    </div>
+
+
     <div class="clear"></div>
 
 </fieldset>

@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         
             <p class="form-row form-row-first">
                 <label for="wc-yapay_intermediador-cc-card-holder-name"><?php _e( 'Nome do portador', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
-                <input id="wc-yapay_intermediador-cc-card-holder-name" name="wc-yapay_intermediador-cc_card_holder_name" class="input-text" type="text" autocomplete="off" style="font-size: 1.5em; padding: 8px;" />
+                <input id="wc-yapay_intermediador-cc-card-holder-name"  name="wc-yapay_intermediador-cc_card_holder_name" class="input-text" type="text" autocomplete="off" style="font-size: 1.5em; padding: 8px;" />
             </p>
             <p class="form-row form-row-last">
                 <label for="wc-yapay_intermediador-cc-card-number"><?php _e( 'Número do Cartão', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
@@ -81,6 +81,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <option value="0">--</option>
             </select>
         </p>
+
+        <div id="cpf_yapayC" class="cpf_yapay">      
+            <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
+            <input type="" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" id="yapay_cpfC" name="yapay_cpfC" maxlength="11">
+        </div>
 
         <div class="clear"></div>
     </div>

@@ -119,4 +119,16 @@ ul li img.tcPaymentFlagSelected{
     text-align: center;
 }
 
+.cpf_yapay {
+    margin: 100px 0 100px 0;
+}
 
+.cpf_yapay input {
+    width: 250px;
+    height: 38px;
+}
+
+.cpf_yapay input:focus {
+  border: 1px solid #1d3b6f; /*Amarelo*/
+  transition: all 0.3s ease;
+}
