@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.0.2
-Stable tag: 0.4.3
+Stable tag: 0.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,3 +109,7 @@ Adicionado o campo CPF nas formas de pagamento.
 = 0.4.3 = 19/07/2019
 
 Adicionado type no input CPF.
+
+= 0.4.4 = 25/07/2019
+
+Bug fix CPF não é valido no checkout.

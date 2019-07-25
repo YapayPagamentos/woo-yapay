@@ -163,37 +163,28 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.3";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.4";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
+        $params["customer[cpf]"] = $_POST["billing_cpf"];
 
 
         if ($_POST["billing_persontype"] == 2) {
             $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
             $params["customer[company_name]"] = $_POST["billing_company"];
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
+
+            if ($_POST["yapay_cpfB"] == "") {
+                $params["customer[cpf]"] = $_POST["billing_cpf"];
+            }
+            else {
+                $params["customer[cpf]"] = $_POST["yapay_cpfB"];
+            }
+
+
         }
 
-        if ($_POST["yapay_cpfB"] == "") {
-            $params["customer[cpf]"] = $_POST["billing_cpf"];
-        }
-        else {
-            $params["customer[cpf]"] = $_POST["yapay_cpfB"];
-        }
-
-        if ($_POST["billing_persontype"] == 1) {
-            $params["customer[cpf]"] = $_POST["billing_cpf"];
-        }
-
-        // var_dump($_POST["yapay_cpf"] == "");
-        // var_dump($_POST["yapay_cpf"]);
-        // var_dump($_POST["billing_cpf"]);
-        // die();
 
 
-        // $params["customer[cpf]"] = $_POST["billing_cpf"];
-        // $params["customer[trade_name]"] = $_POST["billing_company"];
-        // $params["customer[company_name]"] = $_POST["billing_company"];
-        // $params["customer[cnpj]"] = $_POST["billing_cnpj"];
         $params["customer[inscricao_municipal]"] = "";
         $params["customer[email]"] = $_POST["billing_email"];
         $params["customer[contacts][][type_contact]"] = "H";
