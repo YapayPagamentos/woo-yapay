@@ -120,6 +120,7 @@ ul li img.tcPaymentFlagSelected{
 }
 
 .cpf_yapay {
+    display: grid;
     margin: 100px 0 100px 0;
 }
 

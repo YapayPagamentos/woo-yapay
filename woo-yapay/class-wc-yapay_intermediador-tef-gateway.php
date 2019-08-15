@@ -184,7 +184,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         
        
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.4";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.5";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -199,11 +199,14 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             else {
                 $params["customer[cpf]"] = $_POST["yapay_cpfT"];
             }
+        } else {
+            if (($_POST["billing_persontype"] == NULL) || ($_POST["billing_cpf"] == NULL) ) {
+                $params["customer[cpf]"] = $_POST["yapay_cpfT"];
+                $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
+                $params["customer[company_name]"] = $_POST["billing_company"];
+                $params["customer[cnpj]"] = $_POST["billing_cnpj"];
+            } 
         }
-
-
-        
-
 
         $params["customer[inscricao_municipal]"] = "";
         $params["customer[email]"] = $_POST["billing_email"];
@@ -271,7 +274,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $params["transaction[shipping_price]"] = $order->order_shipping;
         }
         
-        $params["transaction[price_discount]"] = $order->cart_discount_tax;
+        $params["transaction[price_discount]"] = $order->discount_total;
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
         
