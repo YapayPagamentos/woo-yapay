@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.2.2
-Stable tag: 0.4.5
+Stable tag: 0.4.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,16 +114,15 @@ Adicionado type no input CPF.
 
 Bug fix CPF não é valido no checkout.
 
-
 = 0.4.5 = 15/08/2019
 
-Bug fix CPF não é valido no checkout, somente CNPJ.
+Bug fix CPF nÃ£o Ã© valido no checkout, somente CNPJ.
 
 Ajuste front do input CPF
 
 Ajuste variavel discount
 
-
-= 0.4.6 = 16/08/2019
+= 0.4.8 = 16/08/2019
 
 Bug fix get_item_subtotal desconto produto.
+
