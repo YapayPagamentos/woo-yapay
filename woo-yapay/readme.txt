@@ -113,3 +113,17 @@ Adicionado type no input CPF.
 = 0.4.4 = 25/07/2019
 
 Bug fix CPF não é valido no checkout.
+
+
+= 0.4.5 = 15/08/2019
+
+Bug fix CPF não é valido no checkout, somente CNPJ.
+
+Ajuste front do input CPF
+
+Ajuste variavel discount
+
+
+= 0.4.6 = 16/08/2019
+
+Bug fix get_item_subtotal desconto produto.
