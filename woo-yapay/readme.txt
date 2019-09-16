@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.2.2
-Stable tag: 0.4.8
+Stable tag: 0.4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,3 +126,10 @@ Ajuste variavel discount
 
 Bug fix get_item_subtotal desconto produto.
 
+= 0.4.9 = 16/09/2019
+
+Será exigido o campo CPF na forma de pagamento somente quando o tipo de pessoa for igual a PESSOA JURÍDICA
+
+Atualização REGEX dos BIN de Cartão de Crédito.
+
+Adicionada mensagem do retorno do pagamento na Tela de Sucesso do pedido, agora vai informar qual foi a mensagem da Adquirente.

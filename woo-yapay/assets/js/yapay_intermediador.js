@@ -63,19 +63,63 @@ function getSplits(payment_method,ta,ev){
     });
 }
 
+function generateRegexRange(start, end){
+    var regexResult = '';
+    var or = '|';
+    start = parseInt(start, 10);
+    end = parseInt(end, 10);
+
+    if (!(start >= 0 && end > 0)) {
+        return false;
+    }
+
+    for (var i = start; i <= end; i++) {
+        regexResult += '(' + i + ')';
+        if (i < end) {
+            regexResult += or;
+        }
+    }
+
+    return regexResult;
+}
+
+function getEloPattern(ccNumber){
+    var regexPattern = '^(' + this.generateRegexRange(457631, 457632) + '|';
+    regexPattern += this.generateRegexRange(506699, 506778) + '|';
+    regexPattern += this.generateRegexRange(509000, 509999) + '|';
+    regexPattern += this.generateRegexRange(650031, 650033) + '|';
+    regexPattern += this.generateRegexRange(650035, 650051) + '|';
+    regexPattern += this.generateRegexRange(650405, 650439) + '|';
+    regexPattern += this.generateRegexRange(650485, 650538) + '|';
+    regexPattern += this.generateRegexRange(650541, 650598) + '|';
+    regexPattern += this.generateRegexRange(650700, 650718) + '|';
+    regexPattern += this.generateRegexRange(650720, 650727) + '|';
+    regexPattern += this.generateRegexRange(650901, 650978) + '|';
+    regexPattern += this.generateRegexRange(651652, 651679) + '|';
+    regexPattern += this.generateRegexRange(655000, 655019) + '|';
+    regexPattern += this.generateRegexRange(655021, 655058) + ')';
+    return new RegExp(regexPattern);
+}
+
+
 function identifyCreditCardTc(ccNumber){
     
     ccNumber = ccNumber.replace(/ /g, "");
     
-    var eloRE = /^(636368|438935|504175|451416|(6362|5067|4576|4011)\d{2})\d{10}/;
-    var visaRE = /^4\d{12,15}/;
-    var masterRE = /^5[1-5]{1}\d{14}/;
-    var amexRE = /^(34|37)\d{13}/;
-    var discoverRE = /^(6011|622\d{1}|(64|65)\d{2})\d{12}/;
-    var hiperRE = /^(60\d{2}|3841)\d{9,15}/;
-    // var dinersRE = /^((30(1|5))|(36|38)\d{1})\d{11}/;
+    regexElo = getEloPattern(ccNumber);
+
+    var eloRE = /^((((457393)|(431274)|(627780)|(636368)|(438935)|(504175)|(451416)|(636297))\d{0,10})|((5067)|(4576)|(4011))\d{0,12})$/;
+    var elo2RE = /^(4011(78|79)|43(1274|8935)|45(1416|7393|763(1|2))|50(4175|6699|67[0-7][0-9]|9000)|50(9[0-9][0-9][0-9])|627780|63(6297|6368)|650(03([^4])|04([0-9])|05(0|1)|05([7-9])|06([0-9])|07([0-9])|08([0-9])|4([0-3][0-9]|8[5-9]|9[0-9])|5([0-9][0-9]|3[0-8])|9([0-6][0-9]|7[0-8])|7([0-2][0-9])|541|700|720|727|901)|65165([2-9])|6516([6-7][0-9])|65500([0-9])|6550([0-5][0-9])|655021|65505([6-7])|6516([8-9][0-9])|65170([0-4]))$/;
+    var elo3RE = regexElo;
+    var visaRE = /^4[0-9]{12}(?:[0-9]{3})?$/;
+    var masterRE = /^((5[1-5][0-9]{14})$|^(2(2(?=([2-9]{1}[1-9]{1}))|7(?=[0-2]{1}0)|[3-6](?=[0-9])))[0-9]{14})$/;
+    var amexRE = /^3[47][0-9]{13}$/;
+    var discoverRE = /^6(?:011|5[0-9]{2})[0-9]{12}$/;    
+    var hiperRE = /^(606282\d{10}(\d{3})?)|^(3841\d{15})$/;
+    var hiperItauRE = /^(637095)\d{0,10}$/;
+    var dinersRE = /^((30(1|5))|(36|38)\d{1})\d{11}/;
     var jcbRE = /^(30[0-5][0-9]{13}|3095[0-9]{12}|35(2[8-9][0-9]{12}|[3-8][0-9]{13})|36[0-9]{12}|3[8-9][0-9]{14}|6011(0[0-9]{11}|[2-4][0-9]{11}|74[0-9]{10}|7[7-9][0-9]{10}|8[6-9][0-9]{10}|9[0-9]{11})|62(2(12[6-9][0-9]{10}|1[3-9][0-9]{11}|[2-8][0-9]{12}|9[0-1][0-9]{11}|92[0-5][0-9]{10})|[4-6][0-9]{13}|8[2-8][0-9]{12})|6(4[4-9][0-9]{13}|5[0-9]{14}))$/;
-    var auraRE = /^50\d{14}/; 
+    var auraRE = /^50[0-9]{17}$/; 
     
     document.getElementById('tcPaymentMethod').value = "";
     
@@ -93,6 +137,12 @@ function identifyCreditCardTc(ccNumber){
     if(eloRE.test(ccNumber)){
         document.getElementById('tcPaymentMethod').value = '16';
         document.getElementById('tcPaymentFlag16').className = 'tcPaymentFlag tcPaymentFlagSelected';
+    }if(elo2RE.test(ccNumber)){
+        document.getElementById('tcPaymentMethod').value = '16';
+        document.getElementById('tcPaymentFlag16').className = 'tcPaymentFlag tcPaymentFlagSelected';
+    }if(elo3RE.test(ccNumber)){
+        document.getElementById('tcPaymentMethod').value = '16';
+        document.getElementById('tcPaymentFlag16').className = 'tcPaymentFlag tcPaymentFlagSelected';
     }else if(visaRE.test(ccNumber)){
         document.getElementById('tcPaymentMethod').value = '3';
         document.getElementById('tcPaymentFlag3').className = 'tcPaymentFlag tcPaymentFlagSelected';
@@ -108,6 +158,12 @@ function identifyCreditCardTc(ccNumber){
     }else if(hiperRE.test(ccNumber)){
         document.getElementById('tcPaymentMethod').value = '20';
         document.getElementById('tcPaymentFlag20').className = 'tcPaymentFlag tcPaymentFlagSelected';
+    }else if(hiperItauRE.test(ccNumber)){
+        document.getElementById('tcPaymentMethod').value = '25';
+        document.getElementById('tcPaymentFlag25').className = 'tcPaymentFlag tcPaymentFlagSelected';
+    }else if(dinersRE.test(ccNumber)){
+        document.getElementById('tcPaymentMethod').value = '2';
+        document.getElementById('tcPaymentFlag2').className = 'tcPaymentFlag tcPaymentFlagSelected';
     }else if(jcbRE.test(ccNumber)){
         document.getElementById('tcPaymentMethod').value = '19';
         document.getElementById('tcPaymentFlag19').className = 'tcPaymentFlag tcPaymentFlagSelected';
@@ -148,7 +204,9 @@ function selectCreditCardTc(idPaymentTC,ta,ev){
 }
 
 function selectTefTc(idPaymentTC){
-    
+    inputCPFYapay();
+
+
     document.getElementById('tctPaymentMethod').value = "";
     
     try { document.getElementById('tctPaymentFlag7').className = 'tcPaymentFlag';} catch(err) { console.debug(err.message);}
@@ -217,19 +275,33 @@ function somenteNumeros(num) {
     }
 };
 
+function inputCPFYapay() {
+    personType = document.getElementById('billing_persontype').value;
+    
+    if (personType == 2) {
+        document.getElementById('cpf_yapayB').style.display = 'block';
+        document.getElementById('cpf_yapayT').style.display = 'block';
+        document.getElementById('cpf_yapayC').style.display = 'block';
+    } else {
+        document.getElementById('cpf_yapayB').style.display = 'none';
+        document.getElementById('cpf_yapayT').style.display = 'none';  
+        document.getElementById('cpf_yapayC').style.display = 'none';    
+      }
+}
+setInterval(inputCPFYapay, 100);
+jQuery(document).ready(function() {
+    var interval;
 
-// jQuery(document).ready(function() {
+    jQuery(document).on('change', '#billing_persontype', function(){
+        if(this.value == '2'){
+            interval = setInterval(inputCPFYapay, 100);
 
-//     jQuery(document).on('change', '#billing_persontype', function(){
-//         if(this.value == '2'){
-//             document.getElementById('cpf_yapayB').style.display = 'block';
-//             document.getElementById('cpf_yapayT').style.display = 'block';
-//             document.getElementById('cpf_yapayC').style.display = 'block';
-//         } else {
-//           document.getElementById('cpf_yapayB').style.display = 'none';
-//           document.getElementById('cpf_yapayT').style.display = 'none';  
-//           document.getElementById('cpf_yapayC').style.display = 'none';    
-//         }
-//     });     
+        } else {
+            clearInterval(interval);
+  
+        }
+    });     
 
-// });
+});
+
+

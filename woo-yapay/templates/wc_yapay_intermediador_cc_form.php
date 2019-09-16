@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <script src="https://static.traycheckout.com.br/js/finger_print.js" type="text/javascript"></script>
 
 
-<fieldset id="wc-yapay_intermediador-cc-payment-form" data-yapay="payment-form">
+<fieldset id="wc-yapay_intermediador-cc-payment-form" data-yapay="payment-form" onclick=inputCPFYapay()>
     
     <input type="hidden" id="wc-yapay_intermediador-cc-cart-total" value="<?php echo number_format( $cart_total, 2, '.', '' ); ?>" />
     <input type="hidden" id="tcPaymentMethod" name="wc-yapay_intermediador-cc-payment-method" class="required-entry" value="" autocomplete="off">
@@ -76,15 +76,15 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="clear"></div>
 
         <p class="form-row form-row-wide">
-            <label for="wc-yapay_intermediador-cc-card-installments"><?php _e( 'Parcelamento', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <small>(<?php _e( 'valor mínimo de parcela - R$ 10,00', 'woocommerce-wc-yapay_intermediador-cc' ); ?>)</small> <span class="required">*</span></label>
+            <label for="wc-yapay_intermediador-cc-card-installments"><?php _e( 'Parcelamento', 'woocommerce-wc-yapay_intermediador-cc' ); ?>  <span class="required">*</span></label>
             <select id="wc-yapay_intermediador-cc-card-installments" name="wc-yapay_intermediador-cc_card_installments" style="font-size: 1.5em; padding: 4px; width: 100%;" disabled="disabled">
-                <option value="0">--</option>
+                <option value="0" disabled selected>--</option>
             </select>
         </p>
 
-        <div id="cpf_yapayC" class="cpf_yapay">      
+        <div id="cpf_yapayC" class="input-text cpf_yapay" style="display: none; ">      
             <label>CPF titular cartão<strong style="color: red;">*</strong> (somente números)</label>
-            <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" type="text" id="yapay_cpfC" name="yapay_cpfC" maxlength="11">
+            <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" type="text" id="yapay_cpfC" name="yapay_cpfC" maxlength="11" required>
         </div>
 
         <div class="clear"></div>

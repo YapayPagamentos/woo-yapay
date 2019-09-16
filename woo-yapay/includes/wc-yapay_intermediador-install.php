@@ -37,6 +37,7 @@ function woocommerce_yapay_intermediador_install () {
     transaction_id bigint(20) NOT NULL,
     split_number int(11) NOT NULL,
     payment_method int(11) NOT NULL,
+    payment_response varchar(255) NOT NULL,
     token_transaction varchar(100) NOT NULL,
     url_payment varchar(200),
     typeful_line varchar(60),

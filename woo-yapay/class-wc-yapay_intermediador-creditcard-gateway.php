@@ -243,7 +243,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.8";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.9";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -381,8 +381,11 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $transactionParams["split_number"] = (int)$tcResponse->data_response->transaction->payment->split;
             $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
             $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
+            $transactionParams["payment_response"] = (string)$tcResponse->data_response->transaction->payment->payment_response;
+
             
             $transactionData->addTransaction($transactionParams);
+
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -492,10 +495,13 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $tcResponse = $tcRequest->requestData("v1/seller_splits/simulate_split",$params,$this->get_option("environment"),false);
 
         $tcTransactionSplit = $tcResponse->data_response->splittings->splitting[$tcTransaction->split_number - 1];
-
+      
         
         $html = "";
         $html .= "<ul class='order_details'>";
+        $html .= "<li>";
+        $html .= "Retorno do pagamento na Yapay Intermediador: <strong>{$tcTransaction->payment_response}</strong>";
+        $html .= "</li>";
         $html .= "<li>";
         $html .= "Número da Transação: <strong>{$tcTransaction->transaction_id}</strong>";
         $html .= "</li>";
