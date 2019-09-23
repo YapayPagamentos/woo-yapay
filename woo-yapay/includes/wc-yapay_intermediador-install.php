@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $woocommerce_yapay_intermediador_db_version;
-$woocommerce_yapay_intermediador_db_version = '1.1';
+$woocommerce_yapay_intermediador_db_version = '1.2';
 
 function woocommerce_yapay_intermediador_install () {
     global $wpdb, $woocommerce_yapay_intermediador_db_version;
@@ -37,7 +37,6 @@ function woocommerce_yapay_intermediador_install () {
     transaction_id bigint(20) NOT NULL,
     split_number int(11) NOT NULL,
     payment_method int(11) NOT NULL,
-    payment_response varchar(255) NOT NULL,
     token_transaction varchar(100) NOT NULL,
     url_payment varchar(200),
     typeful_line varchar(60),
@@ -64,7 +63,6 @@ function woocommerce_yapay_intermediador_install () {
     dbDelta( $sql_table_transaction );
     dbDelta( $sql_table_request );
     dbDelta( $sql_table_response );
-
 
     add_option( 'woocommerce_yapay_intermediador_db_version', $woocommerce_yapay_intermediador_db_version );
 }

@@ -243,7 +243,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.4.9";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.0";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -259,13 +259,14 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
                 $params["customer[cpf]"] = $_POST["yapay_cpfC"];
             }
         }  else {
-            if (($_POST["billing_persontype"] == NULL) || ($_POST["billing_cpf"] == NULL) ) {
+            if (($_POST["billing_persontype"] == NULL) AND ($_POST["billing_cpf"] == NULL) ) {
                 $params["customer[cpf]"] = $_POST["yapay_cpfC"];
                 $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
                 $params["customer[company_name]"] = $_POST["billing_company"];
                 $params["customer[cnpj]"] = $_POST["billing_cnpj"];
             } 
-        }
+        }  
+
 
         $params["customer[inscricao_municipal]"] = "";
         $params["customer[email]"] = $_POST["billing_email"];
@@ -381,7 +382,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $transactionParams["split_number"] = (int)$tcResponse->data_response->transaction->payment->split;
             $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
             $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
-            $transactionParams["payment_response"] = (string)$tcResponse->data_response->transaction->payment->payment_response;
 
             
             $transactionData->addTransaction($transactionParams);
@@ -499,9 +499,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         
         $html = "";
         $html .= "<ul class='order_details'>";
-        $html .= "<li>";
-        $html .= "Retorno do pagamento na Yapay Intermediador: <strong>{$tcTransaction->payment_response}</strong>";
-        $html .= "</li>";
         $html .= "<li>";
         $html .= "Número da Transação: <strong>{$tcTransaction->transaction_id}</strong>";
         $html .= "</li>";

@@ -275,18 +275,59 @@ function somenteNumeros(num) {
     }
 };
 
+
 function inputCPFYapay() {
-    personType = document.getElementById('billing_persontype').value;
-    
-    if (personType == 2) {
+    if ((document.getElementById('billing_persontype') == null) && (document.getElementById('billing_cnpj') != null ) ) {
         document.getElementById('cpf_yapayB').style.display = 'block';
         document.getElementById('cpf_yapayT').style.display = 'block';
         document.getElementById('cpf_yapayC').style.display = 'block';
     } else {
-        document.getElementById('cpf_yapayB').style.display = 'none';
-        document.getElementById('cpf_yapayT').style.display = 'none';  
-        document.getElementById('cpf_yapayC').style.display = 'none';    
-      }
+        if ((document.getElementById('billing_persontype') == null) && (document.getElementById('billing_cpf') != null ) ) {
+            document.getElementById('cpf_yapayB').style.display = 'none';
+            document.getElementById('cpf_yapayT').style.display = 'none';
+            document.getElementById('cpf_yapayC').style.display = 'none';
+        }
+    }
+
+    if ((document.getElementById('billing_persontype') != null) && (document.getElementById('billing_cpf') != null )
+        && (document.getElementById('billing_cpf') != null )) {
+            personType = document.getElementById('billing_persontype').value;
+    
+            if (personType == 2) {
+                document.getElementById('cpf_yapayB').style.display = 'block';
+                document.getElementById('cpf_yapayT').style.display = 'block';
+                document.getElementById('cpf_yapayC').style.display = 'block';
+            } else {
+                document.getElementById('cpf_yapayB').style.display = 'none';
+                document.getElementById('cpf_yapayT').style.display = 'none';  
+                document.getElementById('cpf_yapayC').style.display = 'none';    
+              }
+    }
+
+
+    
+    
+    
+    // else {
+    //     if ( document.getElementById('billing_cpf') != null ) {
+    //         document.getElementById('cpf_yapayB').style.display = 'none';
+    //         document.getElementById('cpf_yapayT').style.display = 'none';
+    //         document.getElementById('cpf_yapayC').style.display = 'none';
+    //     }
+    // }
+
+    // } else 
+    //     if (document.getElementById('billing_persontype').value == 2) {
+    //         document.getElementById('cpf_yapayB').style.display = 'block';
+    //         document.getElementById('cpf_yapayT').style.display = 'block';
+    //         document.getElementById('cpf_yapayC').style.display = 'block';
+    //     } else {
+    //         document.getElementById('cpf_yapayB').style.display = 'none';
+    //         document.getElementById('cpf_yapayT').style.display = 'none';
+    //         document.getElementById('cpf_yapayC').style.display = 'none';
+    //     }
+
+
 }
 setInterval(inputCPFYapay, 100);
 jQuery(document).ready(function() {
