@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.2.2
-Stable tag: 0.5.0
+Stable tag: 0.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -137,3 +137,7 @@ Adicionada mensagem do retorno do pagamento na Tela de Sucesso do pedido, agora 
 = 0.5.0 = 19/09/2019
 
 Correção do bug de CPF em branco, quando estava configurado apenas vendas para CPF
+
+= 0.5.1 = 19/10/2019
+
+Ajuste no javascript

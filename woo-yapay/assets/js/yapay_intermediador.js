@@ -278,14 +278,26 @@ function somenteNumeros(num) {
 
 function inputCPFYapay() {
     if ((document.getElementById('billing_persontype') == null) && (document.getElementById('billing_cnpj') != null ) ) {
-        document.getElementById('cpf_yapayB').style.display = 'block';
-        document.getElementById('cpf_yapayT').style.display = 'block';
-        document.getElementById('cpf_yapayC').style.display = 'block';
+        if (document.getElementById('cpf_yapayB') != null) {
+            document.getElementById('cpf_yapayB').style.display = 'block';
+        }
+        if (document.getElementById('cpf_yapayT') != null) {
+            document.getElementById('cpf_yapayT').style.display = 'block';
+        }
+        if (document.getElementById('cpf_yapayC') != null) {
+            document.getElementById('cpf_yapayC').style.display = 'block';
+        }
     } else {
         if ((document.getElementById('billing_persontype') == null) && (document.getElementById('billing_cpf') != null ) ) {
-            document.getElementById('cpf_yapayB').style.display = 'none';
-            document.getElementById('cpf_yapayT').style.display = 'none';
-            document.getElementById('cpf_yapayC').style.display = 'none';
+            if (document.getElementById('cpf_yapayB') != null) {
+                document.getElementById('cpf_yapayB').style.display = 'none';
+            }
+            if (document.getElementById('cpf_yapayT') != null) {
+                document.getElementById('cpf_yapayT').style.display = 'none';
+            }
+            if (document.getElementById('cpf_yapayC') != null) {
+                document.getElementById('cpf_yapayC').style.display = 'none';
+            }
         }
     }
 
@@ -294,13 +306,25 @@ function inputCPFYapay() {
             personType = document.getElementById('billing_persontype').value;
     
             if (personType == 2) {
-                document.getElementById('cpf_yapayB').style.display = 'block';
-                document.getElementById('cpf_yapayT').style.display = 'block';
-                document.getElementById('cpf_yapayC').style.display = 'block';
+                if (document.getElementById('cpf_yapayB') != null) {
+                    document.getElementById('cpf_yapayB').style.display = 'block';
+                }
+                if (document.getElementById('cpf_yapayT') != null) {
+                    document.getElementById('cpf_yapayT').style.display = 'block';
+                }
+                if (document.getElementById('cpf_yapayC') != null) {
+                    document.getElementById('cpf_yapayC').style.display = 'block';
+                }
             } else {
-                document.getElementById('cpf_yapayB').style.display = 'none';
-                document.getElementById('cpf_yapayT').style.display = 'none';  
-                document.getElementById('cpf_yapayC').style.display = 'none';    
+                if (document.getElementById('cpf_yapayB') != null) {
+                    document.getElementById('cpf_yapayB').style.display = 'none';
+                }
+                if (document.getElementById('cpf_yapayT') != null) {
+                    document.getElementById('cpf_yapayT').style.display = 'none';
+                }
+                if (document.getElementById('cpf_yapayC') != null) {
+                    document.getElementById('cpf_yapayC').style.display = 'none';
+                } 
               }
     }
 
