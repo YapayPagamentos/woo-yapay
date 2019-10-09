@@ -3,6 +3,7 @@ ul {
 }
 
 ul li.tcPaymentMethod{
+    display: contents !important;
     float: left;
     padding: 5px;
     width: 50px;
@@ -15,6 +16,7 @@ ul li input{
 }
 ul li img.tcPaymentFlag{
     display: inline-block !important;
+    padding: 10px;
     float: left;
     width: 76px;
     height: 49px;
