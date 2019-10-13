@@ -80,6 +80,13 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
                 'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-bs' ),
                 'css'       => 'max-width:350px;'
             ),
+	    'dias_vencimento_boleto' => array(
+                'title'     => __( 'Dias para vencimento do boleto', 'wc-yapay_intermediador-bs' ),
+                'type'      => 'text',
+                'desc_tip'  => __( 'Insira quantidade de dias para vencimento do boleto.', 'wc-yapay_intermediador-bs' ),
+				'required' => 'required',
+				'default'   => '1',
+            ),
             'environment' => array(
                 'title'     => __( 'Sandbox', 'wc-yapay_intermediador-bs' ),
                 'label'     => __( 'Ativar Sandbox', 'wc-yapay_intermediador-bs' ),
@@ -269,6 +276,27 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         }
         
         $params["payment[payment_method_id]"] = "6";
+	// EVITA QUE A DATA DE VENCIMENTO DO BOLETO SEJA NO FINAL DE SEMANA AJUDA NA CONVERSÃO
+	$dias_vencimeto = $this->get_option("dias_vencimento_boleto");
+		date_default_timezone_set('America/Sao_Paulo');
+		$data_vencimento = date('d/m/Y', time() + ( $dias_vencimento * 86400 ) );
+		$timestamp = strtotime($data_vencimento);
+		$dia_semana = date('N', $timestamp);
+		if($dia_semana == 6){
+			$params["payment[billet_date_expiration]"]  = date( 'd/m/Y', $data_vencimento + ( 2 * 86400 ) );
+			$data_vencimento_interno  = date( 'Y-m-d', $data_vencimento + ( 2 * 86400 ) );
+		}else{
+			if($dia_semana == 7){
+				$params["payment[billet_date_expiration]"] = date( 'd/m/Y', $data_vencimento + ( 1 * 86400 ) );
+				$data_vencimento_interno  = date( 'Y-m-d', $data_vencimento + ( 1 * 86400 ) );
+			}else{
+				$params["payment[billet_date_expiration]"] = $data_vencimento;
+				$data_vencimento_interno  = date( 'Y-m-d', $data_vencimento );
+			}
+		}
+        update_post_meta( $order->id, 'data_vencimento_boleto', $data_vencimento_interno );
+	// FIM EVITA QUE A DATA DE VENCIMENTO DO BOLETO SEJA NO FINAL DE SEMANA AJUDA NA CONVERSÃO
+	    
         $params["payment[split]"] = "1";
 
         $tcRequest = new WC_Yapay_Intermediador_Request();
@@ -364,6 +392,10 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
 
         $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
+	// CRIA METAS PARA USO INTERNO
+	update_post_meta( $order->id, 'linha_digitavel', $tcTransaction->typeful_line );
+	update_post_meta( $order->id, 'link_boleto', $tcTransaction->url_payment );
+	// FIM CRIA METAS PARA USO INTERNO
 
     }
 }
