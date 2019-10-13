@@ -337,8 +337,27 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $params["transaction[shipping_type]"] = $shipping_type;
             $params["transaction[shipping_price]"] = $order->order_shipping;
         }
+	
+	// OBTER DESCONTOS
+		$the_order = wc_get_order( $order_id );
+		$fee_total = 0;
+		// BUSCAR DESCONTO APLICADOS NO PEDIDO
+		foreach( $the_order->get_items('fee') as $item_id => $item_fee ){
 
-        $params["transaction[price_discount]"] = $order->discount_total;
+    	// NOME DO DESCONTO
+   		 $fee_name = $item_fee->get_name();
+
+    	// VALOR TOTAL DO DESCONTO
+    	$fee_total = $fee_total + $item_fee->get_total();
+
+    	// VALOR TOTAL DA TAXA COM DESCONTO
+    	$fee_total_tax = $item_fee->get_total_tax();
+		}
+		$fee_total = abs($fee_total);
+		$fee_total = $fee_total + $the_order->get_total_discount();
+	$params["transaction[price_discount]"] = $fee_total;
+	    
+        //$params["transaction[price_discount]"] = $order->discount_total;
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
         
