@@ -2,11 +2,7 @@
 
 O [Yapay Intermediador](https://www.yapay.com.br/) é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores.
 
-## Descrição
-
-**Plugin de Integração Yapay Intermediador - WooCommerce**
- 
-O Yapay Intermediador é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores. Focado em praticidade e conversão, possibilita que as lojas virtuais ofereçam diversas formas de pagamento, sem burocracia ou necessidade de contrato com operadoras financeiras. 
+Focado em praticidade e conversão, possibilita que as lojas virtuais ofereçam diversas formas de pagamento, sem burocracia ou necessidade de contrato com operadoras financeiras. 
  
 Este módulo é capaz de fazer a integração com a API do pagamento do Yapay Intermediador. Neste caso, o consumidor não é redirecionar para ambiente Yapay Intermediador. Todos os passos de o pagamento são feito no Checkout WooCommerce.
 
