@@ -37,6 +37,36 @@ function wc_gateway_yapay_intermediador_init() {
         return $methods;
     }
 }
+//////////////////// INICIO NOVO STATUS //////////////////////////
+function add_status_monitoramento( $order_statuses ) {
+
+    $new_order_statuses = array();
+
+    foreach ( $order_statuses as $key => $status ) {
+
+        $new_order_statuses[ $key ] = $status;
+
+        if ( 'wc-processing' === $key ) {
+            $new_order_statuses['monitorando'] = 'Em Monitoramento';
+        }
+    }
+
+    return $new_order_statuses;
+}
+
+function register_status_monitorando() {
+    register_post_status( 'monitoramento', array(
+        'label'                     => 'Em Monitoramento',
+        'public'                    => true,
+        'show_in_admin_status_list' => true,
+        'show_in_admin_all_list'    => true,
+        'exclude_from_search'       => false,
+        'label_count'               => _n_noop( 'Em Monitoramento <span class="count">(%s)</span>', 'Em Monitoramento <span class="count">(%s)</span>' )
+    ) );
+}
+add_action( 'init', 'register_status_monitorando' );
+add_filter( 'wc_order_statuses', 'add_status_monitoramento' );
+//////////////////// FIM NOVO STATUS //////////////////////////
 
 add_action('admin_menu', 'wc_gateway_yapay_intermediador_log_menu');
 
@@ -212,7 +242,16 @@ function wc_yapay_intermediador_notification() {
             $comment = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
             
             switch ($codeStatus) {
-                case 4: 
+                case 4: if($order->get_status() != "on-hold"){ 
+				$order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+				if($order->payment_method == 'wc_yapay_intermediador_cc' ) {
+					$order->update_status( 'failed', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );					
+					$order->add_order_note( 'Houve falha no pagamento. EX: dados incorretos, saldo insuficiente, cartão com restrição....' );
+				}else{
+                            		$order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+                        	}
+			}
+			break;
                 case 5: 
                 case 88: 
                         if($order->get_status() != "on-hold"){
@@ -243,6 +282,8 @@ function wc_yapay_intermediador_notification() {
                 case 87 :  
                         if($order->get_status() != "on-hold"){
                             $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+			    $order->update_status( 'monitoramento', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+			    $order->add_order_note( 'O pagamento foi capturado e está em revisão pela equipe Yapay' );
                         }else{
                             $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
                         }
