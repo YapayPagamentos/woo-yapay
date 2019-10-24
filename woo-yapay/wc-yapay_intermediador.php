@@ -245,14 +245,14 @@ function wc_yapay_intermediador_notification() {
                 case 4:
                 case 5: 
                 case 88: 
-                        if($order->get_status() != "on-hold"){
-                            $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
-                        }else{
-                            $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
-			    if($order->get_payment_method() == 'wc_yapay_intermediador_cc' ) {
+                        if($order->get_status() == "on-hold"){
+                             $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+			     if($order->get_payment_method() == 'wc_yapay_intermediador_cc' ) {
 				$order->update_status( 'failed', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
 				$order->add_order_note( 'Houve falha no pagamento. EX: dados incorretos, saldo insuficiente, cartão com restrição....' );
-			    }
+			     }
+                        }else{
+                            $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );			    
                         }
                     break;
                 case 6 : 
@@ -276,7 +276,7 @@ function wc_yapay_intermediador_notification() {
                     break;
                 case 87 :  
                         if($order->get_status() != "on-hold"){
-                            $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+                            $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
                         }else{
                             $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
 			    $order->update_status( 'monitoramento', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
