@@ -242,7 +242,7 @@ function wc_yapay_intermediador_notification() {
             $comment = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
             
             switch ($codeStatus) {
-                case 4: if($order->get_status() != "on-hold"){				
+                case 4: if($order->get_status() == "on-hold"){				
 				if($order->payment_method == 'wc_yapay_intermediador_cc' ) {
 					$order->update_status( 'failed', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );					
 					$order->add_order_note( 'Houve falha no pagamento. EX: dados incorretos, saldo insuficiente, cartão com restrição....' );
