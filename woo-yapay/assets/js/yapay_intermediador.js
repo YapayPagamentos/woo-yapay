@@ -247,8 +247,9 @@ function sendRastreio(order_id, code, url){
             document.getElementById("list").innerHTML = li;
 
             jQuery.ajax({
-                url: ajaxurl, 
+                url: location.origin + ajaxurl, 
                 type: 'POST',
+                dataType: 'json',
                 data: {
                     'action': 'sendRastreioYapay',
                     'order_id': order_id,
@@ -328,30 +329,6 @@ function inputCPFYapay() {
               }
     }
 
-
-    
-    
-    
-    // else {
-    //     if ( document.getElementById('billing_cpf') != null ) {
-    //         document.getElementById('cpf_yapayB').style.display = 'none';
-    //         document.getElementById('cpf_yapayT').style.display = 'none';
-    //         document.getElementById('cpf_yapayC').style.display = 'none';
-    //     }
-    // }
-
-    // } else 
-    //     if (document.getElementById('billing_persontype').value == 2) {
-    //         document.getElementById('cpf_yapayB').style.display = 'block';
-    //         document.getElementById('cpf_yapayT').style.display = 'block';
-    //         document.getElementById('cpf_yapayC').style.display = 'block';
-    //     } else {
-    //         document.getElementById('cpf_yapayB').style.display = 'none';
-    //         document.getElementById('cpf_yapayT').style.display = 'none';
-    //         document.getElementById('cpf_yapayC').style.display = 'none';
-    //     }
-
-
 }
 setInterval(inputCPFYapay, 100);
 jQuery(document).ready(function() {
@@ -370,3 +347,37 @@ jQuery(document).ready(function() {
 });
 
 
+function apenasLetrasCartao(e, t) {
+    try {
+        if (window.event) {
+            var charCode = window.event.keyCode;
+        } else if (e) {
+            var charCode = e.which;
+        } else {
+            return true;
+        }
+        if (
+            (charCode > 64 && charCode < 91) ||
+            (charCode > 96 && charCode < 123) ||
+            (charCode > 191 && charCode <= 255) ||
+            (charCode == 32) // letras   com acentos
+        ) {
+            return true;
+
+        } else {
+            return false;
+        }
+    } catch (err) {
+        console.log(err.Description);
+    }
+}
+
+
+function somenteNumerosCartao(evt){
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode == 46 || charCode > 31 && (charCode < 48 || charCode > 57)){
+        evt.preventDefault();
+        return false;
+    }
+    return true;
+}

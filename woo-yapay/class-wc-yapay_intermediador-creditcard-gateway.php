@@ -50,7 +50,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
         if ( $new == "N") {
-            add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+            add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
         }
         
         if ( is_admin() ) {
@@ -243,7 +243,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.2";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.3";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -356,12 +356,14 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         
    
         $card_expiry = explode("/",preg_replace('/\s/', "", $_POST["wc-yapay_intermediador-cc_card_expiry"]));
+
+        $anoCartao = "20".$card_expiry[1];
         
         $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-cc-payment-method"];
         $params["payment[card_name]"] = $_POST["wc-yapay_intermediador-cc_card_holder_name"];
         $params["payment[card_number]"] = preg_replace('/\s/', "",$_POST["wc-yapay_intermediador-cc_card_number"]);
         $params["payment[card_expdate_month]"] = $card_expiry[0];
-        $params["payment[card_expdate_year]"] = $card_expiry[1];
+        $params["payment[card_expdate_year]"] = $anoCartao;//$card_expiry[1];
         $params["payment[card_cvv]"] = $_POST["wc-yapay_intermediador-cc_card_cvc"];
         
         $params["payment[split]"] = $_POST["wc-yapay_intermediador-cc_card_installments"];
@@ -398,12 +400,14 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 return array(
                     'result'   => 'success',
-                    'redirect' => add_query_arg( array( 'use_shipping' => $use_shipping ), $order->get_checkout_payment_url( true ) )
+                    'redirect' => $this->get_return_url( $order )
+                    // 'redirect' => add_query_arg( array( 'use_shipping' => $use_shipping ), $order->get_checkout_payment_url( true ) )
                 );
             } else {
                 return array(
                     'result'   => 'success',
-                    'redirect' => add_query_arg( array( 'order' => $order->id, 'key' => $order->order_key, 'use_shipping' => $use_shipping ), get_permalink( woocommerce_get_page_id( 'pay' ) ) )
+                    'redirect' => $this->get_return_url( $order )
+                    // 'redirect' => add_query_arg( array( 'order' => $order->id, 'key' => $order->order_key, 'use_shipping' => $use_shipping ), get_permalink( woocommerce_get_page_id( 'pay' ) ) )
                 );
             }
 
@@ -433,7 +437,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         if($_POST["wc-yapay_intermediador-cc_card_holder_name"] == ""){
             $errors[] = "<strong>Nome do Titular</strong> não informado";
         }
-                
+            
         if(!$this->luhn(preg_replace('/\s/', "", $_POST["wc-yapay_intermediador-cc_card_number"]))){
             $errors[] = "<strong>Cartão de Crédito</strong> não informado ou inválido";
         }
@@ -442,9 +446,11 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
     
         echo $card_expiry;
 
-        if($card_expiry[1] < date('Y') ){
+        $anoCartao = "20".$card_expiry[1];
+
+        if($anoCartao < date('Y') ){
             $errors[] = "<strong>Data de Vencimento do Cartão</strong> não informado ou inválido";
-        }else if (($card_expiry[1] == date('Y') ) && ($card_expiry[0] < date('m') ) ){
+        }else if (($anoCartao == date('Y') ) && ($card_expiry[0] < date('m') ) ){
             $errors[] = "<strong>Data de Vencimento do Cartão</strong> não informado ou inválido";
         }
         
@@ -473,7 +479,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 	return ($sum % 10 == 0) ? true : false;
     }
     
-    public function receipt_page( $order_id ) {
+    public function thankyou_page( $order_id ) {
         global $woocommerce;
 
         $order        = new WC_Order( $order_id );

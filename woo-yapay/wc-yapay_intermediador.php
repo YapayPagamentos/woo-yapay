@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.5.2
+ * Version: 0.5.3
  * Text Domain: woo-yapay
  */
 
@@ -418,11 +418,11 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
 
 function sendRastreioYapay($order_id, $code, $url) {
 
+
     $order_id = $_POST['order_id'];
     $code = $_POST['code'];
     $url = $_POST['url'];
 
-    var_dump($_POST);
 
     $order  = new WC_Order( $order_id );
 
@@ -451,6 +451,7 @@ function sendRastreioYapay($order_id, $code, $url) {
 
     $tcRequest = new WC_Yapay_Intermediador_Request();        
     $tcResponse = $tcRequest->requestData("v3/sales/trace",$params,$environment);
+
 
 
     $order->add_order_note('Enviado para Yapay o código de rastreio: ' . $code);
