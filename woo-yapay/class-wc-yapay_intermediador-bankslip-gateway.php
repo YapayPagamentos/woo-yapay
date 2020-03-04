@@ -49,8 +49,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         }
 
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-        // add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'thankyou_page' ) );
-        add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+        add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
 
         if ( is_admin() ) {
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -164,7 +163,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.5";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.6";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -338,7 +337,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         return true; 
     }
     
-    public function receipt_page( $order_id ) {
+    public function thankyou_page( $order_id ) {
         global $woocommerce;
 
         $order        = new WC_Order( $order_id );
@@ -350,6 +349,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         
         $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
 
+
         $html = "";
         $html .= "<ul class='order_details'>";
         $html .= "<li>";
@@ -359,6 +359,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         $html .= "<a href='{$tcTransaction->url_payment}' target='_blank' class='button'>Imprimir Boleto</a>";
         $html .= "</li>";
         $html .= "<li>";
+        $html .= "<br><br>";
         $html .= "Linha Digitável do Boleto:<strong>{$tcTransaction->typeful_line}</strong>";
         $html .= "</li>";
         $html .= "</ul>";

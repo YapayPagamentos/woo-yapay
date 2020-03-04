@@ -50,7 +50,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
         if ( $new == "N") {
-            add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+            add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
         }
         
         if ( is_admin() ) {
@@ -243,7 +243,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.5";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.6";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -479,7 +479,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 	return ($sum % 10 == 0) ? true : false;
     }
     
-    public function receipt_page( $order_id ) {
+    public function thankyou_page( $order_id ) {
         global $woocommerce;
 
         $order        = new WC_Order( $order_id );
@@ -525,6 +525,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $html .= "Bandeira de Cartão: <strong>$strPaymentMethod</strong>";
         $html .= "</li>";
         $html .= "<li>";
+        $html .= "<br><br>";
         $html .= "Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong>";
         $html .= "</li>";
         $html .= "</ul>";

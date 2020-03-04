@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.2.2
-Stable tag: 0.5.5
+Stable tag: 0.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -167,3 +167,9 @@ Correção Envio de Código de Rastreio do pedido
 = 0.5.5 = 29/02/2020
 
 Bug fix função receitp_page
+
+= 0.5.6 = 04/03/2020
+
+Bug fix URL Boleto.
+
+Correção das imagens das Bandeiras selecionadas na opção de cartão de crédito.

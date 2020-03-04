@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.5.5
+ * Version: 0.5.6
  * Text Domain: woo-yapay
  */
 
