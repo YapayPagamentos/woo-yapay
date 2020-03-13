@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.5.6
+ * Version: 0.5.7
  * Text Domain: woo-yapay
  */
 
@@ -210,6 +210,7 @@ function wc_yapay_intermediador_notification() {
             $codeStatus = intval($tcResponse->data_response->transaction->status_id);
             
             $comment = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
+            
             
             switch ($codeStatus) {
                 case 4: 
@@ -416,7 +417,7 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
 // Fim correios
 
 
-function sendRastreioYapay($order_id, $code, $url) {
+function sendRastreioYapay() {
 
 
     $order_id = $_POST['order_id'];

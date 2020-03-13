@@ -31,7 +31,8 @@ class WC_Yapay_Intermediador_Request{
         curl_setopt ( $ch, CURLOPT_POST, 1 );
         curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt ( $ch, CURLOPT_POSTFIELDS, $dataRequest);
-        curl_setopt ( $ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2 );
+        curl_setopt ( $ch, CURLOPT_SSLVERSION, 6 );
+        // curl_setopt ( $ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2 );
 
         
         if (!($response = curl_exec($ch))) {
