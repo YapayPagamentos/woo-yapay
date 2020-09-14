@@ -2,8 +2,8 @@
 Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
-Tested up to: 5.2.2
-Stable tag: 0.5.7
+Tested up to: 5.5
+Stable tag: 0.5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -177,3 +177,25 @@ Correção das imagens das Bandeiras selecionadas na opção de cartão de créd
 = 0.5.7 = 13/03/2020
 
 Correção bug de envio de Código de Rastreio para Yapay com PHP >7.x 
+
+= 0.5.8 = 11/05/2020
+
+Correção bug thankyou_page com informações do pagamento do pedido.
+
+Correção bug de alteração do status dos pedidos.
+
+Erro na criação da parcela, PHP >= 7.3
+
+= 0.5.9 = 08/09/2020
+
+Ajustes de segurança e funções depreciadas
+
+Ajustes no envio da palavra CORREIOS na URL de envio do código de rastreio.
+
+Adicionado o parâmetro max_split_transaction, no reprocessamento do pagamento permite apenas o que foi setado no primeiro processamento.
+
+Adicionado o envio do número do celular (billing_celphone) caso exista.
+
+Correção no input do nome do cartão de crédito permitindo APENAS letras e espaço.
+
+

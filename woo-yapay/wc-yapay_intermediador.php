@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.5.7
+ * Version: 0.5.9
  * Text Domain: woo-yapay
  */
 
@@ -85,7 +85,7 @@ function tc_get_splits() {
 
     include_once("includes/class-wc-yapay_intermediador-request.php");
     $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();
-    
+
     $paymentId = $_POST['payment_method'];
     $price = $_POST['price'];
     $token_account = $tcConfig->get_option("token_account");
@@ -97,26 +97,33 @@ function tc_get_splits() {
 
     $params["token_account"] = $token_account;
     $params["price"] = $price;
+    $params["type_response"] = "J";
 
     $tcResponse = $tcRequest->requestData("v1/transactions/simulate_splitting",$params,$environment);
 
-    if($tcResponse->message_response->message == "success"){
-        $simulate_splitting = $tcResponse->data_response->payment_methods;
-        foreach($simulate_splitting->payment_method as $payment_method){
-            if(intval($payment_method->payment_method_id) == intval($paymentId)){
+    if($tcResponse['message_response']['message'] == "success"){
+        $simulate_splitting = $tcResponse['data_response']['payment_methods'];
+
+        $simulate_splitting = $tcResponse['data_response']['payment_methods'];
+
+        foreach($simulate_splitting as $payment_method){
+            if(intval($payment_method['payment_method_id']) == intval($paymentId)){
                 for($i = 0 ; $i < $qs ; $i ++){
-                    if(floatval($payment_method->splittings->splitting[$i]->value_split) >= $vs){
-                        $results->splittings->splitting[] = $payment_method->splittings->splitting[$i];
+                    if(floatval($payment_method['splittings'][$i]['value_split']) >= $vs){
+                        $results['splittings']['splitting'][$i] = $payment_method['splittings'][$i];
+
+
                     } else if ($price <= $vs) {
-                        $results->splittings->splitting[] = $payment_method->splittings->splitting[0];
+                        $results['splittings']['splitting'] = $payment_method['splittings'][0];
                         break;
                     }
                 }
-                echo json_encode($results->splittings);
+
+                echo json_encode($results['splittings']);
             }
         }
     }
-    
+
     die();
 }
 
@@ -189,8 +196,10 @@ function wc_yapay_intermediador_notification() {
         $transactionData = new WC_Yapay_Intermediador_Transactions();
         $tcTransaction = $transactionData->getTransactionByToken($token_transaction);
         $tcPayment = "";
-        
-        switch ($order->payment_method) {
+        $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
+        // $paymentOrder = $order->payment_method;
+
+        switch ($paymentOrder) {
             case "wc_yapay_intermediador_bs": $tcPayment = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
             case "wc_yapay_intermediador_cc": $tcPayment = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
             case "wc_yapay_intermediador_tef": $tcPayment = new WC_Yapay_Intermediador_Tef_Gateway(); break;
@@ -204,14 +213,14 @@ function wc_yapay_intermediador_notification() {
         
         $tcResponse = $tcRequest->requestData("v2/transactions/get_by_token",$params,$tcPayment->get_option("environment"));
         
-        if ( (str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction->order_id) == $order->id) && $tcResponse->message_response->message == "success") {
+        if ( (str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction->order_id) == $order->get_id()) && $tcResponse->message_response->message == "success") {
 
             
             $codeStatus = intval($tcResponse->data_response->transaction->status_id);
             
             $comment = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
             
-            
+
             switch ($codeStatus) {
                 case 4: 
                 case 5: 
@@ -253,11 +262,12 @@ function wc_yapay_intermediador_notification() {
                         // No action xD.
                     break;
             }
-            
+            echo "Status do pedido " . $order->get_id() ." alterado: " . $comment . ". Transação: " .$tcResponse->data_response->transaction->transaction_id." ! ";
+
         } else {
             echo "Ocorreu um erro para atualizar o status do pedido!";
             var_dump(str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction->order_id));
-            var_dump($order->id);
+            var_dump($order->get_id());
             var_dump($tcResponse);
         }
 	
@@ -327,7 +337,7 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
     {
         global $post;
 
-        if ($post->post_status == 'wc-processing') {
+        if ($post->post_status != 'wc-pending') {
             $meta_field_data = get_post_meta( $post->ID, '_my_field_slug', true ) ? get_post_meta( $post->ID, '_my_field_slug', true ) : '';
             $urlRastreio = get_post_meta( $post->ID, '_url_rastreio_yapay', true ) ? get_post_meta( $post->ID, '_url_rastreio_yapay', true ) : '';
 
@@ -357,8 +367,7 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
                     <p><strong>Observação:</strong> É importante enviar a URL da Transportadora.</p>
                 </div>
                 ';
-// <li>' .$meta_field_data . ' <a href="#"<span class="dashicons dashicons-dismiss" onclick="remove(this)"></span></a> </li>
-                    
+                   
         }
         else {
             echo 'Status não permite envio de código de rastreio'; 
@@ -367,71 +376,28 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
 }
 // Fim container metafield
 
-// // Save the data of the Meta field
-// add_action( 'save_post', 'mv_save_wc_order_other_fields', 10, 1 );
-// if ( ! function_exists( 'mv_save_wc_order_other_fields' ) )
-// {
-
-//     function mv_save_wc_order_other_fields( $post_id ) {
-
-//         // We need to verify this with the proper authorization (security stuff).
-
-//         // Check if our nonce is set.
-//         if ( ! isset( $_POST[ 'mv_other_meta_field_nonce' ] ) ) {
-//             return $post_id;
-//         }
-//         $nonce = $_REQUEST[ 'mv_other_meta_field_nonce' ];
-
-//         //Verify that the nonce is valid.
-//         if ( ! wp_verify_nonce( $nonce ) ) {
-            
-//             return $post_id;
-//         }
-
-//         // If this is an autosave, our form has not been submitted, so we don't want to do anything.
-//         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {          
-//             return $post_id;
-//         }
-
-//         // Check the user's permissions.
-//         if ( 'page' == $_POST[ 'post_type' ] ) {
-
-//             if ( ! current_user_can( 'edit_page', $post_id ) ) {
-//                 return $post_id;
-//             }
-//         } else {
-
-//             if ( ! current_user_can( 'edit_post', $post_id ) ) {
-//                 return $post_id;
-//             }
-//         }
-
-//         // --- Its safe for us to save the data ! --- //f
-
-//         // Sanitize user input  and update the meta field in the database.
-//         update_post_meta( $post_id, '_my_field_slug', $_POST[ 'wp_woocommerce_rastreio' ] );
-
-//     }
-// }
-
 // Fim correios
 
 
 function sendRastreioYapay() {
-
-
     $order_id = $_POST['order_id'];
     $code = $_POST['code'];
-    $url = $_POST['url'];
-
+    
+    if ((strtolower($_POST["url"]) == "correios") OR (strtolower($_POST["url"]) == "correio") OR 
+        (strtolower($_POST["url"]) == "correios-sedex") OR (strtolower($_POST["url"]) == "correios-pac")) {
+            $url = "http://www2.correios.com.br/sistemas/rastreamento/";
+    } else {
+        $url = $_POST["url"];
+    }
 
     $order  = new WC_Order( $order_id );
-
 
     include_once("includes/class-wc-yapay_intermediador-transactions.php");
     include_once("includes/class-wc-yapay_intermediador-request.php");
 
-    switch ($order->payment_method) {
+    $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
+    
+    switch ($paymentOrder) {
         case "wc_yapay_intermediador_bs": $tcConfig = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
         case "wc_yapay_intermediador_cc": $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
         case "wc_yapay_intermediador_tef": $tcConfig = new WC_Yapay_Intermediador_Tef_Gateway(); break;
@@ -455,17 +421,14 @@ function sendRastreioYapay() {
     $params["code"] = $code;
     $params["url"] = $url;
     $params["posted_date"] = time();
-
+    
     $tcRequest = new WC_Yapay_Intermediador_Request();        
     $tcResponse = $tcRequest->requestData("v3/sales/trace",$params,$environment);
-
-
 
     $order->add_order_note('Enviado para Yapay o código de rastreio: ' . $code);
 
     update_post_meta( $order_id, '_my_field_slug', $_POST[ 'code' ] );
     update_post_meta( $order_id, 'urlRastreio', $_POST[ 'url' ] );
-
 }
 
 add_action( 'wp_ajax_sendRastreioYapay', 'sendRastreioYapay' );

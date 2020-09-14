@@ -49,6 +49,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         }
 
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+        
         if ( $new == "N") {
             add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
         }
@@ -197,7 +198,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         }
         
         
-        woocommerce_get_template( $this->id.'_form.php', array(
+        wc_get_template( $this->id.'_form.php', array(
                 'cart_total'           => $cart_total,
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
                 'payment_methods'      => $this->get_option("payment_methods"),
@@ -243,7 +244,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.7";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.9";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -270,8 +271,14 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 
         $params["customer[inscricao_municipal]"] = "";
         $params["customer[email]"] = $_POST["billing_email"];
-        $params["customer[contacts][][type_contact]"] = "H";
-        $params["customer[contacts][][number_contact]"] = $_POST["billing_phone"];
+        $params["customer[contacts][0][type_contact]"] = "H";
+        $params["customer[contacts][0][number_contact]"] = $_POST["billing_phone"];
+
+        if ($_POST["billing_cellphone"] != "") {
+            $params["customer[contacts][1][type_contact]"] = "M";
+            $params["customer[contacts][1][number_contact]"] = $_POST["billing_cellphone"];
+
+        }
         
         $params["customer[addresses][0][type_address]"] = "B";
         $params["customer[addresses][0][postal_code]"] = $_POST["billing_postcode"];
@@ -341,6 +348,8 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["transaction[price_discount]"] = $order->discount_total;
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
+        $params["transaction[max_split_transaction]"] = $_POST["wc-yapay_intermediador-cc_card_installments"];
+
         
         if ( 0 < sizeof( $order->get_items() ) ) {
             $i = 0;
@@ -457,7 +466,16 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         if($_POST["wc-yapay_intermediador-cc_card_installments"] == "0"){
             $errors[] = "<strong>Quantidade de Parcelas</strong> não informado";
         }
+    
+        if($_POST["wc-yapay_intermediador-cc_card_installments"] == "0"){
+            $errors[] = "<strong>Quantidade de Parcelas</strong> não informado";
+        }        
         
+        if($_POST["billing_phone"] == ""){
+            $errors[] = "<strong>Telefone</strong> não informado";
+        }
+
+
         if (count($errors)){
             $this->add_error($errors);         
             return false; 
@@ -480,29 +498,30 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
     }
     
     public function thankyou_page( $order_id ) {
-        global $woocommerce;
+        // global $woocommerce;
 
         $order        = new WC_Order( $order_id );
-        $request_data = $_POST;
+        // $request_data = $_POST;
 
         include_once("includes/class-wc-yapay_intermediador-transactions.php");
         include_once("includes/class-wc-yapay_intermediador-request.php");
-            
+          
         $transactionData = new WC_Yapay_Intermediador_Transactions();
-        
+       
         $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
 
         $tcRequest = new WC_Yapay_Intermediador_Request();
-        
+      
         $params["token_account"] = $this->get_option("token_account");
-        $params['price']= $order->total;
-        $params['payment_method_id']= $tcTransaction->payment_method;
-        
+        $params['price']= $order->get_total();
+        $params['payment_method_id'] = $tcTransaction->payment_method;
         $tcResponse = $tcRequest->requestData("v1/seller_splits/simulate_split",$params,$this->get_option("environment"),false);
+        // echo("<pre>");
+        // var_dump($params);
+        // die();
 
         $tcTransactionSplit = $tcResponse->data_response->splittings->splitting[$tcTransaction->split_number - 1];
       
-        
         $html = "";
         $html .= "<ul class='order_details'>";
         $html .= "<li>";
@@ -525,14 +544,17 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $html .= "Bandeira de Cartão: <strong>$strPaymentMethod</strong>";
         $html .= "</li>";
         $html .= "<li>";
-        $html .= "<br><br>";
         $html .= "Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong>";
         $html .= "</li>";
         $html .= "</ul>";
         
         echo $html;
 
-        $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
+        $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
+
+        // if ($order->get_status() != 'processing') {
+        //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
+        // }
     }
     
 }

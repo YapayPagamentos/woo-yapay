@@ -15,16 +15,16 @@ class WC_Yapay_Intermediador_Request{
     
     public function requestData($pathPost, $dataRequest, $environment = "yes", $strResponse = false)
     {
-        
+
         $urlPost = self::getUrlEnvironment($environment).$pathPost;
-        
+       
         $requestData = new WC_Yapay_Intermediador_Requests();
         
         $paramRequests["request_params"] = $dataRequest;
         $paramRequests["request_url"] = $urlPost;
         
         $requestData->addRequest($paramRequests,$environment);
-        
+
         $ch = curl_init ( $urlPost );
         
         curl_setopt ( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
@@ -57,10 +57,18 @@ class WC_Yapay_Intermediador_Request{
         
         $responseData->addResponse($paramResponse,$environment);
         
-        if(!$strResponse){
+        if (!$strResponse AND $pathPost == 'v1/transactions/simulate_splitting'){
+            $response = json_decode($response, 1);
+        } else if (!$strResponse AND $pathPost == 'v2/transactions/get_by_token') {
+            $response = simplexml_load_string($response);
+        } else if (!$strResponse AND $pathPost == 'v2/transactions/pay_complete') { 
+            $response = simplexml_load_string($response);
+        } else if (!$strResponse AND $pathPost == 'v3/sales/trace') { 
+            $response = simplexml_load_string($response);
+        } else if (!$strResponse AND $pathPost == 'v1/seller_splits/simulate_split') { 
             $response = simplexml_load_string($response);
         }
-                
+        
         return $response;
     }
 }

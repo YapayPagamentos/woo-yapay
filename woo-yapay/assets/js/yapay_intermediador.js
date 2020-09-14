@@ -349,7 +349,7 @@ jQuery(document).ready(function() {
 
 function apenasLetrasCartao(e, t) {
     try {
-        if (window.event) {
+        if (window.event && window.event.keyCode) {
             var charCode = window.event.keyCode;
         } else if (e) {
             var charCode = e.which;
