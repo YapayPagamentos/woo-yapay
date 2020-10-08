@@ -244,7 +244,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.5.9";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.0";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -368,6 +368,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 
         $anoCartao = "20".$card_expiry[1];
         
+
         $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-cc-payment-method"];
         $params["payment[card_name]"] = $_POST["wc-yapay_intermediador-cc_card_holder_name"];
         $params["payment[card_number]"] = preg_replace('/\s/', "",$_POST["wc-yapay_intermediador-cc_card_number"]);
@@ -378,7 +379,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["payment[split]"] = $_POST["wc-yapay_intermediador-cc_card_installments"];
         
         $tcRequest = new WC_Yapay_Intermediador_Request();
-        
+
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
                     
                 
@@ -438,6 +439,10 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
     }
     
     public function validate_fields() { 
+        global $wp;
+        $order_id = $wp->query_vars['order-pay'];
+        $order = new WC_Order( $order_id );
+
         $errors = array();
         if($_POST["wc-yapay_intermediador-cc-payment-method"] == ""){
             $errors[] = "<strong>Bandeira de Cartão</strong> não selecionada";
@@ -516,9 +521,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params['price']= $order->get_total();
         $params['payment_method_id'] = $tcTransaction->payment_method;
         $tcResponse = $tcRequest->requestData("v1/seller_splits/simulate_split",$params,$this->get_option("environment"),false);
-        // echo("<pre>");
-        // var_dump($params);
-        // die();
 
         $tcTransactionSplit = $tcResponse->data_response->splittings->splitting[$tcTransaction->split_number - 1];
       

@@ -15,15 +15,7 @@ class WC_Yapay_Intermediador_Request{
     
     public function requestData($pathPost, $dataRequest, $environment = "yes", $strResponse = false)
     {
-
         $urlPost = self::getUrlEnvironment($environment).$pathPost;
-       
-        $requestData = new WC_Yapay_Intermediador_Requests();
-        
-        $paramRequests["request_params"] = $dataRequest;
-        $paramRequests["request_url"] = $urlPost;
-        
-        $requestData->addRequest($paramRequests,$environment);
 
         $ch = curl_init ( $urlPost );
         
@@ -49,6 +41,23 @@ class WC_Yapay_Intermediador_Request{
         $httpCode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
         
         curl_close($ch); 
+
+
+        $requestData = new WC_Yapay_Intermediador_Requests();
+
+        if (($pathPost == 'v2/transactions/pay_complete') AND ($dataRequest['payment[card_number]'] != null))  {            
+            $dataRequest['payment[card_name]'] = '';
+            $dataRequest['payment[card_number]'] = '';
+            $dataRequest['payment[card_cvv]'] = '';
+            $dataRequest['payment[card_expdate_year]'] = '';
+            $dataRequest['payment[card_expdate_month]'] = '';
+        }
+        
+        $paramRequests["request_params"] = $dataRequest;
+        $paramRequests["request_url"] = $urlPost;
+        
+        $requestData->addRequest($paramRequests,$environment);
+
         
         $responseData = new WC_Yapay_Intermediador_Responses();
         
