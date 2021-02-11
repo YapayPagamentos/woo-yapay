@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.5
-Stable tag: 0.6.0
+Stable tag: 0.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -202,3 +202,8 @@ Correção no input do nome do cartão de crédito permitindo APENAS letras e es
 = 0.6.0 = 08/10/2020
 
 Ajustes de segurança nos logs
+
+
+= 0.6.1 = 11/02/2021
+
+Ajuste variáveis de desconto.

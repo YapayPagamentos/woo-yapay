@@ -163,7 +163,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.0";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.1";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -254,7 +254,31 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
             $params["transaction[shipping_price]"] = $order->order_shipping;
         }
 
-        $params["transaction[price_discount]"] = $order->discount_total;
+        if (count($order->get_items('fee')) > 0) {
+            add_filter ( 'additional_fees', 'yp_additional_fees', 10, 2  );
+    
+            function yp_additional_fees( $discount, $order ) {
+                foreach( $order->get_items('fee') as $item_id => $item_fee ){
+                    $fee_total = $item_fee->get_total();
+                }
+            
+                if( $discount > 0 ) {
+                    $total_fee = $discount + abs($fee_total);
+                    return $total_fee;
+                }
+                return abs($fee_total);
+            }
+
+
+            $params["transaction[price_discount]"] = apply_filters( 'additional_fees', $order->discount_total, $order );
+
+
+        } else if (intval($order->discount_total) > 0) {
+            $params["transaction[price_discount]"] = $order->discount_total;
+            
+        } 
+
+        // $params["transaction[price_discount]"] = $order->discount_total;
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = "6";
         
