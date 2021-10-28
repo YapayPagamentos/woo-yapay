@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $woocommerce_yapay_intermediador_db_version;
-$woocommerce_yapay_intermediador_db_version = '1.2';
+$woocommerce_yapay_intermediador_db_version = '1.3';
 
 function woocommerce_yapay_intermediador_install () {
     global $wpdb, $woocommerce_yapay_intermediador_db_version;
@@ -40,6 +40,8 @@ function woocommerce_yapay_intermediador_install () {
     token_transaction varchar(100) NOT NULL,
     url_payment varchar(200),
     typeful_line varchar(60),
+    qrcode_path varchar(255),
+    qrcode_original_path varchar(255),
     PRIMARY KEY (control_id)
 ) $charset_collate;";
 

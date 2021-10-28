@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.6.1
+ * Version: 0.6.2
  * Text Domain: woo-yapay
  */
 
@@ -26,6 +26,7 @@ function wc_gateway_yapay_intermediador_init() {
     include_once( 'class-wc-yapay_intermediador-creditcard-gateway.php' );
     include_once( 'class-wc-yapay_intermediador-bankslip-gateway.php' );
     include_once( 'class-wc-yapay_intermediador-tef-gateway.php' );
+    include_once( 'class-wc-yapay_intermediador-pix-gateway.php' );
 
     // Now that we have successfully included our class,
     // Lets add it too WooCommerce
@@ -34,6 +35,7 @@ function wc_gateway_yapay_intermediador_init() {
         $methods[] = 'WC_Yapay_Intermediador_Creditcard_Gateway';
         $methods[] = 'WC_Yapay_Intermediador_Tef_Gateway';
         $methods[] = 'WC_Yapay_Intermediador_Bankslip_Gateway';
+        $methods[] = 'WC_Yapay_Intermediador_Pix_Gateway';
         return $methods;
     }
 }
@@ -62,6 +64,7 @@ function wc_gateway_yapay_intermediador_action_links( $links ) {
         '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_yapay_intermediador_creditcard_gateway' ) . '">' . __( 'Config. Cartão', 'wc-yapay_intermediador-cc' ) . '</a>',
         '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_yapay_intermediador_tef_gateway' ) . '">' . __( 'Config. TEF', 'wc-yapay_intermediador-tef' ) . '</a>',
         '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_yapay_intermediador_bankslip_gateway' ) . '">' . __( 'Config. Boleto', 'wc-yapay_intermediador-bs' ) . '</a>',
+        '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_yapay_intermediador_pix_gateway' ) . '">' . __( 'Config. Pix', 'wc-yapay_intermediador-pix' ) . '</a>',
     );
 
     // Merge our new link with the default ones
@@ -186,7 +189,7 @@ function wc_yapay_intermediador_notification() {
     if( $wp_query->get('wc_yapay_intermediador_notification') && isset($_GET['wc_yapay_intermediador_notification'])) {  
         
         $order_id = $_GET['order_id'];
-        $token_transaction = $_POST['token_transaction'];
+        $token_transaction = 'adafec57eab2abb6a3c94d10360bf81d';//$_POST['token_transaction'];
         
         include_once("includes/class-wc-yapay_intermediador-request.php");
         include_once("includes/class-wc-yapay_intermediador-transactions.php");
@@ -202,13 +205,14 @@ function wc_yapay_intermediador_notification() {
             case "wc_yapay_intermediador_bs": $tcPayment = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
             case "wc_yapay_intermediador_cc": $tcPayment = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
             case "wc_yapay_intermediador_tef": $tcPayment = new WC_Yapay_Intermediador_Tef_Gateway(); break;
+            case "wc_yapay_intermediador_pix": $tcPayment = new WC_Yapay_Intermediador_Pix_Gateway(); break;
             default: $tcPayment = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
         }
         
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $params["token_account"] = $tcPayment->get_option("token_account");
-        $params["token_transaction"] = $_POST["token_transaction"];
+        $params["token_transaction"] = 'adafec57eab2abb6a3c94d10360bf81d';//$_POST["token_transaction"];
         
         $tcResponse = $tcRequest->requestData("v2/transactions/get_by_token",$params,$tcPayment->get_option("environment"));
         
@@ -400,6 +404,7 @@ function sendRastreioYapay() {
         case "wc_yapay_intermediador_bs": $tcConfig = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
         case "wc_yapay_intermediador_cc": $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
         case "wc_yapay_intermediador_tef": $tcConfig = new WC_Yapay_Intermediador_Tef_Gateway(); break;
+        case "wc_yapay_intermediador_pix": $tcConfig = new WC_Yapay_Intermediador_Pix_Gateway(); break;
         default: $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
     }
 

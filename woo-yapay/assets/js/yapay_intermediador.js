@@ -381,3 +381,12 @@ function somenteNumerosCartao(evt){
     }
     return true;
 }
+
+
+
+function copiarTexto() {
+    var textoCopiado = document.getElementById("linhaDigitavel");
+    textoCopiado.select();
+    document.execCommand("copy");
+    document.getElementById("linhaDigitavel").blur();
+  }

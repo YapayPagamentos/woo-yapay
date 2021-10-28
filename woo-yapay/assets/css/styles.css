@@ -135,3 +135,19 @@ ul li img.tcPaymentFlagSelected{
   border: 1px solid #1d3b6f; /*Amarelo*/
   transition: all 0.3s ease;
 }
+
+
+.linhaDigitavel {
+    margin-top: 15px;
+}
+
+.copiaCola img {
+    width: 20px;
+    margin-left: 30px;
+}
+
+.qrCodeYapay {
+    margin-top: 15px;
+    width: 100px;
+
+}

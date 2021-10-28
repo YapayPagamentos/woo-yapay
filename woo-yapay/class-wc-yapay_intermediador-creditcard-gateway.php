@@ -244,7 +244,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.1";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.2";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
