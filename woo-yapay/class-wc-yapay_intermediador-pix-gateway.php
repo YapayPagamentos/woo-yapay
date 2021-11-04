@@ -180,7 +180,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         
        
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.3";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.4";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -324,6 +324,10 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             
             $transactionData = new WC_Yapay_Intermediador_Transactions();
             
+            // var_dump($tcResponse->data_response->transaction->payment);
+            // var_dump($tcResponse->data_response->transaction->payment->qrcode_original_path);
+            // die();
+
             $transactionParams["order_id"] = (string)$tcResponse->data_response->transaction->order_number;
             $transactionParams["transaction_id"] = (int)$tcResponse->data_response->transaction->transaction_id;
             $transactionParams["split_number"] = (string)$tcResponse->data_response->transaction->order_number;
@@ -403,6 +407,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $transactionData = new WC_Yapay_Intermediador_Transactions();
 
         $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
+        // var_dump($tcTransaction);die();
         $html = "";
         $html .= "<ul class='order_details'>";
         $html .= "<li>";
@@ -412,18 +417,27 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         switch (intval($tcTransaction->payment_method)){
             case 27: $strPaymentMethod = "Pix";break;
         }
-            
-        $html .= "Pix Copia e Cola<input type='text' id='linhaDigitavel' value='{$tcTransaction->qrcode_original_path}'><a class='copiaCola' onClick='copiarTexto()'><img name='imgCopy' src='{$url_image}/assets/images/copy.svg' /></a>";
-        $html .= "</li>";
-        $html .= "<li>";
-        $html .= "<br><br>";
-        $html .= "<object class='qrCodeYapay' data='{$tcTransaction->qrcode_path}' > </object>";
-        $html .= "</li>";        
-        $html .= "<br><br>";
-        $html .= "<li>";   
-        $html .= "<p>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</p>";   
-        $html .= "</li>";   
-        $html .= "</ul>";
+
+        if ($tcTransaction->qrcode_original_path != null) {
+            $html .= "Pix Copia e Cola<input type='text' id='linhaDigitavel' value='{$tcTransaction->qrcode_original_path}'><a class='copiaCola' onClick='copiarTexto()'><img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' /></a>";
+            $html .= "</li>";
+            $html .= "<li>";
+            $html .= "<br><br>";
+            $html .= "<object class='qrCodeYapay' data='{$tcTransaction->qrcode_path}' > </object>";
+            $html .= "</li>";        
+            $html .= "<br><br>";
+            $html .= "<li>";   
+            $html .= "<p>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</p>";   
+            $html .= "</li>";   
+            $html .= "</ul>";
+        } else if ($tcTransaction->qrcode_original_path == null) {
+            $html .= "<strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong> ";
+            $html .= "</li>";
+
+            $html .= "</ul>";
+        }
+        
+
 
  
         

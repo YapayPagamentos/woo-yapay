@@ -3,7 +3,7 @@ Contributors: Integração Yapay
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.5
-Stable tag: 0.6.3
+Stable tag: 0.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -215,5 +215,9 @@ Adicionada forma de pagamento PIX
 
 
 = 0.6.3 = 01/11/2021
+
+Ajuste token_transaction Notificação
+
+= 0.6.4 = 03/11/2021
 
 Ajuste token_transaction Notificação

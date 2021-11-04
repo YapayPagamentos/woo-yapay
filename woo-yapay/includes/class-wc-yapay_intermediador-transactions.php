@@ -25,9 +25,10 @@ class WC_Yapay_Intermediador_Transactions{
     
     public function getTransactionById($transaction_id) {
         global $wpdb;
-        
+
         $responses = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}woocommerce_yapay_intermediador_transactions WHERE transaction_id = $transaction_id");
         
+        // var_dump($responses);
         return $responses;
         
     }
