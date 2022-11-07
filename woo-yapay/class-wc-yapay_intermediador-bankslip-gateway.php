@@ -254,31 +254,32 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
             $params["transaction[shipping_price]"] = $order->order_shipping;
         }
 
+        $discount = 0;
+        $fee      = 0;
+
         if (count($order->get_items('fee')) > 0) {
-            add_filter ( 'additional_fees', 'yp_additional_fees', 10, 2  );
     
-            function yp_additional_fees( $discount, $order ) {
-                foreach( $order->get_items('fee') as $item_id => $item_fee ){
-                    $fee_total = $item_fee->get_total();
+            foreach( $order->get_items('fee') as $item_id => $item_fee ){
+                $fee_total = intval( $item_fee->get_total() );
+
+                if ( $fee_total > 0 ) {
+                    $fee += $fee_total;
+                } else {
+                    $discount += $fee_total * -1;
                 }
-            
-                if( $discount > 0 ) {
-                    $total_fee = $discount + abs($fee_total);
-                    return $total_fee;
-                }
-                return abs($fee_total);
             }
-
-
-            $params["transaction[price_discount]"] = apply_filters( 'additional_fees', $order->discount_total, $order );
-
-
-        } else if (intval($order->discount_total) > 0) {
-            $params["transaction[price_discount]"] = $order->discount_total;
-            
         } 
 
-        // $params["transaction[price_discount]"] = $order->discount_total;
+        $discount += $order->discount_total;
+
+        if ( $discount > 0 ) {
+            $params["transaction[price_discount]"] = $discount;
+        }
+
+        if ( $fee > 0 ) {
+            $params["transaction[fee]"] = $fee;
+        }
+        
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = "6";
         

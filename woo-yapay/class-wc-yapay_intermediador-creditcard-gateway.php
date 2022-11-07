@@ -345,32 +345,33 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $params["transaction[shipping_price]"] = $order->order_shipping;
         }
 
+        $discount = 0;
+        $fee      = 0;
 
         if (count($order->get_items('fee')) > 0) {
-            add_filter ( 'additional_fees', 'yp_additional_fees', 10, 2  );
     
-            function yp_additional_fees( $discount, $order ) {
-                foreach( $order->get_items('fee') as $item_id => $item_fee ){
-                    $fee_total = $item_fee->get_total();
+            foreach( $order->get_items('fee') as $item_id => $item_fee ){
+                $fee_total = intval( $item_fee->get_total() );
+
+                if ( $fee_total > 0 ) {
+                    $fee += $fee_total;
+                } else {
+                    $discount += $fee_total * -1;
                 }
-            
-                if( $discount > 0 ) {
-                    $total_fee = $discount + abs($fee_total);
-                    return $total_fee;
-                }
-                return abs($fee_total);
             }
-
-
-            $params["transaction[price_discount]"] = apply_filters( 'additional_fees', $order->discount_total, $order );
-
-
-        } else if (intval($order->discount_total) > 0) {
-            $params["transaction[price_discount]"] = $order->discount_total;
-            
         } 
 
-        // $params["transaction[price_discount]"] = $order->discount_total;
+        $discount += $order->discount_total;
+
+        if ( $discount > 0 ) {
+            $params["transaction[price_discount]"] = $discount;
+        }
+
+        if ( $fee > 0 ) {
+            $params["transaction[fee]"] = $fee;
+        }
+        
+
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
         $params["transaction[max_split_transaction]"] = $_POST["wc-yapay_intermediador-cc_card_installments"];
@@ -403,11 +404,11 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         
         $params["payment[split]"] = $_POST["wc-yapay_intermediador-cc_card_installments"];
         
+        error_log( var_export( $params, true ) ); exit;
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
                     
-                
         if($tcResponse->message_response->message == "success"){
             // Remove cart.  
             include_once("includes/class-wc-yapay_intermediador-transactions.php");
@@ -420,7 +421,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
             $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
 
-            
             $transactionData->addTransaction($transactionParams);
 
 
