@@ -404,7 +404,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         
         $params["payment[split]"] = $_POST["wc-yapay_intermediador-cc_card_installments"];
         
-        error_log( var_export( $params, true ) ); exit;
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
