@@ -260,7 +260,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         if (count($order->get_items('fee')) > 0) {
     
             foreach( $order->get_items('fee') as $item_id => $item_fee ){
-                $fee_total = intval( $item_fee->get_total() );
+                $fee_total = floatval( $item_fee->get_total() );
 
                 if ( $fee_total > 0 ) {
                     $fee += $fee_total;
@@ -270,7 +270,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
             }
         } 
 
-        $discount += $order->discount_total;
+        $discount += floatval( $order->discount_total );
 
         if ( $discount > 0 ) {
             $params["transaction[price_discount]"] = $discount;
