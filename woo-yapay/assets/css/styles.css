@@ -147,7 +147,6 @@ ul li img.tcPaymentFlagSelected{
 }
 
 .qrCodeYapay {
-    margin-top: 15px;
-    width: 100px;
-
+    margin-left: -75px;
+    margin-top: 10px;
 }

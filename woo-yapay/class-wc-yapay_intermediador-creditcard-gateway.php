@@ -548,13 +548,6 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $tcResponse = $tcRequest->requestData("v1/seller_splits/simulate_split",$params,$this->get_option("environment"),false);
 
         $tcTransactionSplit = $tcResponse->data_response->splittings->splitting[$tcTransaction->split_number - 1];
-      
-        $html = "";
-        $html .= "<ul class='order_details'>";
-        $html .= "<li>";
-        $html .= "Número da Transação: <strong>{$tcTransaction->transaction_id}</strong>";
-        $html .= "</li>";
-        $html .= "<li>";
         $strPaymentMethod = "";
         switch (intval($tcTransaction->payment_method)){
             // case 2: $strPaymentMethod = "Diners Club International";break;
@@ -568,20 +561,26 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             case 20: $strPaymentMethod = "Hipercard";break;
             case 25: $strPaymentMethod = "Hiper (Itaú)";break;
         }
-        $html .= "Bandeira de Cartão: <strong>$strPaymentMethod</strong>";
-        $html .= "</li>";
-        $html .= "<li>";
-        $html .= "Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong>";
-        $html .= "</li>";
-        $html .= "</ul>";
-        
+
+        $html = "
+        <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+            <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+            <hr/>
+            <div style='margin: 20px 0'>
+                <span>Número da Transação: <strong>{$tcTransaction->transaction_id}</strong></span>
+            </div>
+            <div style='margin: 20px 0'>
+                <span>Bandeira de Cartão: <strong>$strPaymentMethod</strong></span>
+            </div>
+            <div style='margin: 20px 0'>
+                <span>Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong></span>
+            </div>
+        </div>
+        ";
+
         echo $html;
 
         $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-
-        // if ($order->get_status() != 'processing') {
-        //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        // }
     }
     
 }

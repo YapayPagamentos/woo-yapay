@@ -374,29 +374,28 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
         $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
 
-        $html = "";
-        $html .= "<ul class='order_details'>";
-        $html .= "<li>";
-        $html .= "Número da Transação:<strong>{$tcTransaction->transaction_id}</strong>";
-        $html .= "</li>";
-        $html .= "<li>";
-        $html .= "<a href='{$tcTransaction->url_payment}' target='_blank' class='button'>Imprimir Boleto</a>";
-        $html .= "</li>";
-        $html .= "<li>";
-        $html .= "<br><br>";
-        $html .= "Linha Digitável do Boleto:<strong>{$tcTransaction->typeful_line}</strong>";
-        $html .= "</li>";
-        $html .= "</ul>";
+        $html = "
+            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                <div style='margin: 20px 0'>
+                    <span>Número da Transação: <strong>{$tcTransaction->transaction_id}</strong></span>
+                </div>
+                <div style='margin: 20px 0'>
+                    <a href='{$tcTransaction->url_payment}' target='_blank' class='button'>Imprimir Boleto</a>
+                </div>
+                <hr/>
+                <div style='margin: 20px 0'>
+                    <span>Linha Digitável do Boleto:</span>
+                    <div>
+                        <strong>{$tcTransaction->typeful_line}</strong>
+                    </div>
+                </div>
+            </div>
+        ";
         
         echo $html;
 
         $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-
-        // if (($order->get_status() != 'processing') OR ($order->get_status() != 'completed')) {
-        //     $order->update_status( 'on-hold', 'oiPedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        // } else die();
-
-
     }
 }
 endif;

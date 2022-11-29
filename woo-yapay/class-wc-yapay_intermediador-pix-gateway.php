@@ -407,49 +407,51 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $transactionData = new WC_Yapay_Intermediador_Transactions();
 
         $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
-        // var_dump($tcTransaction);die();
-        $html = "";
-        $html .= "<ul class='order_details'>";
-        $html .= "<li>";
-        // $html .= "Número da Transação:<strong>{$tcTransaction->transaction_id}</strong>";
-        $html .= "<br><br>";                
+
         $strPaymentMethod = "";
         switch (intval($tcTransaction->payment_method)){
             case 27: $strPaymentMethod = "Pix";break;
         }
 
         if ($tcTransaction->qrcode_original_path != null) {
-            $html .= "Pix Copia e Cola<input type='text' id='linhaDigitavel' value='{$tcTransaction->qrcode_original_path}'><a class='copiaCola' onClick='copiarTexto()'><img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' /></a>";
-            $html .= "</li>";
-            $html .= "<li>";
-            $html .= "<br><br>";
-            $html .= "<object class='qrCodeYapay' data='{$tcTransaction->qrcode_path}' > </object>";
-            $html .= "</li>";        
-            $html .= "<br><br>";
-            $html .= "<li>";   
-            $html .= "<p>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</p>";   
-            $html .= "</li>";   
-            $html .= "</ul>";
+            $html = "
+            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                <div style='margin: 20px 0'>
+                    <span>Pix Copia e Cola</span>
+                    <div style='display: flex; align-items: center;'>
+                        <input style='width: 100%' type='text' id='linhaDigitavel' value='{$tcTransaction->qrcode_original_path}' />
+                        <a class='copiaCola' onClick='copiarTexto()'>
+                            <img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' />
+                        </a>
+                    </div>
+                </div>
+                <div style='margin: 20px 0'>
+                    <span><strong>Escaneie o QR Code:</strong></span>
+                    <div>
+                        <object class='qrCodeYapay' data='{$tcTransaction->qrcode_path}' ></object>
+                    </div>
+                </div>
+                <hr/>
+                <div style='margin: 20px 0'>
+                    <span>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</span>
+                </div>
+            </div>
+            ";
         } else if ($tcTransaction->qrcode_original_path == null) {
-            $html .= "<strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong> ";
-            $html .= "</li>";
-
-            $html .= "</ul>";
+            $html = "
+            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                <div style='margin: 20px 0'>
+                    <strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong> 
+                </div>
+            </div>
+            ";
         }
-        
-
-
- 
-        
-
 
         echo $html;
         
         $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        
-        // if ($order->get_status() != 'processing' ) {
-        //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        // }
     }
 }
 endif;
