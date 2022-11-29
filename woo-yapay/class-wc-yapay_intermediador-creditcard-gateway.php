@@ -99,7 +99,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
                 'title'     => __( 'Descrição', 'wc-yapay_intermediador-cc' ),
                 'type'      => 'textarea',
                 'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-cc' ),
-                'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-cc' ),
+                'default'   => __( 'A maneira mais fácil e segura de comprar pela internet.', 'wc-yapay_intermediador-cc' ),
                 'css'       => 'max-width:350px;'
             ),
             'environment' => array(
