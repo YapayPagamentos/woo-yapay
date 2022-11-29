@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <fieldset id="wc-yapay_intermediador-bs-payment-form">
+    <input type="hidden" id="tcbPaymentMethod" name="wc-yapay_intermediador-bs-payment-method" class="required-entry" value="" autocomplete="off">
 
     <div id="cpf_yapayB" class="cpf_yapay" style="display: none">  	
 	    <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
