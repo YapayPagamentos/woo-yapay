@@ -189,16 +189,16 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $params["customer[company_name]"] = $_POST["billing_company"];
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
 
-            if ( ! isset( $_POST["yapay_cpf_pix"] ) || $_POST["yapay_cpf_pix"] == "" ) {
+            if ( ! isset( $_POST["yapay_cpfP"] ) || $_POST["yapay_cpfP"] == "" ) {
                 wc_add_notice(  "O campo CPF é obrigatório!", "error" );
                 return;
             }
 
-            $params["customer[cpf]"] = $_POST["yapay_cpf_pix"];
+            $params["customer[cpf]"] = $_POST["yapay_cpfP"];
             
         } else {
             if (($_POST["billing_persontype"] == NULL) AND ($_POST["billing_cpf"] == NULL) ) {
-                $params["customer[cpf]"] = $_POST["yapay_cpf_pix"];
+                $params["customer[cpf]"] = $_POST["yapay_cpfP"];
                 $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
                 $params["customer[company_name]"] = $_POST["billing_company"];
                 $params["customer[cnpj]"] = $_POST["billing_cnpj"];
