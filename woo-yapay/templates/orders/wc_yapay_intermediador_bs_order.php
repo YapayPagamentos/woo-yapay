@@ -1,0 +1,25 @@
+<div class="order-view-section">
+    <div id="yapay-order-container">
+        <h2 class="section-title"><?php echo __( "Yapay Intermediador","wc-yapay_intermediador-bs" ); ?></h2>
+        <p>
+            <div class="section-row">
+                <strong><?php echo __( "Método de pagamento: ", "wc-yapay_intermediador-bs" ) ;?></strong>
+                <span><?php echo esc_html( "Boleto Bancário - Yapay Intermediador" ); ?></span>
+            </div>
+            <div class="section-row">
+                <strong><?php echo __( "Yapay transaction ID:  ", "wc-yapay_intermediador-bs" ); ?></strong>
+                <span><?php echo esc_html( $yapay_transaction_id ); ?></span>
+            </div>
+            <div class="section-row">
+                <strong><?php echo __( "Download do boleto:   ", "wc-yapay_intermediador-bs" ); ?></strong><br>
+                <div id="yapay-billet-link">
+                    <a target="_blank" href="<?php echo esc_url( $yapay_bankslip_url )?>"><?php echo esc_html( "Imprimir Boleto" ); ?></a>
+                </div>
+            </div>
+            <div class="section-row">
+                <strong><?php echo __( "Linha digitável:  ", "wc-yapay_intermediador-bs" ); ?></strong>
+                <span><?php echo esc_html( $yapay_bankslip_code ); ?>"</span>
+            </div>
+        </p>
+    </div>
+</div>

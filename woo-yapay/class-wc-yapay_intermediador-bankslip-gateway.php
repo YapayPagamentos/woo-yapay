@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WC_Yapay_Intermediador_Bankslip_Gateway' ) ) :
+if ( class_exists( 'WC_Yapay_Intermediador_Bankslip_Gateway' ) ) return;
 
 /**
  * WooCommerce Yapay Intermediador main class.
@@ -50,6 +50,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
         add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
+        add_action( 'woocommerce_order_details_after_order_table', [ $this, 'add_yapay_order_details' ], 10, 1 );
 
         if ( is_admin() ) {
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -392,11 +393,56 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
 
         $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
 
+        $this->save_meta_data( [ 
+            'yapay_transaction_id' => $tcTransaction->transaction_id,
+            'yapay_bankslip_url'   => $tcTransaction->url_payment,
+            'yapay_bankslip_code'  => $tcTransaction->typeful_line,
+        ], $order_id );
+
         // if (($order->get_status() != 'processing') OR ($order->get_status() != 'completed')) {
         //     $order->update_status( 'on-hold', 'oiPedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
         // } else die();
 
 
     }
+
+    public function add_yapay_order_details( $order ) 
+    {
+        if ( array_intersect( [ 'wc_yapay_intermediador_bs' ], [ $order->get_payment_method() ] ) ) {
+
+            $order_id = $order->get_id();
+
+            $dados = $this->get_meta_data( $order_id );
+            extract($dados);
+            ob_start();
+
+            require __DIR__ . '/templates/orders/wc_yapay_intermediador_bs_order.php';
+
+            $html = ob_get_clean();
+
+            echo $html;
+        }
+    }
+
+    private function save_meta_data( $metas = [], $order )
+    {
+        foreach ($metas as $key => $value) {
+            update_post_meta( $order, $key, $value );
+        }
+    }
+
+    private function get_meta_data( $order )
+    {
+        $keys = [
+            'yapay_transaction_id' => "",
+            'yapay_bankslip_url'   => "",
+            'yapay_bankslip_code'  => ""
+        ];
+
+        foreach ( $keys as $key => $value ) {
+            $keys[$key] = get_post_meta( $order, $key, true );
+        }
+
+        return $keys;
+    }
 }
-endif;

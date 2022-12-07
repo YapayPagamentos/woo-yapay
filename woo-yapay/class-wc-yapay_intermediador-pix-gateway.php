@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WC_Yapay_Intermediador_Pix_Gateway' ) ) :
+if ( class_exists( 'WC_Yapay_Intermediador_Pix_Gateway' ) ) return;
 
 /**
  * WooCommerce Yapay Intermediador main class.
@@ -50,6 +50,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
         add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
+        add_action( 'woocommerce_order_details_after_order_table', [ $this, 'add_yapay_order_details' ], 10, 1 );
 
         if ( is_admin() ) {
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -430,6 +431,13 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $html .= "<p>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</p>";   
             $html .= "</li>";   
             $html .= "</ul>";
+
+            $this->save_meta_data( [ 
+                'yapay_transaction_id' => $tcTransaction->transaction_id,
+                'yapay_qrcode_url'   => $tcTransaction->qrcode_path,
+                'yapay_qrcode_code'  => $tcTransaction->qrcode_original_path,
+            ], $order_id );
+
         } else if ($tcTransaction->qrcode_original_path == null) {
             $html .= "<strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong> ";
             $html .= "</li>";
@@ -437,12 +445,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $html .= "</ul>";
         }
         
-
-
- 
-        
-
-
         echo $html;
         
         $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
@@ -451,7 +453,47 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
         // }
     }
-}
-endif;
 
+
+    public function add_yapay_order_details( $order ) 
+    {
+        if ( array_intersect( [ 'wc_yapay_intermediador_pix' ], [ $order->get_payment_method() ] ) ) {
+
+            $order_id = $order->get_id();
+
+            $dados = $this->get_meta_data( $order_id );
+            error_log( var_export( $dados, true ) );
+            extract($dados);
+            ob_start();
+
+            require __DIR__ . '/templates/orders/wc_yapay_intermediador_pix_order.php';
+
+            $html = ob_get_clean();
+
+            echo $html;
+        }
+    }
+
+    private function save_meta_data( $metas = [], $order )
+    {
+        foreach ($metas as $key => $value) {
+            update_post_meta( $order, $key, $value );
+        }
+    }
+
+    private function get_meta_data( $order )
+    {
+        $keys = [
+            'yapay_transaction_id' => "",
+            'yapay_qrcode_url'     => "",
+            'yapay_qrcode_code'    => ""
+        ];
+
+        foreach ( $keys as $key => $value ) {
+            $keys[$key] = get_post_meta( $order, $key, true );
+        }
+
+        return $keys;
+    }
+}
 
