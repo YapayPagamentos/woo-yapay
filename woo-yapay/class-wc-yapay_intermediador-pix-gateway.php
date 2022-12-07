@@ -462,7 +462,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $order_id = $order->get_id();
 
             $dados = $this->get_meta_data( $order_id );
-            error_log( var_export( $dados, true ) );
+            
             extract($dados);
             ob_start();
 
