@@ -17,6 +17,15 @@ class WC_Yapay_Intermediador_Request{
     {
         $urlPost = self::getUrlEnvironment($environment).$pathPost;
 
+        $log = new WC_Logger();
+        
+        $log->add( 
+            "yapay-intermediador-request-response-", 
+            "\n\nYAPAY NEW REQUEST : \n" . 
+            "URL : $urlPost \n" . 
+            print_r( $dataRequest, true ) 
+        );
+
         $ch = curl_init ( $urlPost );
         
         curl_setopt ( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
@@ -37,6 +46,13 @@ class WC_Yapay_Intermediador_Request{
             curl_close ( $ch );
             exit();    
         }
+
+        $log->add( 
+            "yapay-intermediador-request-response-", 
+            "\n\nYAPAY NEW RESPONSE : \n" . 
+            "URL : $urlPost \n" . 
+            print_r( $response, true )
+        );
         
         $httpCode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
         

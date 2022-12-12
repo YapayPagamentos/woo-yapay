@@ -420,6 +420,22 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
             $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
 
+            $metas = [
+                'transaction_id' => $transactionParams["transaction_id"],
+                'payment_method' => $transactionParams["payment_method"],
+                'split_number'   => $transactionParams['split_number']
+            ];
+
+            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $metas ) );
+            
+            if ( $result ) {
+                $log = new WC_Logger();
+                $log->add( 
+                    "yapay-intermediador-transactions-save-", 
+                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) 
+                );
+            }
             
             $transactionData->addTransaction($transactionParams);
 
