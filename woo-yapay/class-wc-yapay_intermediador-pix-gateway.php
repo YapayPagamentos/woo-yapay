@@ -27,7 +27,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-pix' );
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-        $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "pix-flag.svg";
+        $this->icon = null;
 
         // Bool. Can be set to true if you want payment fields to show on the checkout 
         // if doing a direct integration, which we are doing in this case
@@ -75,13 +75,13 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 'title'     => __( 'Titulo', 'wc-yapay_intermediador-pix' ),
                 'type'      => 'text',
                 'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-pix' ),
-                'default'   => __( 'Yapay - Pix', 'wc-yapay_intermediador-pix' ),
+                'default'   => __( 'Yapay Intermediador - Pix', 'wc-yapay_intermediador-pix' ),
             ),
             'description' => array(
                 'title'     => __( 'Descrição', 'wc-yapay_intermediador-pix' ),
                 'type'      => 'textarea',
                 'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-pix' ),
-                'default'   => __( 'A maneira mais fácil e segura de comprar pela internet.', 'wc-yapay_intermediador-pix' ),
+                'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-pix' ),
                 'css'       => 'max-width:350px;'
             ),
             'environment' => array(
@@ -338,6 +338,22 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $transactionParams["qrcode_original_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_original_path;
             //$transactionParams["typeful_line"] = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
             
+            $metas = [
+                'transaction_id'       => $transactionParams["transaction_id"],
+                'qrcode_path'          => $transactionParams["qrcode_path"],
+                'qrcode_original_path' => $transactionParams["qrcode_original_path"]
+            ];
+
+            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $metas ) );
+
+            if ( $result ) {
+                $log = new WC_Logger();
+                $log->add( 
+                    "yapay-intermediador-transactions-save-", 
+                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) 
+                );
+            }
 
             $transactionData->addTransaction($transactionParams);
             
@@ -407,38 +423,46 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $transactionData = new WC_Yapay_Intermediador_Transactions();
 
         $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
+        // var_dump($tcTransaction);die();
+        $html = "";
+        $html .= "<ul class='order_details'>";
+        $html .= "<li>";
+        $html .= "<br><br>";                
 
-        $strPaymentMethod = "";
-        switch (intval($tcTransaction->payment_method)){
-            case 27: $strPaymentMethod = "Pix";break;
-        }
+        $data = get_post_meta( $order_id, 'yapay_transaction_data', true );
 
-        if ($tcTransaction->qrcode_original_path != null) {
-            $html = "
-            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
-                <div style='margin: 20px 0'>
-                    <span>Pix Copia e Cola</span>
-                    <div style='display: flex; align-items: center;'>
-                        <input style='width: 100%' type='text' id='linhaDigitavel' value='{$tcTransaction->qrcode_original_path}' />
-                        <a class='copiaCola' onClick='copiarTexto()'>
-                            <img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' />
-                        </a>
+        if ( is_serialized( $data ) ) {
+            $data = unserialize( $data );
+
+            if ( isset( $data['qrcode_original_path'] ) && $data['qrcode_original_path'] ) {
+                $html = "
+                    <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                        <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                        <div style='margin: 20px 0'>
+                            <span>Pix Copia e Cola</span>
+                            <div style='display: flex; align-items: center;'>
+                                <input style='width: 100%' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."' />
+                                <a class='copiaCola' onClick='copiarTexto()'>
+                                    <img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' />
+                                </a>
+                            </div>
+                        </div>
+                        <div style='margin: 20px 0'>
+                            <span><strong>Escaneie o QR Code:</strong></span>
+                            <div>
+                                <object class='qrCodeYapay' data='". $data['qrcode_path'] ."' ></object>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div style='margin: 20px 0'>
+                            <span>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</span>
+                        </div>
                     </div>
-                </div>
-                <div style='margin: 20px 0'>
-                    <span><strong>Escaneie o QR Code:</strong></span>
-                    <div>
-                        <object class='qrCodeYapay' data='{$tcTransaction->qrcode_path}' ></object>
-                    </div>
-                </div>
-                <hr/>
-                <div style='margin: 20px 0'>
-                    <span>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</span>
-                </div>
-            </div>
-            ";
-        } else if ($tcTransaction->qrcode_original_path == null) {
+                ";
+            }
+
+        } else {
+
             $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
                 <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
@@ -452,6 +476,10 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         echo $html;
         
         $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
+        
+        // if ($order->get_status() != 'processing' ) {
+        //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
+        // }
     }
 }
 endif;
