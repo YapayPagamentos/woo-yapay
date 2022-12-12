@@ -40,21 +40,6 @@ function wc_gateway_yapay_intermediador_init() {
     }
 }
 
-add_action('admin_menu', 'wc_gateway_yapay_intermediador_log_menu');
-
-function wc_gateway_yapay_intermediador_log_menu() {
-    include_once "includes/class-wc-yapay_intermediador-requests.php";    
-    include_once "includes/class-wc-yapay_intermediador-responses.php"; 
-    add_submenu_page(
-        'woocommerce',
-        'Logs Yapay Intermediador',
-        'Logs Yapay Intermediador',
-        'manage_options',
-        'woocommerce_yapay_intermediador_logs',
-        'html_log_page'
-    );
-}
-
 function html_log_page() {
     include_once 'templates/wc_yapay_intermediador_html_log.php';
 }
