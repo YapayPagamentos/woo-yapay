@@ -27,7 +27,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-tef' );
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-        $this->icon = null;
+        $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "transfer-flag.svg";
 
         // Bool. Can be set to true if you want payment fields to show on the checkout 
         // if doing a direct integration, which we are doing in this case
@@ -79,13 +79,13 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
                 'title'     => __( 'Titulo', 'wc-yapay_intermediador-tef' ),
                 'type'      => 'text',
                 'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-tef' ),
-                'default'   => __( 'Yapay Intermediador - Transferência Online', 'wc-yapay_intermediador-tef' ),
+                'default'   => __( 'Yapay - Transferência Online', 'wc-yapay_intermediador-tef' ),
             ),
             'description' => array(
                 'title'     => __( 'Descrição', 'wc-yapay_intermediador-tef' ),
                 'type'      => 'textarea',
                 'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-tef' ),
-                'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-tef' ),
+                'default'   => __( 'A maneira mais fácil e segura de comprar pela internet.', 'wc-yapay_intermediador-tef' ),
                 'css'       => 'max-width:350px;'
             ),
             'environment' => array(
@@ -414,14 +414,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         include_once("includes/class-wc-yapay_intermediador-transactions.php");
              
         $transactionData = new WC_Yapay_Intermediador_Transactions();
-        
         $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
-        $html = "";
-        $html .= "<ul class='order_details'>";
-        $html .= "<li>";
-        $html .= "Número da Transação:<strong>{$tcTransaction->transaction_id}</strong>";
-        $html .= "</li>";
-        $html .= "<li>";
         $strPaymentMethod = "";
         switch (intval($tcTransaction->payment_method)){
             case 7: $strPaymentMethod = "Itaú";break;
@@ -430,22 +423,27 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             case 22: $strPaymentMethod = "Bradesco";break;
             case 23: $strPaymentMethod = "Banco do Brasil";break;
         }
-        $html .= "Transferência Online:<strong>$strPaymentMethod</strong>";
-        $html .= "</li>";
-        $html .= "<li>";
-        $html .= "<br><br>";
-        $html .= "<a href='{$tcTransaction->url_payment}' target='_blank' class='button'>Efetuar Transferência Online</a>";
-        $html .= "</li>";
-        $html .= "</ul>";
- 
-        
+
+        $html = "
+        <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+            <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+            <div style='margin: 20px 0'>
+                <span>Número da Transação:<strong>{$tcTransaction->transaction_id}</strong></span>
+            </div>
+            <div style='margin: 20px 0'>
+                <span>Transferência Online: <strong>$strPaymentMethod</strong></span>
+            </div>
+            <hr/>
+            <div style='margin: 20px 0'>
+                <a href='{$tcTransaction->url_payment}' target='_blank' class='button'>Efetuar Transferência Online</a>
+            </div>
+        </div>
+        ";
+
         echo $html;
         
         $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
         
-        // if ($order->get_status() != 'processing' ) {
-        //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        // }
     }
 }
 endif;

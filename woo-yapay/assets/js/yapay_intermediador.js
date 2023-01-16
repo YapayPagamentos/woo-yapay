@@ -288,6 +288,9 @@ function inputCPFYapay() {
         if (document.getElementById('cpf_yapayC') != null) {
             document.getElementById('cpf_yapayC').style.display = 'block';
         }
+        if (document.getElementById('cpf_yapayP') != null) {
+            document.getElementById('cpf_yapayP').style.display = 'block';
+        }
     } else {
         if ((document.getElementById('billing_persontype') == null) && (document.getElementById('billing_cpf') != null ) ) {
             if (document.getElementById('cpf_yapayB') != null) {
@@ -298,6 +301,9 @@ function inputCPFYapay() {
             }
             if (document.getElementById('cpf_yapayC') != null) {
                 document.getElementById('cpf_yapayC').style.display = 'none';
+            }
+            if (document.getElementById('cpf_yapayP') != null) {
+                document.getElementById('cpf_yapayP').style.display = 'none';
             }
         }
     }
@@ -316,6 +322,9 @@ function inputCPFYapay() {
                 if (document.getElementById('cpf_yapayC') != null) {
                     document.getElementById('cpf_yapayC').style.display = 'block';
                 }
+                if (document.getElementById('cpf_yapayP') != null) {
+                    document.getElementById('cpf_yapayP').style.display = 'block';
+                }
             } else {
                 if (document.getElementById('cpf_yapayB') != null) {
                     document.getElementById('cpf_yapayB').style.display = 'none';
@@ -325,6 +334,9 @@ function inputCPFYapay() {
                 }
                 if (document.getElementById('cpf_yapayC') != null) {
                     document.getElementById('cpf_yapayC').style.display = 'none';
+                } 
+                if (document.getElementById('cpf_yapayP') != null) {
+                    document.getElementById('cpf_yapayP').style.display = 'none';
                 } 
               }
     }

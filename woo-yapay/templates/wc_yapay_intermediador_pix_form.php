@@ -8,14 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 <fieldset id="wc-yapay_intermediador-pix-payment-form">
 
     <input type="hidden" id="tcbPaymentMethod" name="wc-yapay_intermediador-pix-payment-method" class="required-entry" value="27" autocomplete="off">
-    <label for="tcbPaymentMethod">Forma de pagamento <span class="required">*</span></label>
-    <ul>
-        
-        <li class="tcbPaymentMethod">
-            <img src="<?php echo $url_images; ?>pix-flag.svg" class="tcPaymentFlag tcPaymentFlagSelected" id="tcbPaymentMethod">
-        </li>
-    </ul>
-
 
     <div id="cpf_yapayP" class="cpf_yapay" style="display: none">  	
 	    <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
