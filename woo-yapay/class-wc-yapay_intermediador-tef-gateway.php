@@ -336,7 +336,23 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
             $transactionParams["url_payment"] = (string)$tcResponse->data_response->transaction->payment->url_payment;
             //$transactionParams["typeful_line"] = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
+
+            $metas = [
+                'transaction_id' => $transactionParams["transaction_id"],
+                'qrcode_path'    => $transactionParams["url_payment"]
+            ];
+
+            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $metas ) );
             
+            if ( $result ) {
+                $log = new WC_Logger();
+                $log->add( 
+                    "yapay-intermediador-transactions-save-", 
+                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) 
+                );
+            }
+
             $transactionData->addTransaction($transactionParams);
             
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {

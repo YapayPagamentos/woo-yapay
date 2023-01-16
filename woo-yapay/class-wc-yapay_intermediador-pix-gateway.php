@@ -341,7 +341,23 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $transactionParams["qrcode_original_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_original_path;
             //$transactionParams["typeful_line"] = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
             
+            $metas = [
+                'transaction_id'       => $transactionParams["transaction_id"],
+                'qrcode_path'          => $transactionParams["qrcode_path"],
+                'qrcode_original_path' => $transactionParams["qrcode_original_path"]
+            ];
 
+            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $metas ) );
+            
+            if ( $result ) {
+                $log = new WC_Logger();
+                $log->add( 
+                    "yapay-intermediador-transactions-save-", 
+                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) 
+                );
+            }
+            
             $transactionData->addTransaction($transactionParams);
             
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
