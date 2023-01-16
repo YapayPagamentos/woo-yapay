@@ -159,6 +159,17 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
                 'type'      => 'text',
                 'desc_tip'  => __( 'Valor mínimo de parcelas que será disponibilizado ao comprador. Valor mínimo R$10,00 (Inserir valor separado por "." Ex: 12.54)).', 'wc-yapay_intermediador-cc' ),
             ),
+            'show_installments_fees' => array(
+                'title'     => __( 'Exibir juros de parcelas', 'wc-yapay_intermediador-cc' ),
+                'type'      => 'select',
+                'options'   => [
+                    'show_fee_text'  => 'Exibir texto na parcela ("com juros")',
+                    'show_fee_price' => 'Texto e valor total da parcela',
+                    'not_show'       => 'Não exibir'
+                ],
+                'default'   => 'show_fee_price',
+                'desc_tip'  => __( 'Quantidade máxima de parcelas que será disponibilizado ao comprador.', 'wc-yapay_intermediador-cc' ),
+            ),
             'prefixo' => array(
                 'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-cc' ),
                 'type'      => 'text',

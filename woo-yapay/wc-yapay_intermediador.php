@@ -80,6 +80,7 @@ function tc_get_splits() {
     $environment = $tcConfig->get_option("environment");
     $qs = intval($tcConfig->get_option("max_qtd_split"));
     $vs = floatval($tcConfig->get_option("min_value_split"));
+    $fee = $tcConfig->get_option('show_installments_fees');
         
     $tcRequest = new WC_Yapay_Intermediador_Request();
 
@@ -107,6 +108,7 @@ function tc_get_splits() {
                     }
                 }
 
+                $results['splittings']['fees'] = $fee;
                 echo json_encode($results['splittings']);
             }
         }
