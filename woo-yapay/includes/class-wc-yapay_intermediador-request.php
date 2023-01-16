@@ -13,7 +13,7 @@ class WC_Yapay_Intermediador_Request{
         return ($environment == 'yes') ? "https://api.intermediador.sandbox.yapay.com.br/" : "https://api.intermediador.yapay.com.br/";
     }
     
-    public function requestData($pathPost, $dataRequest, $environment = "yes", $strResponse = false)
+    public function requestData($pathPost, $dataRequest, $environment = "yes", $strResponse = false, $method = "POST")
     {
         $urlPost = self::getUrlEnvironment($environment).$pathPost;
 
@@ -25,6 +25,9 @@ class WC_Yapay_Intermediador_Request{
         curl_setopt ( $ch, CURLOPT_POSTFIELDS, $dataRequest);
         curl_setopt ( $ch, CURLOPT_SSLVERSION, 6 );
         // curl_setopt ( $ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2 );
+        if ( $method != "POST" ) {
+            curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $method) ;
+        }
 
         
         if (!($response = curl_exec($ch))) {
