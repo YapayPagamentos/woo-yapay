@@ -17,9 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     </ul>
 
 
-    <div id="cpf_yapayB" class="cpf_yapay" style="display: none">  	
+    <div id="cpf_yapayP" class="cpf_yapay" style="display: none">  	
 	    <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
-        <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" id="yapay_cpfB" type="text" name="yapay_cpfB" maxlength="11" required>
+        <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" id="yapay_cpfP" type="text" name="yapay_cpfP" maxlength="11" required>
     </div>
 
 
