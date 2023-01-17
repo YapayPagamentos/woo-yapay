@@ -1,9 +1,9 @@
 === WooCommerce Yapay Intermediador ===
-Contributors: Integração Yapay
+Contributors: Integração Yapay, aguiart0, apiki
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 5.5
-Stable tag: 0.6.4
+Stable tag: 0.6.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -218,6 +218,15 @@ Adicionada forma de pagamento PIX
 
 Ajuste token_transaction Notificação
 
-= 0.6.4 = 03/11/2021
+= 0.6.5 = 03/11/2021
 
 Ajuste token_transaction Notificação
+
+= 0.6.5 = 20/01/2023
+
+* Fix: Envio de taxas e descontos em pedidos
+* Fix: Pagamento com PIX para Pessoa Jurídica
+* Feat: Padronizando o padrão visual do plugin
+* Feat: Criando visualização de boleto e pix na visualização do pedido
+* Feat: Refatoração do sistema de log e remoção do sistema antigo
+* Feat: Controlador do formato de visualização das parcelas durante o checkout
