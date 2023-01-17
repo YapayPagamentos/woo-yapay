@@ -176,13 +176,20 @@ function wc_yapay_intermediador_notification() {
     if( $wp_query->get('wc_yapay_intermediador_notification') && isset($_GET['wc_yapay_intermediador_notification'])) {  
         
         $order_id = $_GET['order_id'];
+
+        $log = new WC_Logger();
+        $log->add( 
+            "yapay-intermediador-notification", 
+            "\n\nYAPAY NEW NOTIFICATION : \n" . 
+            "OrderID: ".print_r( $order_id, true ) 
+        );
         
         include_once("includes/class-wc-yapay_intermediador-request.php");
         
         $order  = new WC_Order( $order_id );
         
-        $tcTransaction = get_post_meta( $order_id, "yapay_transaction_data" );
-        $tcPayment = "";
+        $tcTransaction = unserialize( get_post_meta( $order_id, "yapay_transaction_data", true ) );
+        $tcPayment     = "";
         
         $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
 
@@ -197,11 +204,17 @@ function wc_yapay_intermediador_notification() {
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $params["token_account"]     = $tcPayment->get_option("token_account");
-        $params["token_transaction"] = $token_transaction;
+        $params["token_transaction"] = $tcTransaction['token_transaction'];
         
         $tcResponse = $tcRequest->requestData( "v2/transactions/get_by_token", $params,$tcPayment->get_option( "environment" ) );
+
+        $log->add( 
+            "yapay-intermediador-notification", 
+            "\n\nYAPAY NEW NOTIFICATION : \n" . 
+            "request: ".print_r( $tcResponse, true ) 
+        );
         
-        if ( ( str_replace($tcPayment->get_option("prefixo"), "", $tcTransaction['order_id'] ) == $order->get_id() ) && $tcResponse->message_response->message == "success" ) {
+        if ( $tcResponse->message_response->message == "success" ) {
 
             
             $codeStatus = intval( $tcResponse->data_response->transaction->status_id );
@@ -250,7 +263,14 @@ function wc_yapay_intermediador_notification() {
                         // No action xD.
                     break;
             }
-            echo "Status do pedido " . $order->get_id() ." alterado: " . $comment . ". Transação: " .$tcResponse->data_response->transaction->transaction_id." ! ";
+            $teste = "Status do pedido " . $order->get_id() ." alterado: " . $comment . ". Transação: " .$tcResponse->data_response->transaction->transaction_id." ! ";
+            echo $teste;
+            
+            $log->add( 
+                "yapay-intermediador-notification", 
+                "\n\nYAPAY NEW NOTIFICATION : \n" . 
+                "Status: ".print_r( $teste, true ) 
+            );
 
         } else {
             echo "Ocorreu um erro para atualizar o status do pedido!";
@@ -392,7 +412,7 @@ function sendRastreioYapay() {
         default: $tcConfig                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
     }
 
-    $tcTransaction = get_post_id( $order_id, "yapay_transaction_data" );
+    $tcTransaction = get_post_id( $order_id, "yapay_transaction_data", true );
 
     $token_transaction = $tcTransaction['token_transaction'];
     $idTransacao       = $tcTransaction['transaction_id'];

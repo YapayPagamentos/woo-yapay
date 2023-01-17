@@ -86,17 +86,21 @@ class WC_Yapay_Intermediador_Cancellation
     /**
      * Get transaction data
      * @param int $order_id
-     * @return object|bool
+     * @return array|bool
      */
     private function get_transaction( $order_id )
     {
-        $transaction = get_post_meta( $order_id, "yapay_transaction_data" );
+        $data = get_post_meta( $order_id, "yapay_transaction_data", true );
 
-        if ( empty( $transaction ) || ! $transaction ) {
-            return;
+        if ( is_serialized( $data ) ) {
+            $transaction = unserialize( $data );
+
+            if ( ! empty( $transaction ) && isset( $transaction['transaction_id'] ) ) {
+                return $transaction;
+            }
         }
 
-        return $transaction;
+        return;
     }
     
 }
