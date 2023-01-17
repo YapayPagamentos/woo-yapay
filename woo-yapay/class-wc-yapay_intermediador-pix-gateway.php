@@ -322,7 +322,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
 
         if($tcResponse->message_response->message == "success"){
-            // Remove cart.  
 
             $transactionParams["order_id"]             = (string)$tcResponse->data_response->transaction->order_number;
             $transactionParams["transaction_id"]       = (int)$tcResponse->data_response->transaction->transaction_id;
@@ -339,11 +338,12 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 $log = new WC_Logger();
                 $log->add( 
                     "yapay-intermediador-transactions-save-", 
-                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
-                    print_r( $transactionParams, true ) 
+                    "YAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) ."\n\n" 
                 );
             }
 
+            $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | PIX copia e cola: ". $transactionParams["qrcode_original_path"] );
             
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -353,19 +353,11 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             if(!isset($use_shipping)){
                 $use_shipping = isset($use_shipping);
             }
-            if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
-                return array(
-                    'result'   => 'success',
-                    'redirect' => $this->get_return_url( $order )
-                    // 'redirect' => add_query_arg( array( 'use_shipping' => $use_shipping ), $order->get_checkout_payment_url( true ) )
-                );
-            } else {
-                return array(
-                    'result'   => 'success',
-                    'redirect' => $this->get_return_url( $order )
-                    // 'redirect' => add_query_arg( array( 'order' => $order->id, 'key' => $order->order_key, 'use_shipping' => $use_shipping ), get_permalink( woocommerce_get_page_id( 'pay' ) ) )
-                );
-            }
+
+            return array(
+                'result'   => 'success',
+                'redirect' => $this->get_return_url( $order )
+            );
 
         }else{
             $errors = array();
@@ -414,7 +406,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             if ( isset( $data['qrcode_original_path'] ) && $data['qrcode_original_path'] ) {
                 $html = "
                     <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                        <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                        <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                         <div style='margin: 20px 0'>
                             <span>Pix Copia e Cola</span>
                             <div style='display: flex; align-items: center;'>
@@ -444,7 +436,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
             $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
                     <strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong> 
                 </div>

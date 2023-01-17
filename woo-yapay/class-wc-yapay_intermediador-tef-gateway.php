@@ -339,8 +339,8 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
                 $log = new WC_Logger();
                 $log->add( 
                     "yapay-intermediador-transactions-save-", 
-                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
-                    print_r( $transactionParams, true ) 
+                    "YAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) ."\n\n" 
                 );
             }
             
@@ -414,7 +414,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             if ( isset( $data['transaction_id'] ) && $data['transaction_id'] ) {
                 $html = "
                 <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                    <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                    <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                     <div style='margin: 20px 0'>
                         <span>Número da Transação:<strong>". $data['transaction_id'] ."</strong></span>
                     </div>
@@ -434,7 +434,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         } else {
             $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
                     <strong style='color: red'>Ocorreu um erro na geração da transferência bancária. Entre em contato com o administrador da Loja</strong> 
                 </div>

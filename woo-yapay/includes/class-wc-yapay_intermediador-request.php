@@ -21,9 +21,9 @@ class WC_Yapay_Intermediador_Request{
         
         $log->add( 
             "yapay-intermediador-request-response-", 
-            "\n\nYAPAY NEW REQUEST : \n" . 
+            "YAPAY NEW REQUEST : \n" . 
             "URL : $urlPost \n" . 
-            print_r( $dataRequest, true ) 
+            print_r( $dataRequest, true ) ."\n\n" 
         );
 
         $ch = curl_init ( $urlPost );
@@ -52,7 +52,7 @@ class WC_Yapay_Intermediador_Request{
 
         $log->add( 
             "yapay-intermediador-request-response-", 
-            "\n\nYAPAY NEW RESPONSE : \n" . 
+            "YAPAY NEW RESPONSE : \n" . 
             "URL : $urlPost \n" . 
             print_r( $response, true )
         );

@@ -319,10 +319,12 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
                 $log = new WC_Logger();
                 $log->add( 
                     "yapay-intermediador-transactions-save-", 
-                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
-                    print_r( $transactionParams, true ) 
+                    "YAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) ."\n\n" 
                 );
             }
+
+            $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | Linha digitável: ". $transactionParams["typeful_line"] );
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -333,21 +335,12 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
                 $use_shipping = isset($use_shipping);
             }
 
-            if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
-                return array(
-                    'result'   => 'success',
-                    'redirect' => $this->get_return_url( $order )
-                    // 'redirect' => add_query_arg( array( 'use_shipping' => $use_shipping ), $order->get_checkout_payment_url( true ) )
-                );
-            } else {
-                return array(
-                    'result'   => 'success',
-                    'redirect' => $this->get_return_url( $order )
-                    // 'redirect' => add_query_arg( array( 'order' => $order->id, 'key' => $order->order_key, 'use_shipping' => $use_shipping ), get_permalink( woocommerce_get_page_id( 'pay' ) ) )
-                );
-            }
+            return array(
+                'result'   => 'success',
+                'redirect' => $this->get_return_url( $order )
+            );
 
-        }else{
+        }else {
             $errors = array();
             if(isset($tcResponse->error_response->general_errors)){
                 foreach ($tcResponse->error_response->general_errors->general_error as $error){
@@ -383,7 +376,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
             if ( isset( $data['url_payment'] ) && $data['url_payment'] ) {
                 $html = "
                     <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                        <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                        <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                         <div style='margin: 20px 0'>
                             <span>Número da Transação: <strong>" . $data['transaction_id'] . "</strong></span>
                         </div>
@@ -406,7 +399,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         } else {
             $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
                     <strong style='color: red'>Ocorreu um erro na geração do Boleto Bancário. Entre em contato com o administrador da Loja</strong> 
                 </div>
