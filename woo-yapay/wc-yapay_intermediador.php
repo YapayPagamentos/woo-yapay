@@ -176,37 +176,35 @@ function wc_yapay_intermediador_notification() {
     if( $wp_query->get('wc_yapay_intermediador_notification') && isset($_GET['wc_yapay_intermediador_notification'])) {  
         
         $order_id = $_GET['order_id'];
-        $token_transaction = $_POST['token_transaction'];
         
         include_once("includes/class-wc-yapay_intermediador-request.php");
-        include_once("includes/class-wc-yapay_intermediador-transactions.php");
         
         $order  = new WC_Order( $order_id );
         
-        $transactionData = new WC_Yapay_Intermediador_Transactions();
-        $tcTransaction = $transactionData->getTransactionByToken($token_transaction);
+        $tcTransaction = get_post_meta( $order_id, "yapay_transaction_data" );
         $tcPayment = "";
+        
         $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
 
         switch ($paymentOrder) {
-            case "wc_yapay_intermediador_bs": $tcPayment = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
-            case "wc_yapay_intermediador_cc": $tcPayment = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
+            case "wc_yapay_intermediador_bs": $tcPayment  = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
+            case "wc_yapay_intermediador_cc": $tcPayment  = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
             case "wc_yapay_intermediador_tef": $tcPayment = new WC_Yapay_Intermediador_Tef_Gateway(); break;
             case "wc_yapay_intermediador_pix": $tcPayment = new WC_Yapay_Intermediador_Pix_Gateway(); break;
-            default: $tcPayment = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
+            default: $tcPayment                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
         }
         
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
-        $params["token_account"] = $tcPayment->get_option("token_account");
-        $params["token_transaction"] = $_POST["token_transaction"];
+        $params["token_account"]     = $tcPayment->get_option("token_account");
+        $params["token_transaction"] = $token_transaction;
         
-        $tcResponse = $tcRequest->requestData("v2/transactions/get_by_token",$params,$tcPayment->get_option("environment"));
+        $tcResponse = $tcRequest->requestData( "v2/transactions/get_by_token", $params,$tcPayment->get_option( "environment" ) );
         
-        if ( (str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction->order_id) == $order->get_id()) && $tcResponse->message_response->message == "success") {
+        if ( ( str_replace($tcPayment->get_option("prefixo"), "", $tcTransaction['order_id'] ) == $order->get_id() ) && $tcResponse->message_response->message == "success" ) {
 
             
-            $codeStatus = intval($tcResponse->data_response->transaction->status_id);
+            $codeStatus = intval( $tcResponse->data_response->transaction->status_id );
             
             $comment = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
             
@@ -256,7 +254,7 @@ function wc_yapay_intermediador_notification() {
 
         } else {
             echo "Ocorreu um erro para atualizar o status do pedido!";
-            var_dump(str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction->order_id));
+            var_dump(str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction['order_id']));
             var_dump($order->get_id());
             var_dump($tcResponse);
         }
@@ -371,7 +369,7 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
 
 function sendRastreioYapay() {
     $order_id = $_POST['order_id'];
-    $code = $_POST['code'];
+    $code     = $_POST['code'];
     
     if ((strtolower($_POST["url"]) == "correios") OR (strtolower($_POST["url"]) == "correio") OR 
         (strtolower($_POST["url"]) == "correios-sedex") OR (strtolower($_POST["url"]) == "correios-pac")) {
@@ -382,41 +380,37 @@ function sendRastreioYapay() {
 
     $order  = new WC_Order( $order_id );
 
-    include_once("includes/class-wc-yapay_intermediador-transactions.php");
     include_once("includes/class-wc-yapay_intermediador-request.php");
 
     $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
     
     switch ($paymentOrder) {
-        case "wc_yapay_intermediador_bs": $tcConfig = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
-        case "wc_yapay_intermediador_cc": $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
+        case "wc_yapay_intermediador_bs": $tcConfig  = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
+        case "wc_yapay_intermediador_cc": $tcConfig  = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
         case "wc_yapay_intermediador_tef": $tcConfig = new WC_Yapay_Intermediador_Tef_Gateway(); break;
         case "wc_yapay_intermediador_pix": $tcConfig = new WC_Yapay_Intermediador_Pix_Gateway(); break;
-        default: $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
+        default: $tcConfig                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
     }
 
-    // $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();    
-    $transactionData = new WC_Yapay_Intermediador_Transactions();
-    $tcTransaction = $transactionData->getTransactionByOrderId($tcConfig->get_option("prefixo").$order_id);
+    $tcTransaction = get_post_id( $order_id, "yapay_transaction_data" );
 
-    $token_transaction = $tcTransaction->token_transaction;
-    $idTransacao = $tcTransaction->transaction_id;
+    $token_transaction = $tcTransaction['token_transaction'];
+    $idTransacao       = $tcTransaction['transaction_id'];
 
+    $token_account = $tcConfig->get_option( "token_account" );
+    $environment   = $tcConfig->get_option( "environment" );
 
-    $token_account = $tcConfig->get_option("token_account");
-    $environment = $tcConfig->get_option("environment");
-
-    $params["token_account"] = $token_account;
-    $params["id"] = $idTransacao;
+    $params["token_account"]     = $token_account;
+    $params["id"]                = $idTransacao;
     $params["transaction_token"] = $token_transaction;
-    $params["code"] = $code;
-    $params["url"] = $url;
-    $params["posted_date"] = time();
+    $params["code"]              = $code;
+    $params["url"]               = $url;
+    $params["posted_date"]       = time();
     
     $tcRequest = new WC_Yapay_Intermediador_Request();        
-    $tcResponse = $tcRequest->requestData("v3/sales/trace",$params,$environment);
+    $tcResponse = $tcRequest->requestData( "v3/sales/trace", $params, $environment );
 
-    $order->add_order_note('Enviado para Yapay o código de rastreio: ' . $code);
+    $order->add_order_note( 'Enviado para Yapay o código de rastreio: ' . $code );
 
     update_post_meta( $order_id, '_my_field_slug', $_POST[ 'code' ] );
     update_post_meta( $order_id, 'urlRastreio', $_POST[ 'url' ] );

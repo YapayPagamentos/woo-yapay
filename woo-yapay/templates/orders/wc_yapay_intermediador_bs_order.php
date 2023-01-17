@@ -8,17 +8,17 @@
             </div>
             <div class="section-row">
                 <strong><?php echo __( "Yapay transaction ID:  ", "wc-yapay_intermediador-bs" ); ?></strong>
-                <span><?php echo esc_html( $yapay_transaction_id ); ?></span>
+                <span><?php echo esc_html( $transaction_id ); ?></span>
             </div>
             <div class="section-row">
                 <strong><?php echo __( "Download do boleto:   ", "wc-yapay_intermediador-bs" ); ?></strong><br>
                 <div id="yapay-billet-link">
-                    <a target="_blank" href="<?php echo esc_url( $yapay_bankslip_url )?>"><?php echo esc_html( "Imprimir Boleto" ); ?></a>
+                    <a target="_blank" href="<?php echo esc_url( $url_payment )?>"><?php echo esc_html( "Imprimir Boleto" ); ?></a>
                 </div>
             </div>
             <div class="section-row">
                 <strong><?php echo __( "Linha digitável:  ", "wc-yapay_intermediador-bs" ); ?></strong>
-                <span><?php echo esc_html( $yapay_bankslip_code ); ?>"</span>
+                <span><?php echo esc_html( $typeful_line ); ?>"</span>
             </div>
         </p>
     </div>

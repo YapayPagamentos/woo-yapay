@@ -46,20 +46,19 @@ class WC_Yapay_Intermediador_Cancellation
     {
         include_once( 'class-wc-yapay_intermediador-request.php' );
 
-        $transaction  = $this->get_transaction( $order_id );
-        $option = $this->get_payment_option( $payment_method );
+        $transaction = $this->get_transaction( $order_id );
+        $option      = $this->get_payment_option( $payment_method );
 
-        if ( ! $transaction || ! isset( $transaction->transaction_id ) ) return;
+        if ( ! $transaction || ! isset( $transaction['transaction_id'] ) ) return;
         if ( ! $option['token_account'] ) return;
 
         $params = [
             "access_token"   => $option['token_account'],
-            "transaction_id" => $transaction->transaction_id
+            "transaction_id" => $transaction['transaction_id']
         ];
 
         $request  = new WC_Yapay_Intermediador_Request();
-        $response = $request->requestData("api/v3/transactions/cancel", $params, $option['environment'], false, "PATCH");
-
+        $response = $request->requestData( "api/v3/transactions/cancel", $params, $option['environment'], false, "PATCH" );
     }
 
     /**
@@ -91,10 +90,7 @@ class WC_Yapay_Intermediador_Cancellation
      */
     private function get_transaction( $order_id )
     {
-        include_once( 'class-wc-yapay_intermediador-transactions.php' );
-
-        $transactions = new WC_Yapay_Intermediador_Transactions();
-        $transaction  = $transactions->getTransactionByOrderId( $order_id );
+        $transaction = get_post_meta( $order_id, "yapay_transaction_data" );
 
         if ( empty( $transaction ) || ! $transaction ) {
             return;

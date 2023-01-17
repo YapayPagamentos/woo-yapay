@@ -324,25 +324,16 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
 
         if($tcResponse->message_response->message == "success"){
-            // Remove cart.  
-            include_once("includes/class-wc-yapay_intermediador-transactions.php");
             
-            $transactionData = new WC_Yapay_Intermediador_Transactions();
-            
-            $transactionParams["order_id"] = (string)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["transaction_id"] = (int)$tcResponse->data_response->transaction->transaction_id;
-            $transactionParams["split_number"] = (int)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
+            $transactionParams["order_id"]          = (string)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["transaction_id"]    = (int)$tcResponse->data_response->transaction->transaction_id;
+            $transactionParams["split_number"]      = (int)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["payment_method"]    = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
             $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
-            $transactionParams["url_payment"] = (string)$tcResponse->data_response->transaction->payment->url_payment;
-            //$transactionParams["typeful_line"] = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
+            $transactionParams["url_payment"]       = (string)$tcResponse->data_response->transaction->payment->url_payment;
 
-            $metas = [
-                'transaction_id' => $transactionParams["transaction_id"],
-                'qrcode_path'    => $transactionParams["url_payment"]
-            ];
 
-            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $metas ) );
+            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $transactionParams ) );
             
             if ( $result ) {
                 $log = new WC_Logger();
@@ -352,8 +343,6 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
                     print_r( $transactionParams, true ) 
                 );
             }
-
-            $transactionData->addTransaction($transactionParams);
             
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -406,44 +395,54 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
     }
     
     public function thankyou_page( $order_id ) {
-        global $woocommerce;
 
-        $order        = new WC_Order( $order_id );
-        $request_data = $_POST;
-        
-        include_once("includes/class-wc-yapay_intermediador-transactions.php");
-             
-        $transactionData = new WC_Yapay_Intermediador_Transactions();
-        $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
+        $order = new WC_Order( $order_id );
+        $data  = get_post_meta( $order_id, 'yapay_transaction_data', true );
+
         $strPaymentMethod = "";
-        switch (intval($tcTransaction->payment_method)){
-            case 7: $strPaymentMethod = "Itaú";break;
+        switch ( intval( $data['payment_method'] ) ) {
+            case 7: $strPaymentMethod  = "Itaú";break;
             case 14: $strPaymentMethod = "Peela";break;
             case 21: $strPaymentMethod = "HSBC";break;
             case 22: $strPaymentMethod = "Bradesco";break;
             case 23: $strPaymentMethod = "Banco do Brasil";break;
         }
 
-        $html = "
-        <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-            <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
-            <div style='margin: 20px 0'>
-                <span>Número da Transação:<strong>{$tcTransaction->transaction_id}</strong></span>
+        if ( is_serialized( $data ) ) {
+            $data = unserialize( $data );
+
+            if ( isset( $data['transaction_id'] ) && $data['transaction_id'] ) {
+                $html = "
+                <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                    <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                    <div style='margin: 20px 0'>
+                        <span>Número da Transação:<strong>". $data['transaction_id'] ."</strong></span>
+                    </div>
+                    <div style='margin: 20px 0'>
+                        <span>Transferência Online: <strong>$strPaymentMethod</strong></span>
+                    </div>
+                    <hr/>
+                    <div style='margin: 20px 0'>
+                        <a href='". $data['url_payment'] ." target='_blank' class='button'>Efetuar Transferência Online</a>
+                    </div>
+                </div>
+                ";
+
+                $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '. $data->transaction_id );
+            }
+
+        } else {
+            $html = "
+            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermidiator</strong></h3>
+                <div style='margin: 20px 0'>
+                    <strong style='color: red'>Ocorreu um erro na geração da transferência bancária. Entre em contato com o administrador da Loja</strong> 
+                </div>
             </div>
-            <div style='margin: 20px 0'>
-                <span>Transferência Online: <strong>$strPaymentMethod</strong></span>
-            </div>
-            <hr/>
-            <div style='margin: 20px 0'>
-                <a href='{$tcTransaction->url_payment}' target='_blank' class='button'>Efetuar Transferência Online</a>
-            </div>
-        </div>
-        ";
+            ";
+        }
 
         echo $html;
-        
-        $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        
     }
 }
 endif;

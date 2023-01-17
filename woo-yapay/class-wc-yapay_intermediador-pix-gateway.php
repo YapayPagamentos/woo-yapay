@@ -27,7 +27,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-pix' );
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-        $this->icon = null;
+        $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "pix-flag.svg";;
 
         // Bool. Can be set to true if you want payment fields to show on the checkout 
         // if doing a direct integration, which we are doing in this case
@@ -323,31 +323,17 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         if($tcResponse->message_response->message == "success"){
             // Remove cart.  
-            include_once("includes/class-wc-yapay_intermediador-transactions.php");
-            
-            $transactionData = new WC_Yapay_Intermediador_Transactions();
-            
-            // var_dump($tcResponse->data_response->transaction->payment);
-            // var_dump($tcResponse->data_response->transaction->payment->qrcode_original_path);
-            // die();
 
-            $transactionParams["order_id"] = (string)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["transaction_id"] = (int)$tcResponse->data_response->transaction->transaction_id;
-            $transactionParams["split_number"] = (string)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
-            $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
-            $transactionParams["url_payment"] = (string)$tcResponse->data_response->transaction->payment->url_payment;
-            $transactionParams["qrcode_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_path;
+            $transactionParams["order_id"]             = (string)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["transaction_id"]       = (int)$tcResponse->data_response->transaction->transaction_id;
+            $transactionParams["split_number"]         = (string)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["payment_method"]       = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
+            $transactionParams["token_transaction"]    = (string)$tcResponse->data_response->transaction->token_transaction;
+            $transactionParams["url_payment"]          = (string)$tcResponse->data_response->transaction->payment->url_payment;
+            $transactionParams["qrcode_path"]          = (string)$tcResponse->data_response->transaction->payment->qrcode_path;
             $transactionParams["qrcode_original_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_original_path;
-            //$transactionParams["typeful_line"] = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
-            
-            $metas = [
-                'transaction_id'       => $transactionParams["transaction_id"],
-                'qrcode_path'          => $transactionParams["qrcode_path"],
-                'qrcode_original_path' => $transactionParams["qrcode_original_path"]
-            ];
 
-            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $metas ) );
+            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $transactionParams ) );
 
             if ( $result ) {
                 $log = new WC_Logger();
@@ -358,18 +344,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 );
             }
 
-            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $metas ) );
-            
-            if ( $result ) {
-                $log = new WC_Logger();
-                $log->add( 
-                    "yapay-intermediador-transactions-save-", 
-                    "\n\nYAPAY NEW TRANSACTION SAVE : \n" . 
-                    print_r( $transactionParams, true ) 
-                );
-            }
-            
-            $transactionData->addTransaction($transactionParams);
             
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -424,21 +398,10 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
     public function thankyou_page( $order_id ) {
         global $woocommerce;
 
-        global $wp;
-
-
         $url_image = (WP_PLUGIN_URL . '/'. str_replace( basename( __FILE__ ), "", plugin_basename(__FILE__) ));
-        
-        $order        = new WC_Order( $order_id );
-        $request_data = $_POST;
-        
-        include_once("includes/class-wc-yapay_intermediador-transactions.php");
-             
-        $transactionData = new WC_Yapay_Intermediador_Transactions();
+        $order     = new WC_Order( $order_id );
 
-        $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
-        // var_dump($tcTransaction);die();
-        $html = "";
+        $html  = "";
         $html .= "<ul class='order_details'>";
         $html .= "<li>";
         $html .= "<br><br>";                
@@ -473,6 +436,8 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                         </div>
                     </div>
                 ";
+
+                $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '. $data['transaction_id'] );
             }
 
         } else {
@@ -489,11 +454,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         echo $html;
         
-        $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        
-        // if ($order->get_status() != 'processing' ) {
-        //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        // }
     }
 
 
@@ -516,26 +476,15 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         }
     }
 
-    private function save_meta_data( $metas = [], $order )
-    {
-        foreach ($metas as $key => $value) {
-            update_post_meta( $order, $key, $value );
-        }
-    }
-
     private function get_meta_data( $order )
     {
-        $keys = [
-            'yapay_transaction_id' => "",
-            'yapay_qrcode_url'     => "",
-            'yapay_qrcode_code'    => ""
-        ];
-
-        foreach ( $keys as $key => $value ) {
-            $keys[$key] = get_post_meta( $order, $key, true );
+        $data = get_post_meta( $order, 'yapay_transaction_data', true );
+        if ( is_serialized( $data ) ) {
+            $data = unserialize( $data );
+            if ( isset( $data['transaction_id'] ) && $data['transaction_id'] ) {
+                return $data;
+            }
         }
-
-        return $keys;
     }
 }
 
