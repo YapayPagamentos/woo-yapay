@@ -435,10 +435,3 @@ function sendRastreioYapay() {
 
 add_action( 'wp_ajax_sendRastreioYapay', 'sendRastreioYapay' );
 add_action( 'wp_ajax_nopriv_sendRastreioYapay', 'sendRastreioYapay' );
-
-function call_yapay_includes() {
-    include_once( 'includes/class-wc-yapay_intermediador-cancellation.php' );
-    new WC_Yapay_Intermediador_Cancellation();
-}
-
-add_action( 'init', 'call_yapay_includes' );
