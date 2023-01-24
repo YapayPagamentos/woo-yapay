@@ -224,9 +224,9 @@ Ajuste token_transaction Notificação
 
 = 0.6.5 = 20/01/2023
 
-* Fix: Envio de taxas e descontos em pedidos
-* Fix: Pagamento com PIX para Pessoa Jurídica
+* Fix:  Envio de taxas e descontos em pedidos
+* Fix:  Pagamento com PIX para Pessoa Jurídica
 * Feat: Padronizando o padrão visual do plugin
-* Feat: Criando visualização de boleto e pix na visualização do pedido
+* Feat: Criando visualização de boleto e pix na página do pedido
 * Feat: Refatoração do sistema de log e remoção do sistema antigo
 * Feat: Controlador do formato de visualização das parcelas durante o checkout
