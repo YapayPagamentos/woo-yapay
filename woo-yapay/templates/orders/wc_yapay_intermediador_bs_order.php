@@ -18,7 +18,7 @@
             </div>
             <div class="section-row">
                 <strong><?php echo __( "Linha digitável:  ", "wc-yapay_intermediador-bs" ); ?></strong>
-                <span><?php echo esc_html( $typeful_line ); ?>"</span>
+                <span><?php echo esc_html( $typeful_line ); ?></span>
             </div>
         </p>
     </div>

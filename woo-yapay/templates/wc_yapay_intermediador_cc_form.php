@@ -83,7 +83,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </select>
         </p>
 
-        <div id="cpf_yapayC" class="input-text cpf_yapay" style="display: none; ">      
+        <div id="cpf_yapayC" class="cpf_yapay cpf_yapay_cc" style="display: none; ">      
             <label>CPF titular cartão<strong style="color: red;">*</strong> (somente números)</label>
             <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" type="text" id="yapay_cpfC" name="yapay_cpfC" maxlength="11" required>
         </div>
