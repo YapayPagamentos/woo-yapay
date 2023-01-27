@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.6.4
+ * Version: 0.6.5
  * Text Domain: woo-yapay
  */
 
@@ -38,21 +38,6 @@ function wc_gateway_yapay_intermediador_init() {
         $methods[] = 'WC_Yapay_Intermediador_Pix_Gateway';
         return $methods;
     }
-}
-
-add_action('admin_menu', 'wc_gateway_yapay_intermediador_log_menu');
-
-function wc_gateway_yapay_intermediador_log_menu() {
-    include_once "includes/class-wc-yapay_intermediador-requests.php";    
-    include_once "includes/class-wc-yapay_intermediador-responses.php"; 
-    add_submenu_page(
-        'woocommerce',
-        'Logs Yapay Intermediador',
-        'Logs Yapay Intermediador',
-        'manage_options',
-        'woocommerce_yapay_intermediador_logs',
-        'html_log_page'
-    );
 }
 
 function html_log_page() {
@@ -95,6 +80,7 @@ function tc_get_splits() {
     $environment = $tcConfig->get_option("environment");
     $qs = intval($tcConfig->get_option("max_qtd_split"));
     $vs = floatval($tcConfig->get_option("min_value_split"));
+    $fee = $tcConfig->get_option('show_installments_fees');
         
     $tcRequest = new WC_Yapay_Intermediador_Request();
 
@@ -122,6 +108,7 @@ function tc_get_splits() {
                     }
                 }
 
+                $results['splittings']['fees'] = $fee;
                 echo json_encode($results['splittings']);
             }
         }
@@ -186,94 +173,109 @@ add_action( 'template_redirect', 'wc_yapay_intermediador_notification' );
 function wc_yapay_intermediador_notification() {
     global $wp_query;
         
-    if( $wp_query->get('wc_yapay_intermediador_notification') && isset($_GET['wc_yapay_intermediador_notification'])) {  
+    if( $wp_query->get( 'wc_yapay_intermediador_notification' ) && isset( $_GET['wc_yapay_intermediador_notification'] ) ) {  
         
         $order_id = $_GET['order_id'];
-        $token_transaction = $_POST['token_transaction'];
-        
-        include_once("includes/class-wc-yapay_intermediador-request.php");
-        include_once("includes/class-wc-yapay_intermediador-transactions.php");
-        
-        $order  = new WC_Order( $order_id );
-        
-        $transactionData = new WC_Yapay_Intermediador_Transactions();
-        $tcTransaction = $transactionData->getTransactionByToken($token_transaction);
-        $tcPayment = "";
-        $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
 
-        switch ($paymentOrder) {
-            case "wc_yapay_intermediador_bs": $tcPayment = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
-            case "wc_yapay_intermediador_cc": $tcPayment = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
-            case "wc_yapay_intermediador_tef": $tcPayment = new WC_Yapay_Intermediador_Tef_Gateway(); break;
-            case "wc_yapay_intermediador_pix": $tcPayment = new WC_Yapay_Intermediador_Pix_Gateway(); break;
-            default: $tcPayment = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
-        }
+        $log = new WC_Logger();
+        $log->add( 
+            "yapay-intermediador-notification", 
+            "YAPAY NEW NOTIFICATION : \n" . 
+            "ORDER ID: ". print_r( $order_id, true ) ."\n\n" 
+        );
         
-        $tcRequest = new WC_Yapay_Intermediador_Request();
-
-        $params["token_account"] = $tcPayment->get_option("token_account");
-        $params["token_transaction"] = $_POST["token_transaction"];
+        include_once( "includes/class-wc-yapay_intermediador-request.php" );
         
-        $tcResponse = $tcRequest->requestData("v2/transactions/get_by_token",$params,$tcPayment->get_option("environment"));
+        $order = new WC_Order( $order_id );
         
-        if ( (str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction->order_id) == $order->get_id()) && $tcResponse->message_response->message == "success") {
+        $tcTransaction = unserialize( get_post_meta( $order_id, "yapay_transaction_data", true ) );
 
-            
-            $codeStatus = intval($tcResponse->data_response->transaction->status_id);
-            
-            $comment = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
-            
+        if ( is_array( $tcTransaction ) && ! empty( $tcTransaction ) ) {
 
-            switch ($codeStatus) {
-                case 4: 
-                case 5: 
-                case 88: 
-                        if($order->get_status() != "on-hold"){
-                            $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
-                        }else{
-                            $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
-                        }
-                    break;
-                case 6 : 
-                        $order->add_order_note( 'Yapay Intermediador - Aprovado. Pagamento confirmado automaticamente.' );
-                        $order->payment_complete();
-                    break;
-                case 24 : 
-                        if($order->get_status() != "on-hold"){
-                            $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
-                        }else{
-                            $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
-                        }
-                    break;
-                case 7 : 
-                case 89 :  
-                        if($order->get_status() != "cancelled"){
-                            $order->update_status( 'cancelled', 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback). | ' );
-                        }else{
-                            $order->add_order_note( 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback).'  );
-                        }
-                    break;
-                case 87 :  
-                        if($order->get_status() != "on-hold"){
-                            $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
-                        }else{
-                            $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
-                        }
-                    break;
+            $tcPayment    = "";
+            $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
 
-                default :
-                        // No action xD.
-                    break;
+            switch ($paymentOrder) {
+                case "wc_yapay_intermediador_bs": $tcPayment  = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
+                case "wc_yapay_intermediador_cc": $tcPayment  = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
+                case "wc_yapay_intermediador_tef": $tcPayment = new WC_Yapay_Intermediador_Tef_Gateway(); break;
+                case "wc_yapay_intermediador_pix": $tcPayment = new WC_Yapay_Intermediador_Pix_Gateway(); break;
+                default: $tcPayment                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
             }
-            echo "Status do pedido " . $order->get_id() ." alterado: " . $comment . ". Transação: " .$tcResponse->data_response->transaction->transaction_id." ! ";
+            
+            $tcRequest = new WC_Yapay_Intermediador_Request();
 
-        } else {
-            echo "Ocorreu um erro para atualizar o status do pedido!";
-            var_dump(str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction->order_id));
-            var_dump($order->get_id());
-            var_dump($tcResponse);
+            $params["token_transaction"] = $tcTransaction['token_transaction'];
+            $params["token_account"]     = $tcPayment->get_option("token_account");
+            
+            $tcResponse = $tcRequest->requestData( "v2/transactions/get_by_token", $params,$tcPayment->get_option( "environment" ) );
+
+            $log->add( 
+                "yapay-intermediador-notification", 
+                "YAPAY NEW NOTIFICATION : \n" . 
+                "REQUEST: ". print_r( $tcResponse, true ) ."\n\n" 
+            );
+            
+            if ( $tcResponse->message_response->message == "success" ) {
+
+                $codeStatus = intval( $tcResponse->data_response->transaction->status_id );
+                $comment    = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
+                
+
+                switch ( $codeStatus ) {
+                    case 4: 
+                    case 5: 
+                    case 88: 
+                            if($order->get_status() != "on-hold"){
+                                $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+                            }else{
+                                $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+                            }
+                        break;
+                    case 6 : 
+                            $order->add_order_note( 'Yapay Intermediador - Aprovado. Pagamento confirmado automaticamente.' );
+                            $order->payment_complete();
+                        break;
+                    case 24 : 
+                            if($order->get_status() != "on-hold"){
+                                $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+                            }else{
+                                $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+                            }
+                        break;
+                    case 7 : 
+                    case 89 :  
+                            if($order->get_status() != "cancelled"){
+                                $order->update_status( 'cancelled', 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback). | ' );
+                            }else{
+                                $order->add_order_note( 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback).'  );
+                            }
+                        break;
+                    case 87 :  
+                            if($order->get_status() != "on-hold"){
+                                $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+                            }else{
+                                $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+                            }
+                        break;
+                }
+
+                $message = "Status do pedido " . $order->get_id() ." alterado: " . $comment . ". Transação: " .$tcResponse->data_response->transaction->transaction_id." ! ";
+                echo $message;
+                
+                $log->add( 
+                    "yapay-intermediador-notification", 
+                    "YAPAY NEW NOTIFICATION : \n" . 
+                    "STATUS: ".print_r( $message, true ) ."\n\n" 
+                );
+
+            } else {
+                echo "Ocorreu um erro para atualizar o status do pedido!";
+                var_dump(str_replace($tcPayment->get_option("prefixo"),"",$tcTransaction['order_id']));
+                var_dump($order->get_id());
+                var_dump($tcResponse);
+            }
         }
-	
     }
 }
 
@@ -384,7 +386,7 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
 
 function sendRastreioYapay() {
     $order_id = $_POST['order_id'];
-    $code = $_POST['code'];
+    $code     = $_POST['code'];
     
     if ((strtolower($_POST["url"]) == "correios") OR (strtolower($_POST["url"]) == "correio") OR 
         (strtolower($_POST["url"]) == "correios-sedex") OR (strtolower($_POST["url"]) == "correios-pac")) {
@@ -395,41 +397,37 @@ function sendRastreioYapay() {
 
     $order  = new WC_Order( $order_id );
 
-    include_once("includes/class-wc-yapay_intermediador-transactions.php");
     include_once("includes/class-wc-yapay_intermediador-request.php");
 
     $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
     
     switch ($paymentOrder) {
-        case "wc_yapay_intermediador_bs": $tcConfig = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
-        case "wc_yapay_intermediador_cc": $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
+        case "wc_yapay_intermediador_bs": $tcConfig  = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
+        case "wc_yapay_intermediador_cc": $tcConfig  = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
         case "wc_yapay_intermediador_tef": $tcConfig = new WC_Yapay_Intermediador_Tef_Gateway(); break;
         case "wc_yapay_intermediador_pix": $tcConfig = new WC_Yapay_Intermediador_Pix_Gateway(); break;
-        default: $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
+        default: $tcConfig                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
     }
 
-    // $tcConfig = new WC_Yapay_Intermediador_Creditcard_Gateway();    
-    $transactionData = new WC_Yapay_Intermediador_Transactions();
-    $tcTransaction = $transactionData->getTransactionByOrderId($tcConfig->get_option("prefixo").$order_id);
+    $tcTransaction = get_post_id( $order_id, "yapay_transaction_data", true );
 
-    $token_transaction = $tcTransaction->token_transaction;
-    $idTransacao = $tcTransaction->transaction_id;
+    $token_transaction = $tcTransaction['token_transaction'];
+    $idTransacao       = $tcTransaction['transaction_id'];
 
+    $token_account = $tcConfig->get_option( "token_account" );
+    $environment   = $tcConfig->get_option( "environment" );
 
-    $token_account = $tcConfig->get_option("token_account");
-    $environment = $tcConfig->get_option("environment");
-
-    $params["token_account"] = $token_account;
-    $params["id"] = $idTransacao;
+    $params["token_account"]     = $token_account;
+    $params["id"]                = $idTransacao;
     $params["transaction_token"] = $token_transaction;
-    $params["code"] = $code;
-    $params["url"] = $url;
-    $params["posted_date"] = time();
+    $params["code"]              = $code;
+    $params["url"]               = $url;
+    $params["posted_date"]       = time();
     
     $tcRequest = new WC_Yapay_Intermediador_Request();        
-    $tcResponse = $tcRequest->requestData("v3/sales/trace",$params,$environment);
+    $tcResponse = $tcRequest->requestData( "v3/sales/trace", $params, $environment );
 
-    $order->add_order_note('Enviado para Yapay o código de rastreio: ' . $code);
+    $order->add_order_note( 'Enviado para Yapay o código de rastreio: ' . $code );
 
     update_post_meta( $order_id, '_my_field_slug', $_POST[ 'code' ] );
     update_post_meta( $order_id, 'urlRastreio', $_POST[ 'url' ] );

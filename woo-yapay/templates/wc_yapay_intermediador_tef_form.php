@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <fieldset id="wc-yapay_intermediador-tef-payment-form">
     
     <input type="hidden" id="tctPaymentMethod" name="wc-yapay_intermediador-tef-payment-method" class="required-entry" value="" autocomplete="off">
-    <label for="tctPaymentMethod">Selecione a forma de pagamento <span class="required">*</span></label>
+    <label for="tctPaymentMethod">Selecione a bandeira do seu banco <span class="required">*</span></label>
     <ul>
         <?php
             $imgSrc = "";
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
      </ul>
 
-    <div id="cpf_yapayT" class="cpf_yapay" style="display: none">      
+    <div id="cpf_yapayT" class="cpf_yapay cpf_yapay_tef" style="display: none">      
         <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
         <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" type="text" id="yapay_cpfT" name="yapay_cpfT" maxlength="11" required>
     </div>

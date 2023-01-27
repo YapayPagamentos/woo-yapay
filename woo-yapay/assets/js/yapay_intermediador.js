@@ -22,23 +22,34 @@ function getSplits(payment_method,ta,ev){
             jQuery('form.checkout').removeClass( 'processing' ).unblock();
             var json_response = JSON.parse(response);
             
-
             if (typeof json_response.splitting[0] == "object"){
                 jQuery.each(json_response.splitting, function (i, splitData) {
-                    
-                    // if(parseFloat(splitData.split_rate) == 0){
-                    if(splitData.split_rate == "0" ||  splitData.split_rate == "0.0"){
-                        aditional_text = " sem juros";
-                    }else{
-                        aditional_text = " com juros";
+
+                    const show_fee  = json_response.fees;
+                    const formatter = new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                    });
+
+                    switch (show_fee) {
+                        case 'not_show':
+                            aditional_text = "";
+                            break;
+                        case 'show_fee_text':
+                            aditional_text = splitData.split_rate == "0" ? " sem juros" : aditional_text = " com juros";
+                            break;
+                        default:
+                            aditional_text = splitData.split_rate == "0" ? " sem juros" : aditional_text = ` (${formatter.format(splitData.value_transaction)}) com juros`;
+                            break;
                     }
+
                     jQuery('#wc-yapay_intermediador-cc-card-installments').append(jQuery('<option>', { 
                         value: splitData.split,
-                        text : splitData.split + " x " + splitData.value_split + aditional_text
+                        text : splitData.split + " x " + formatter.format(splitData.value_split) + aditional_text
                     }));
                 });
+                
             }else{
-                // if(parseFloat(json_response.splitting.split_rate) == 0){
                  if (json_response.splitting.split_rate == "0" || json_response.splitting.split_rate == "0.0") {
                     aditional_text = " sem juros";
                 }else{
@@ -288,6 +299,9 @@ function inputCPFYapay() {
         if (document.getElementById('cpf_yapayC') != null) {
             document.getElementById('cpf_yapayC').style.display = 'block';
         }
+        if (document.getElementById('cpf_yapayP') != null) {
+            document.getElementById('cpf_yapayP').style.display = 'block';
+        }
     } else {
         if ((document.getElementById('billing_persontype') == null) && (document.getElementById('billing_cpf') != null ) ) {
             if (document.getElementById('cpf_yapayB') != null) {
@@ -298,6 +312,9 @@ function inputCPFYapay() {
             }
             if (document.getElementById('cpf_yapayC') != null) {
                 document.getElementById('cpf_yapayC').style.display = 'none';
+            }
+            if (document.getElementById('cpf_yapayP') != null) {
+                document.getElementById('cpf_yapayP').style.display = 'none';
             }
         }
     }
@@ -316,6 +333,9 @@ function inputCPFYapay() {
                 if (document.getElementById('cpf_yapayC') != null) {
                     document.getElementById('cpf_yapayC').style.display = 'block';
                 }
+                if (document.getElementById('cpf_yapayP') != null) {
+                    document.getElementById('cpf_yapayP').style.display = 'block';
+                }
             } else {
                 if (document.getElementById('cpf_yapayB') != null) {
                     document.getElementById('cpf_yapayB').style.display = 'none';
@@ -325,6 +345,9 @@ function inputCPFYapay() {
                 }
                 if (document.getElementById('cpf_yapayC') != null) {
                     document.getElementById('cpf_yapayC').style.display = 'none';
+                } 
+                if (document.getElementById('cpf_yapayP') != null) {
+                    document.getElementById('cpf_yapayP').style.display = 'none';
                 } 
               }
     }

@@ -13,9 +13,18 @@ class WC_Yapay_Intermediador_Request{
         return ($environment == 'yes') ? "https://api.intermediador.sandbox.yapay.com.br/" : "https://api.intermediador.yapay.com.br/";
     }
     
-    public function requestData($pathPost, $dataRequest, $environment = "yes", $strResponse = false)
+    public function requestData($pathPost, $dataRequest, $environment = "yes", $strResponse = false, $method = "POST")
     {
         $urlPost = self::getUrlEnvironment($environment).$pathPost;
+
+        $log = new WC_Logger();
+        
+        $log->add( 
+            "yapay-intermediador-request-response-", 
+            "YAPAY NEW REQUEST : \n" . 
+            "URL : $urlPost \n" . 
+            print_r( $dataRequest, true ) ."\n\n" 
+        );
 
         $ch = curl_init ( $urlPost );
         
@@ -25,6 +34,9 @@ class WC_Yapay_Intermediador_Request{
         curl_setopt ( $ch, CURLOPT_POSTFIELDS, $dataRequest);
         curl_setopt ( $ch, CURLOPT_SSLVERSION, 6 );
         // curl_setopt ( $ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2 );
+        if ( $method != "POST" ) {
+            curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $method) ;
+        }
 
         
         if (!($response = curl_exec($ch))) {
@@ -37,6 +49,13 @@ class WC_Yapay_Intermediador_Request{
             curl_close ( $ch );
             exit();    
         }
+
+        $log->add( 
+            "yapay-intermediador-request-response-", 
+            "YAPAY NEW RESPONSE : \n" . 
+            "URL : $urlPost \n" . 
+            print_r( $response, true )
+        );
         
         $httpCode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
         

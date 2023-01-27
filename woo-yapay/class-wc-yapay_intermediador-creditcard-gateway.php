@@ -27,7 +27,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-cc' );
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-        $this->icon = null;
+        $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "cc-flag.svg";
 
         // Bool. Can be set to true if you want payment fields to show on the checkout 
         // if doing a direct integration, which we are doing in this case
@@ -93,13 +93,13 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
                 'title'     => __( 'Titulo', 'wc-yapay_intermediador-cc' ),
                 'type'      => 'text',
                 'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-cc' ),
-                'default'   => __( 'Yapay Intermediador - Cartões de Crédito', 'wc-yapay_intermediador-cc' ),
+                'default'   => __( 'Yapay - Cartões de Crédito', 'wc-yapay_intermediador-cc' ),
             ),
             'description' => array(
                 'title'     => __( 'Descrição', 'wc-yapay_intermediador-cc' ),
                 'type'      => 'textarea',
                 'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-cc' ),
-                'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-cc' ),
+                'default'   => __( 'A maneira mais fácil e segura de comprar pela internet.', 'wc-yapay_intermediador-cc' ),
                 'css'       => 'max-width:350px;'
             ),
             'environment' => array(
@@ -158,6 +158,17 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
                 'title'     => __( 'Valor Mínimo de Parcelas', 'wc-yapay_intermediador-cc' ),
                 'type'      => 'text',
                 'desc_tip'  => __( 'Valor mínimo de parcelas que será disponibilizado ao comprador. Valor mínimo R$10,00 (Inserir valor separado por "." Ex: 12.54)).', 'wc-yapay_intermediador-cc' ),
+            ),
+            'show_installments_fees' => array(
+                'title'     => __( 'Exibir juros de parcelas', 'wc-yapay_intermediador-cc' ),
+                'type'      => 'select',
+                'options'   => [
+                    'show_fee_text'  => 'Exibir texto na parcela ("com juros")',
+                    'show_fee_price' => 'Texto e valor total da parcela',
+                    'not_show'       => 'Não exibir'
+                ],
+                'default'   => 'show_fee_price',
+                'desc_tip'  => __( 'Quantidade máxima de parcelas que será disponibilizado ao comprador.', 'wc-yapay_intermediador-cc' ),
             ),
             'prefixo' => array(
                 'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-cc' ),
@@ -244,7 +255,7 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
         $params["finger_print"] = $_POST["finger_print"];
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.4";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.5";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -345,32 +356,32 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
             $params["transaction[shipping_price]"] = $order->order_shipping;
         }
 
+        $discount = 0;
+        $fee      = 0;
 
         if (count($order->get_items('fee')) > 0) {
-            add_filter ( 'additional_fees', 'yp_additional_fees', 10, 2  );
     
-            function yp_additional_fees( $discount, $order ) {
-                foreach( $order->get_items('fee') as $item_id => $item_fee ){
-                    $fee_total = $item_fee->get_total();
+            foreach( $order->get_items('fee') as $item_id => $item_fee ){
+                $fee_total = floatval( $item_fee->get_total() );
+
+                if ( $fee_total > 0 ) {
+                    $fee += $fee_total;
+                } else {
+                    $discount += $fee_total * -1;
                 }
-            
-                if( $discount > 0 ) {
-                    $total_fee = $discount + abs($fee_total);
-                    return $total_fee;
-                }
-                return abs($fee_total);
             }
-
-
-            $params["transaction[price_discount]"] = apply_filters( 'additional_fees', $order->discount_total, $order );
-
-
-        } else if (intval($order->discount_total) > 0) {
-            $params["transaction[price_discount]"] = $order->discount_total;
-            
         } 
 
-        // $params["transaction[price_discount]"] = $order->discount_total;
+        $discount += floatval( $order->discount_total );
+
+        if ( $discount > 0 ) {
+            $params["transaction[price_discount]"] = $discount;
+        }
+
+        if ( $fee > 0 ) {
+            $params["transaction[fee]"] = $fee;
+        }
+        
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
         $params["transaction[max_split_transaction]"] = $_POST["wc-yapay_intermediador-cc_card_installments"];
@@ -407,22 +418,24 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
 
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
                     
-                
-        if($tcResponse->message_response->message == "success"){
-            // Remove cart.  
-            include_once("includes/class-wc-yapay_intermediador-transactions.php");
-            
-            $transactionData = new WC_Yapay_Intermediador_Transactions();
-            
-            $transactionParams["order_id"] = (string)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["transaction_id"] = (int)$tcResponse->data_response->transaction->transaction_id;
-            $transactionParams["split_number"] = (int)$tcResponse->data_response->transaction->payment->split;
-            $transactionParams["payment_method"] = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
+        if( $tcResponse->message_response->message == "success" ) {
+
+            $transactionParams["order_id"]          = (string)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["transaction_id"]    = (int)$tcResponse->data_response->transaction->transaction_id;
+            $transactionParams["split_number"]      = (int)$tcResponse->data_response->transaction->payment->split;
+            $transactionParams["payment_method"]    = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
             $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
 
+            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $transactionParams ) );
             
-            $transactionData->addTransaction($transactionParams);
-
+            if ( $result ) {
+                $log = new WC_Logger();
+                $log->add( 
+                    "yapay-intermediador-transactions-save-", 
+                    "YAPAY NEW TRANSACTION SAVE : \n" . 
+                    print_r( $transactionParams, true ) ."\n\n" 
+                );
+            }
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -528,60 +541,69 @@ class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway {
     }
     
     public function thankyou_page( $order_id ) {
-        // global $woocommerce;
 
-        $order        = new WC_Order( $order_id );
-        // $request_data = $_POST;
+        $order = new WC_Order( $order_id );
 
-        include_once("includes/class-wc-yapay_intermediador-transactions.php");
-        include_once("includes/class-wc-yapay_intermediador-request.php");
-          
-        $transactionData = new WC_Yapay_Intermediador_Transactions();
-       
-        $tcTransaction = $transactionData->getTransactionByOrderId($this->get_option("prefixo").$order_id);
-
+        include_once( "includes/class-wc-yapay_intermediador-request.php" );
         $tcRequest = new WC_Yapay_Intermediador_Request();
-      
-        $params["token_account"] = $this->get_option("token_account");
-        $params['price']= $order->get_total();
-        $params['payment_method_id'] = $tcTransaction->payment_method;
-        $tcResponse = $tcRequest->requestData("v1/seller_splits/simulate_split",$params,$this->get_option("environment"),false);
+          
+        $data = get_post_meta( $order_id, 'yapay_transaction_data', true );
 
-        $tcTransactionSplit = $tcResponse->data_response->splittings->splitting[$tcTransaction->split_number - 1];
-      
-        $html = "";
-        $html .= "<ul class='order_details'>";
-        $html .= "<li>";
-        $html .= "Número da Transação: <strong>{$tcTransaction->transaction_id}</strong>";
-        $html .= "</li>";
-        $html .= "<li>";
-        $strPaymentMethod = "";
-        switch (intval($tcTransaction->payment_method)){
-            // case 2: $strPaymentMethod = "Diners Club International";break;
-            case 3: $strPaymentMethod = "Visa";break;
-            case 4: $strPaymentMethod = "Mastercard";break;
-            case 5: $strPaymentMethod = "American Express";break;
-            case 15: $strPaymentMethod = "Discover";break;
-            case 16: $strPaymentMethod = "Elo";break;
-            case 18: $strPaymentMethod = "Aura";break;
-            case 19: $strPaymentMethod = "JCB";break;
-            case 20: $strPaymentMethod = "Hipercard";break;
-            case 25: $strPaymentMethod = "Hiper (Itaú)";break;
+        if ( is_serialized( $data ) ) {
+            $data = unserialize( $data );
+
+            $params["token_account"]     = $this->get_option( "token_account" );
+            $params['price']             = $order->get_total();
+            $params['payment_method_id'] = $data['payment_method'];
+            $tcResponse                  = $tcRequest->requestData( "v1/seller_splits/simulate_split", $params, $this->get_option( "environment" ), false) ;
+
+            $tcTransactionSplit = $tcResponse->data_response->splittings->splitting[$data['split_number'] - 1];
+            $strPaymentMethod   = "";
+
+            switch ( intval( $data['payment_method'] ) ) {
+                case 3: $strPaymentMethod  = "Visa";break;
+                case 4: $strPaymentMethod  = "Mastercard";break;
+                case 5: $strPaymentMethod  = "American Express";break;
+                case 15: $strPaymentMethod = "Discover";break;
+                case 16: $strPaymentMethod = "Elo";break;
+                case 18: $strPaymentMethod = "Aura";break;
+                case 19: $strPaymentMethod = "JCB";break;
+                case 20: $strPaymentMethod = "Hipercard";break;
+                case 25: $strPaymentMethod = "Hiper (Itaú)";break;
+            }
+
+            $html = "
+            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                <hr/>
+                <div style='margin: 20px 0'>
+                    <span>Número da Transação: <strong>". $data['transaction_id'] ."</strong></span>
+                </div>
+                <div style='margin: 20px 0'>
+                    <span>Bandeira de Cartão: <strong>$strPaymentMethod</strong></span>
+                </div>
+                <div style='margin: 20px 0'>
+                    <span>Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong></span>
+                </div>
+            </div>
+            ";
+
+            $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '. $data['transaction_id'] );
+
+        } else {
+            $html = "
+            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
+                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                <div style='margin: 20px 0'>
+                    <strong style='color: red'>Ocorreu um erro na geração da cobrança de crédito. Entre em contato com o administrador da Loja</strong> 
+                </div>
+            </div>
+            ";
         }
-        $html .= "Bandeira de Cartão: <strong>$strPaymentMethod</strong>";
-        $html .= "</li>";
-        $html .= "<li>";
-        $html .= "Pagamento em: <strong>".$tcTransactionSplit->split." x R$".number_format(floatval($tcTransactionSplit->value_split), 2, ',', '')."</strong>";
-        $html .= "</li>";
-        $html .= "</ul>";
-        
+
+
         echo $html;
-
-        $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-
-        // if ($order->get_status() != 'processing') {
-        //     $order->update_status( 'on-hold', 'Pedido registrado no Yapay Intermediador. Transação: '.$tcTransaction->transaction_id );
-        // }
+        
     }
     
 }

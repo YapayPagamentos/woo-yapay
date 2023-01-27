@@ -120,9 +120,13 @@ ul li img.tcPaymentFlagSelected{
     text-align: center;
 }
 
-.cpf_yapay {
-    display: grid;
-    margin: 100px 0 100px 0;
+.cpf_yapay_tef {
+    margin-top: 80px;
+}
+
+.cpf_yapay_cc {
+    padding: 0;
+    box-shadow: none;
 }
 
 .cpf_yapay input {
@@ -147,7 +151,35 @@ ul li img.tcPaymentFlagSelected{
 }
 
 .qrCodeYapay {
-    margin-top: 15px;
-    width: 100px;
+    margin-left: -75px;
+    margin-top: 10px;
+}
 
+/** Order view page */
+#yapay-order-container h2 {
+    font-weight: 600;
+}
+
+#yapay-order-container .section-row {
+    margin: 5px 0;
+}
+
+#yapay-order-container #yapay-billet-link {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#yapay-order-container #yapay-billet-link > a {
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #eeee;
+    color: #333333;
+    margin: 5px 0;
+}
+
+#yapay-order-container #yapay-pix-qr > object{
+    margin-left: -75px;
 }
