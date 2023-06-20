@@ -58,8 +58,8 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
         <div class="clear"></div>
         <p class="form-row form-row-first">
-            <label for="wc-yapay_intermediador-cc-card-expiry"><?php _e( 'Data de Expiração (MM/YY)', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
-            <input id="wc-yapay_intermediador-cc-card-expiry" name="wc-yapay_intermediador-cc_card_expiry" class="input-text wc-credit-card-form-card-expiry" type="text"  autocomplete="off" placeholder="<?php _e( 'MM / YY', 'woocommerce-wc-yapay_intermediador-cc' ); ?>" onkeyup="
+            <label for="wc-yapay_intermediador-cc-card-expiry"><?php _e( 'Data de Expiração (MM/AA)', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
+            <input id="wc-yapay_intermediador-cc-card-expiry" name="wc-yapay_intermediador-cc_card_expiry" class="input-text wc-credit-card-form-card-expiry" type="text"  autocomplete="off" placeholder="<?php _e( 'MM / AA', 'woocommerce-wc-yapay_intermediador-cc' ); ?>" onkeyup="
                     var v = this.value;
                     if (v.match(/^\d{2}$/) !== null) {
                         this.value = v + ' / ';
