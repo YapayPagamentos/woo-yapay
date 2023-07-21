@@ -409,28 +409,30 @@ function sendRastreioYapay() {
         default: $tcConfig                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
     }
 
-    $tcTransaction = get_post_id( $order_id, "yapay_transaction_data", true );
+    $tcTransaction = unserialize(get_post_meta($order_id, "yapay_transaction_data", true));
 
-    $token_transaction = $tcTransaction['token_transaction'];
-    $idTransacao       = $tcTransaction['transaction_id'];
-
-    $token_account = $tcConfig->get_option( "token_account" );
-    $environment   = $tcConfig->get_option( "environment" );
-
-    $params["token_account"]     = $token_account;
-    $params["id"]                = $idTransacao;
-    $params["transaction_token"] = $token_transaction;
-    $params["code"]              = $code;
-    $params["url"]               = $url;
-    $params["posted_date"]       = time();
+    if ($tcTransaction && is_array($tcTransaction)) {
+        $token_transaction = $tcTransaction['token_transaction'];
+        $idTransacao       = $tcTransaction['transaction_id'];
     
-    $tcRequest = new WC_Yapay_Intermediador_Request();        
-    $tcResponse = $tcRequest->requestData( "v3/sales/trace", $params, $environment );
-
-    $order->add_order_note( 'Enviado para Yapay o código de rastreio: ' . $code );
-
-    update_post_meta( $order_id, '_my_field_slug', $_POST[ 'code' ] );
-    update_post_meta( $order_id, 'urlRastreio', $_POST[ 'url' ] );
+        $token_account = $tcConfig->get_option( "token_account" );
+        $environment   = $tcConfig->get_option( "environment" );
+    
+        $params["token_account"]     = $token_account;
+        $params["id"]                = $idTransacao;
+        $params["transaction_token"] = $token_transaction;
+        $params["code"]              = $code;
+        $params["url"]               = $url;
+        $params["posted_date"]       = time();
+        
+        $tcRequest = new WC_Yapay_Intermediador_Request();        
+        $tcResponse = $tcRequest->requestData( "v3/sales/trace", $params, $environment );
+    
+        $order->add_order_note( 'Enviado para Yapay o código de rastreio: ' . $code );
+    
+        update_post_meta( $order_id, '_my_field_slug', $_POST[ 'code' ] );
+        update_post_meta( $order_id, 'urlRastreio', $_POST[ 'url' ] );
+    }
 }
 
 add_action( 'wp_ajax_sendRastreioYapay', 'sendRastreioYapay' );
