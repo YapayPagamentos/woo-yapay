@@ -27,7 +27,9 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
         $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-bs' );
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-        $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "boleto-flag.svg";
+        if ($this->get_option('show_icon')) {
+            $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "boleto-flag.svg";
+        }
 
         // Bool. Can be set to true if you want payment fields to show on the checkout 
         // if doing a direct integration, which we are doing in this case
@@ -88,16 +90,13 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway {
                 'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-bs' ),
                 'default'   => 'no',
             ),
-            // 'bt_config' => array(
-            //     'title'             => __( 'Configuração Yapay Intermediador', 'wc-yapay_intermediador-bs' ),
-            //     'type'              => 'text',
-            //     'default'           => 'Configurar',
-            //     'desc_tip'          => __( 'Clique no botão para configurar o Yapay Intermediador.', 'wc-yapay_intermediador-bs' ),
-
-            //     'custom_attributes' => array('onclick'=>'window.open("http://developers.tray.com.br/authLoginWc.php?environment="+document.getElementById("woocommerce_wc_yapay_intermediador_bs_environment").checked+"&path='.  urlencode(get_site_url()) .'&type=cc", "", "width=650,height=550")'),
-            //     'class' => 'button-primary',
-            //     'css' => 'text-align:center'
-            // ),
+            'show_icon' => array(
+                'title'     => __( 'Mostrar ícone no checkout', 'wc-yapay_intermediador-cc' ),
+                'label'     => __( 'Ativar ícone', 'wc-yapay_intermediador-cc' ),
+                'type'      => 'checkbox',
+                'description' => __( 'Ativar / Desativar o ícone do método de pagamento no checkout', 'wc-yapay_intermediador-cc' ),
+                'default'   => 'on',
+            ),
             'token_account' => array(
                 'title'     => __( 'Token da Conta', 'wc-yapay_intermediador-bs' ),
                 'type'      => 'text',

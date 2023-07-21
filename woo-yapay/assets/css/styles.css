@@ -183,3 +183,11 @@ ul li img.tcPaymentFlagSelected{
 #yapay-order-container #yapay-pix-qr > object{
     margin-left: -75px;
 }
+
+#payment .payment_method_wc_yapay_intermediador_cc img,
+#payment .payment_method_wc_yapay_intermediador_pix img,
+#payment .payment_method_wc_yapay_intermediador_bs img,
+#payment .payment_method_wc_yapay_intermediador_tef img {
+    float: right;
+    max-height: 1.618em;
+}
