@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<fieldset id="wc-yapay_intermediador-bs-payment-form">
+<fieldset id="wc-yapay_intermediador-bs-payment-form" class="wc_yapay_intermediador_gateway">
     <input type="hidden" id="tcbPaymentMethod" name="wc-yapay_intermediador-bs-payment-method" class="required-entry" value="" autocomplete="off">
 
     <div id="cpf_yapayB" class="cpf_yapay" style="display: none">  	

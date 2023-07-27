@@ -2,8 +2,8 @@
 Contributors: Integração Yapay, aguiart0, apiki
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
-Tested up to: 5.5
-Stable tag: 0.6.5
+Tested up to: 6.3
+Stable tag: 0.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,175 +52,13 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 == Changelog ==
 
-= 0.1.0 = 20/11/2017
-
-* Versão incial do plugin Yapay Intermediador.
-
-= 0.2.0 = 01/02/2018
-
-Correção bug combo box de parcelamento. 
-
-
-= 0.2.1 = 20/12/2018
-
-Correção bug combo box de parcelamento devido ao retorno da API de Parcelamento .
-
-
-= 0.2.2 = 14/02/2019
-
-Ajuste no frontend do campo de Data de Vencimento do Cartão de crédito.
-
-= 0.2.3 = 19/02/2019
-
-Ajuste no frontend do campo de Data de Vencimento do Cartão de crédito.
-
-= 0.2.4 = 19/02/2019
-
-Retirada botão Configurar Yapay.
-
-= 0.2.5 = 11/03/2019
-
-Adicionado fingerprint.
-
-= 0.2.6 = 12/03/2019
-
-Novos ajustes fingerprint.
-
-= 0.2.7 = 12/03/2019
-
-Ajuste no parâmetro de criação da transação customer_ip.
-
-= 0.2.7 = 26/03/2019
-
-Ajuste no layout quebrado do checkout.
-
-= 0.4.1 = 21/06/2019
-
-Adicionada a opção de enviar para a Yapay o código de rastreio do pedido. Essa informaço é importante para liberação do saque do vendedor.
-
-Corrigido a variável de desconto enviada na transação para a Yapay.
-
-= 0.4.2 = 17/07/2019
-
-Adicionada a opção de realiar compras com CNPJ.
-
-Adicionado o campo CPF nas formas de pagamento.
-
-= 0.4.3 = 19/07/2019
-
-Adicionado type no input CPF.
-
-= 0.4.4 = 25/07/2019
-
-Bug fix CPF não é valido no checkout.
-
-= 0.4.5 = 15/08/2019
-
-Bug fix CPF nÃ£o Ã© valido no checkout, somente CNPJ.
-
-Ajuste front do input CPF
-
-Ajuste variavel discount
-
-= 0.4.8 = 16/08/2019
-
-Bug fix get_item_subtotal desconto produto.
-
-= 0.4.9 = 16/09/2019
-
-Será exigido o campo CPF na forma de pagamento somente quando o tipo de pessoa for igual a PESSOA JURÍDICA
-
-Atualização REGEX dos BIN de Cartão de Crédito.
-
-Adicionada mensagem do retorno do pagamento na Tela de Sucesso do pedido, agora vai informar qual foi a mensagem da Adquirente.
-
-= 0.5.0 = 19/09/2019
-
-Correção do bug de CPF em branco, quando estava configurado apenas vendas para CPF
-
-= 0.5.1 = 29/09/2019
-
-Ajuste no javascript
-
-
-= 0.5.2 = 09/10/2019
-
-Ajuste no css das bandeiras do cartão de crédito.
-
-
-= 0.5.3 = 24/02/2020
-
-Alterar página de finalização de compra para order-received.
-
-Ajustar input do ano do cartão de crédito para dois digitos, ficando MM / YY.
-
-Ajuste no checkout, não será permitido digitar letras no campo de NÚMERO DO CARTÃO.
-
-Ajuste no checkout, não será permitido digitar números no campo de NOME DO CARTÃO.
-
-
-= 0.5.4 = 24/02/2020
-
-Correção Envio de Código de Rastreio do pedido
-
-
-= 0.5.5 = 29/02/2020
-
-Bug fix função receitp_page
-
-= 0.5.6 = 04/03/2020
-
-Bug fix URL Boleto.
-
-Correção das imagens das Bandeiras selecionadas na opção de cartão de crédito.
-
-= 0.5.7 = 13/03/2020
-
-Correção bug de envio de Código de Rastreio para Yapay com PHP >7.x 
-
-= 0.5.8 = 11/05/2020
-
-Correção bug thankyou_page com informações do pagamento do pedido.
-
-Correção bug de alteração do status dos pedidos.
-
-Erro na criação da parcela, PHP >= 7.3
-
-= 0.5.9 = 08/09/2020
-
-Ajustes de segurança e funções depreciadas
-
-Ajustes no envio da palavra CORREIOS na URL de envio do código de rastreio.
-
-Adicionado o parâmetro max_split_transaction, no reprocessamento do pagamento permite apenas o que foi setado no primeiro processamento.
-
-Adicionado o envio do número do celular (billing_celphone) caso exista.
-
-Correção no input do nome do cartão de crédito permitindo APENAS letras e espaço.
-
-
-= 0.6.0 = 08/10/2020
-
-Ajustes de segurança nos logs
-
-
-= 0.6.1 = 11/02/2021
-
-Ajuste variáveis de desconto.
-
-
-= 0.6.2 = 27/10/2021
-
-Adicionada forma de pagamento PIX
-
-
-= 0.6.3 = 01/11/2021
-
-Ajuste token_transaction Notificação
-
-= 0.6.5 = 03/11/2021
-
-Ajuste token_transaction Notificação
+= 0.6.6 = 21/07/2023
+
+* Fix:  Ícones gigantes no checkout
+* Fix:  Correção da funcionalidade de Código de Rastreio
+* Fix:  Remoção de estilização genéria do elemento 'ul'
+* Feat: Criação de opção de remoção de ícones no checkout
+* Feat: Melhorando visualização do formulário de cartão
 
 = 0.6.5 = 20/01/2023
 
@@ -230,3 +68,90 @@ Ajuste token_transaction Notificação
 * Feat: Criando visualização de boleto e pix na página do pedido
 * Feat: Refatoração do sistema de log e remoção do sistema antigo
 * Feat: Controlador do formato de visualização das parcelas durante o checkout
+
+= 0.6.4 = 03/11/2021
+
+* Ajuste token_transaction Notificação
+
+= 0.5.2 = 09/10/2019
+
+* Ajuste no css das bandeiras do cartão de crédito.
+
+= 0.6.3 = 01/11/2021
+
+* Ajuste token_transaction Notificação
+
+= 0.6.2 = 27/10/2021
+
+* Adicionada forma de pagamento PIX
+
+= 0.6.1 = 11/02/2021
+
+* Ajuste variáveis de desconto.
+
+= 0.6.0 = 08/10/2020
+
+* Ajustes de segurança nos logs
+
+= 0.5.9 = 08/09/2020
+
+* Ajustes de segurança e funções depreciadas
+
+* Ajustes no envio da palavra CORREIOS na URL de envio do código de rastreio.
+* Adicionado o parâmetro max_split_transaction, no reprocessamento do pagamento permite apenas o que foi setado no primeiro processamento.
+* Adicionado o envio do número do celular (billing_celphone) caso exista.
+* Correção no input do nome do cartão de crédito permitindo APENAS letras e espaço.
+
+= 0.5.8 = 11/05/2020
+
+* Correção bug thankyou_page com informações do pagamento do pedido.
+* Correção bug de alteração do status dos pedidos.
+* Erro na criação da parcela, PHP >= 7.3
+
+= 0.5.7 = 13/03/2020
+
+* Correção bug de envio de Código de Rastreio para Yapay com PHP >7.x 
+
+= 0.5.6 = 04/03/2020
+
+* Bug fix URL Boleto.
+* Correção das imagens das Bandeiras selecionadas na opção de cartão de crédito.
+
+= 0.5.5 = 29/02/2020
+
+* Bug fix função receitp_page
+
+= 0.5.4 = 24/02/2020
+
+* Correção Envio de Código de Rastreio do pedido
+
+= 0.5.3 = 24/02/2020
+
+* Alterar página de finalização de compra para order-received.
+* Ajustar input do ano do cartão de crédito para dois digitos, ficando MM / YY.
+* Ajuste no checkout, não será permitido digitar letras no campo de NÚMERO DO CARTÃO.
+* Ajuste no checkout, não será permitido digitar números no campo de NOME DO CARTÃO.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

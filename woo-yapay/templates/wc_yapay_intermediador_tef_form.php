@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 
-<fieldset id="wc-yapay_intermediador-tef-payment-form">
+<fieldset id="wc-yapay_intermediador-tef-payment-form" class="wc_yapay_intermediador_gateway">
     
     <input type="hidden" id="tctPaymentMethod" name="wc-yapay_intermediador-tef-payment-method" class="required-entry" value="" autocomplete="off">
     <label for="tctPaymentMethod">Selecione a bandeira do seu banco <span class="required">*</span></label>
