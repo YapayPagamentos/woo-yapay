@@ -55,7 +55,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </p>
             <p class="form-row form-row-wide">
                 <label for="wc-yapay_intermediador-cc-card-number"><?php _e( 'Número do Cartão', 'woocommerce-wc-yapay_intermediador-cc' ); ?> <span class="required">*</span></label>
-                <input id="wc-yapay_intermediador-cc-card-number" name="wc-yapay_intermediador-cc_card_number" class="input-text " type="text" maxlength="20" autocomplete="off" placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;" style="font-size: 1.5em; padding: 8px;" onkeyup="identifyCreditCardTc(this.value)" onblur="getSplits(document.getElementById('tcPaymentMethod').value)" onkeypress="somenteNumerosCartao(event,this)" />
+                <input id="wc-yapay_intermediador-cc-card-number" name="wc-yapay_intermediador-cc_card_number" class="input-text " type="text" maxlength="20" autocomplete="off" placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;" style="font-size: 1.5em; padding: 8px;"/>
             </p>
         </div>
         <div class="clear"></div>
