@@ -14,9 +14,6 @@ function getSplits() {
     return;
   }
 
-  jQuery("#wc-yapay_intermediador-cc-card-installments").html(
-    "<option value='0'>--</option>"
-  );
   jQuery.ajax({
     url: ajaxurl,
     type: "POST",
@@ -26,9 +23,12 @@ function getSplits() {
       price: jQuery("#wc-yapay_intermediador-cc-cart-total").val(),
     },
     success: function (response) {
+      jQuery("#wc-yapay_intermediador-cc-card-installments").html(
+        "<option value='0'>--</option>"
+      );
+
       jQuery("form.checkout").removeClass("processing").unblock();
       var json_response = JSON.parse(response);
-
       if (typeof json_response.splitting[0] == "object") {
         jQuery.each(json_response.splitting, function (i, splitData) {
           const show_fee = json_response.fees;
@@ -37,26 +37,28 @@ function getSplits() {
             currency: "BRL",
           });
 
+          let rate = parseFloat(splitData.split_rate);
+
+          let formatterPrice = formatter.format(splitData.value_transaction);
+
           switch (show_fee) {
-            case "not_show":
-              aditional_text = "";
+            case "show_fee_price":
+              aditional_text = ` (${formatterPrice})`;
               break;
             case "show_fee_text":
               aditional_text =
-                splitData.split_rate == "0"
-                  ? " sem juros"
-                  : (aditional_text = " com juros");
+                rate === 0 ? " sem juros" : (aditional_text = " com juros");
+              break;
+            case "show_fee_text_price":
+              aditional_text =
+                rate === 0
+                  ? ` (${formatterPrice}) sem juros`
+                  : (aditional_text = ` (${formatterPrice}) com juros`);
               break;
             default:
-              aditional_text =
-                splitData.split_rate == "0"
-                  ? " sem juros"
-                  : (aditional_text = ` (${formatter.format(
-                      splitData.value_transaction
-                    )}) com juros`);
+              aditional_text = "";
               break;
           }
-
           jQuery("#wc-yapay_intermediador-cc-card-installments").append(
             jQuery("<option>", {
               value: splitData.split,
