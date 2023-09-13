@@ -32,11 +32,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
      </ul>
-
-    <div id="cpf_yapayT" class="cpf_yapay cpf_yapay_tef" style="display: none">      
-        <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
-        <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" type="text" id="yapay_cpfT" name="yapay_cpfT" maxlength="11" required>
-    </div>
+    <?php if ($not_require_cpf == 'no') : ?>
+        <div id="cpf_yapayT" class="cpf_yapay cpf_yapay_tef" style="display: none">      
+            <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
+            <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" type="text" id="yapay_cpfT" name="yapay_cpfT" maxlength="11" required>
+        </div>
+    <?php endif; ?>
 
 
     <div class="clear"></div>

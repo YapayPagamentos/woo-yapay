@@ -94,6 +94,13 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-pix' ),
                 'default'   => 'no',
             ),
+            'not_require_cpf' => array(
+                'title'     => __('Não exibir campo de CPF', 'wc-yapay_intermediador-cc'),
+                'label'     => __('Não exibir campo de CPF no checkout para compras realizadas com o CNPJ', 'wc-yapay_intermediador-cc'),
+                'type'      => 'checkbox',
+                'description' => __('Atenção! Para marcar essa opção é necessário entrar em contato com o suporte da Vindi previamente', 'wc-yapay_intermediador-cc'),
+                'default'   => 'no',
+            ),
             'show_icon' => array(
                 'title'     => __( 'Mostrar ícone no checkout', 'wc-yapay_intermediador-cc' ),
                 'label'     => __( 'Ativar ícone', 'wc-yapay_intermediador-cc' ),
@@ -142,7 +149,8 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         
         wc_get_template( $this->id.'_form.php', array(
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
-                'payment_methods'      => $this->get_option("payment_methods")
+                'payment_methods'      => $this->get_option("payment_methods"),
+                'not_require_cpf'      => $this->get_option("not_require_cpf")
         ), 'woocommerce/'.$this->id.'/', plugin_dir_path( __FILE__ ) . 'templates/' );
     }
     
@@ -185,27 +193,16 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
-        if ( isset( $_POST["billing_persontype"] ) && $_POST["billing_persontype"] == 2 ) {
+        if ( !isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2 ) {
             $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
             $params["customer[company_name]"] = $_POST["billing_company"];
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
 
-            if ( ! isset( $_POST["yapay_cpfP"] ) || $_POST["yapay_cpfP"] == "" ) {
-                wc_add_notice(  "O campo CPF é obrigatório!", "error" );
-                return;
-            }
-
-            $params["customer[cpf]"] = $_POST["yapay_cpfP"];
-            
-        } else {
-            if (($_POST["billing_persontype"] == NULL) AND ($_POST["billing_cpf"] == NULL) ) {
+            if (isset( $_POST["yapay_cpfP"]) && $_POST["yapay_cpfP"] !== "" ) {
                 $params["customer[cpf]"] = $_POST["yapay_cpfP"];
-                $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
-                $params["customer[company_name]"] = $_POST["billing_company"];
-                $params["customer[cnpj]"] = $_POST["billing_cnpj"];
-            } 
-        }
-        
+            }
+        } 
+
 
         $params["customer[inscricao_municipal]"] = "";
         $params["customer[email]"] = $_POST["billing_email"];
