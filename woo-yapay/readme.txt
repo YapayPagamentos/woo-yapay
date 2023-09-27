@@ -3,7 +3,7 @@ Contributors: Integração Yapay, aguiart0, apiki
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 6.3
-Stable tag: 0.6.6
+Stable tag: 0.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,12 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 2. Página de configuração do plugin
 
 == Changelog ==
+
+= 0.6.7 = 13/09/2023
+
+* Fix: Utilização das mascaras e identificação de bandeiras em dispositivos mobile
+* Feat: Foi adicionado a opção do lojista exigir o CPF no checkout para compras com CNPJ.
+* Fix: Exibição do texto de parcelas do checkout.
 
 = 0.6.6 = 21/07/2023
 

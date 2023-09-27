@@ -97,6 +97,13 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
                 'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-tef' ),
                 'default'   => 'no',
             ),
+            'not_require_cpf' => array(
+                'title'     => __('Não exibir campo de CPF', 'wc-yapay_intermediador-cc'),
+                'label'     => __('Não exibir campo de CPF no checkout para compras realizadas com o CNPJ', 'wc-yapay_intermediador-cc'),
+                'type'      => 'checkbox',
+                'description' => __('Atenção! Para marcar essa opção é necessário entrar em contato com o suporte da Vindi previamente', 'wc-yapay_intermediador-cc'),
+                'default'   => 'no',
+            ),
             'show_icon' => array(
                 'title'     => __( 'Mostrar ícone no checkout', 'wc-yapay_intermediador-cc' ),
                 'label'     => __( 'Ativar ícone', 'wc-yapay_intermediador-cc' ),
@@ -145,7 +152,8 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         
         wc_get_template( $this->id.'_form.php', array(
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
-                'payment_methods'      => $this->get_option("payment_methods")
+                'payment_methods'      => $this->get_option("payment_methods"),
+                'not_require_cpf'          => $this->get_option("not_require_cpf")
         ), 'woocommerce/'.$this->id.'/', plugin_dir_path( __FILE__ ) . 'templates/' );
     }
     
@@ -184,28 +192,18 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         
        
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.6";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.7";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
-        if ($_POST["billing_persontype"] == 2) {
+        if (!isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2 ) {
             $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
             $params["customer[company_name]"] = $_POST["billing_company"];
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
 
-            if ($_POST["yapay_cpfT"] == "") {
-                $params["customer[cpf]"] = $_POST["billing_cpf"];
-            }
-            else {
+            if ($_POST["yapay_cpfT"] !== "" ) {
                 $params["customer[cpf]"] = $_POST["yapay_cpfT"];
             }
-        } else {
-            if (($_POST["billing_persontype"] == NULL) AND ($_POST["billing_cpf"] == NULL) ) {
-                $params["customer[cpf]"] = $_POST["yapay_cpfT"];
-                $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
-                $params["customer[company_name]"] = $_POST["billing_company"];
-                $params["customer[cnpj]"] = $_POST["billing_cnpj"];
-            } 
         }
 
 
