@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 }
         ?>
         <li class="tcPaymentMethod">
-            <img src="<?php echo $url_images.$imgSrc; ?>-flag.svg" class="tcPaymentFlag" id="tctPaymentFlag<?php echo $idTcPayment;?>" onclick="selectTefTc('<?php echo $idTcPayment;?>')">
+            <img src="<?php echo $url_images.$imgSrc; ?>-flag.svg" class="tcPaymentFlag" id="tctPaymentFlag<?php echo $idTcPayment;?>">
         </li>
 
         <?php
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <?php if ($not_require_cpf == 'no') : ?>
         <div id="cpf_yapayT" class="cpf_yapay cpf_yapay_tef" style="display: none">      
             <label>CPF<strong style="color: red;">*</strong> (somente números)</label>
-            <input type="text" class="input-text yapay_cpf" onkeyup="somenteNumeros(this)" type="text" id="yapay_cpfT" name="yapay_cpfT" maxlength="11" required>
+            <input type="text" class="input-text yapay_cpf" type="text" id="yapay_cpfT" name="yapay_cpfT"  required>
         </div>
     <?php endif; ?>
 

@@ -19,6 +19,7 @@ class Credit
         this.setDateMask();
         this.setCvvMask();
         this.setOwnerMask();
+        this.setCpfMask();
     }
     
     setCardMask() {
@@ -41,6 +42,17 @@ class Credit
           };
           IMask(date, mask);
         }
+    }
+
+    setCpfMask() {
+        const fields = document.querySelectorAll(".yapay_cpf");
+        fields.forEach(element => {
+            var mask = {
+                mask: '000.000.000-00'
+            };
+
+            IMask(element, mask);
+        });
     }
     
     setCvvMask() {

@@ -101,7 +101,7 @@ if (!defined('ABSPATH')) {
         <?php if ($not_require_cpf == 'no') : ?>
             <div id="cpf_yapayC" class="cpf_yapay cpf_yapay_cc" style="display: none; ">
                 <label>CPF titular cartão<strong style="color: red;">*</strong> (somente números)</label>
-                <input type="text" class="input-text yapay_cpf" type="text" id="yapay_cpfC" name="yapay_cpfC" maxlength="11" required>
+                <input type="text" class="input-text yapay_cpf" type="text" id="yapay_cpfC" name="yapay_cpfC"  required>
             </div>
         <?php endif; ?>
 
