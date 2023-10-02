@@ -167,3 +167,7 @@ ul li img.tcPaymentFlag:hover{
     float: right;
     max-height: 1.618em;
 }
+
+#wc-yapay_intermediador-cc-card-holder-name {
+    text-transform: uppercase;
+}
