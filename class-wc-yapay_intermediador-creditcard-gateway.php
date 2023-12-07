@@ -265,10 +265,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             $params["token_account"] = $this->get_option("token_account");
             $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.6.7";
             $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
-
-            if($_POST["billing_persontype"] == 1){
-                $params["customer[cpf]"] = $_POST["billing_cpf"];
-            }
+			$params["customer[cpf]"] = $_POST["billing_cpf"];
 
             if (!isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2) {
                 $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
