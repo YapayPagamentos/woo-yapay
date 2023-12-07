@@ -10,7 +10,7 @@ if ( class_exists( 'WC_Yapay_Intermediador_Pix_Gateway' ) ) return;
  * WooCommerce Yapay Intermediador main class.
  */
 class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
-    
+
     function __construct() {
 
         $version = "0.1.0";
@@ -31,7 +31,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "pix-flag.svg";
         }
 
-        // Bool. Can be set to true if you want payment fields to show on the checkout 
+        // Bool. Can be set to true if you want payment fields to show on the checkout
         // if doing a direct integration, which we are doing in this case
         $this->has_fields = true;
 
@@ -56,16 +56,16 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         if ( is_admin() ) {
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-        }       
-    } 
-    
+        }
+    }
+
     // Build the administration fields for this specific Gateway
     public function init_form_fields() {
         add_thickbox();
         $payment_methods = array();
-        
+
         $payment_methods["27"] = "Pix";
-        
+
         $this->form_fields = array(
             'enabled' => array(
                 'title'     => __( 'Ativar / Desativar', 'wc-yapay_intermediador-pix' ),
@@ -137,23 +137,23 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             'consumer_secret' => array(
                 'type'      => 'hidden'
             )
-        );      
+        );
     }
-    
+
     public function payment_fields() {
         global $woocommerce;
-        
+
         if ( $description = $this->get_description() ) {
                 echo wpautop( wptexturize( $description ) );
         }
-        
+
         wc_get_template( $this->id.'_form.php', array(
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
                 'payment_methods'      => $this->get_option("payment_methods"),
                 'not_require_cpf'      => $this->get_option("not_require_cpf")
         ), 'woocommerce/'.$this->id.'/', plugin_dir_path( __FILE__ ) . 'templates/' );
     }
-    
+
     public function add_error( $messages ) {
         global $woocommerce;
 
@@ -170,7 +170,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             }
         }
     }
-    
+
     /**
     * Get WooCommerce return URL.
     *
@@ -179,15 +179,15 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
     public function get_wc_request_url($order_id) {
         return get_site_url()."/?wc_yapay_intermediador_notification=1&order_id=$order_id";
     }
-        
+
     public function process_payment( $order_id ) {
         global $woocommerce;
 
         include_once("includes/class-wc-yapay_intermediador-request.php");
-        
+
         $order = new WC_Order( $order_id );
-        
-       
+
+
         $params["token_account"] = $this->get_option("token_account");
 		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.7";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
@@ -201,14 +201,14 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             if (isset( $_POST["yapay_cpfP"]) && $_POST["yapay_cpfP"] !== "" ) {
                 $params["customer[cpf]"] = $_POST["yapay_cpfP"];
             }
-        } 
+        }
 
 
         $params["customer[inscricao_municipal]"] = "";
         $params["customer[email]"] = $_POST["billing_email"];
         $params["customer[contacts][][type_contact]"] = "H";
         $params["customer[contacts][][number_contact]"] = $_POST["billing_phone"];
-        
+
         $params["customer[addresses][0][type_address]"] = "B";
         $params["customer[addresses][0][postal_code]"] = $_POST["billing_postcode"];
         $params["customer[addresses][0][street]"] = $_POST["billing_address_1"];
@@ -217,7 +217,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $params["customer[addresses][0][completion]"] = $_POST["billing_address_2"];
         $params["customer[addresses][0][city]"] = $_POST["billing_city"];
         $params["customer[addresses][0][state]"] = $_POST["billing_state"];
-        
+
         if (isset($_POST["ship_to_different_address"])){
             if ($_POST["ship_to_different_address"]){
                 $params["customer[addresses][1][type_address]"] = "D";
@@ -248,33 +248,33 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $params["customer[addresses][1][city]"] = $_POST["billing_city"];
             $params["customer[addresses][1][state]"] = $_POST["billing_state"];
         }
-        
+
         if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
           $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
         }
 
-        $params["transaction[customer_ip]"] = $_SERVER['REMOTE_ADDR'];        
+        $params["transaction[customer_ip]"] = $_SERVER['REMOTE_ADDR'];
 
         $params["transaction[order_number]"] = $this->get_option("prefixo").$order_id;
         $shippingData = $order->get_shipping_methods();
         $shipping_type = "";
-        foreach ($shippingData as $shipping){            
+        foreach ($shippingData as $shipping){
             $shipping_type .= $shipping["name"];
             if(count($shippingData) > 1){
                 $shipping_type .= " / ";
             }
         }
-        
+
         if($shipping_type != ""){
             $params["transaction[shipping_type]"] = $shipping_type;
             $params["transaction[shipping_price]"] = $order->order_shipping;
         }
-        
+
         $discount = 0;
         $fee      = 0;
 
         if (count($order->get_items('fee')) > 0) {
-    
+
             foreach( $order->get_items('fee') as $item_id => $item_fee ){
                 $fee_total = floatval( $item_fee->get_total() );
 
@@ -284,7 +284,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                     $discount += $fee_total * -1;
                 }
             }
-        } 
+        }
 
         $discount += floatval( $order->discount_total );
 
@@ -295,11 +295,11 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         if ( $fee > 0 ) {
             $params["transaction[fee]"] = $fee;
         }
-        
+
 
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
         $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
-        
+
         if ( 0 < sizeof( $order->get_items() ) ) {
             $i = 0;
             foreach ($order->get_items() as $product) {
@@ -310,12 +310,12 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 $i++;
             }
         }
-        
+
         $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-pix-payment-method"];
         $params["payment[split]"] = "1";
-        
+
         $tcRequest = new WC_Yapay_Intermediador_Request();
-        
+
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
 
         if($tcResponse->message_response->message == "success"){
@@ -329,19 +329,19 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $transactionParams["qrcode_path"]          = (string)$tcResponse->data_response->transaction->payment->qrcode_path;
             $transactionParams["qrcode_original_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_original_path;
 
-            $result = update_post_meta( $order_id, 'yapay_transaction_data', serialize( $transactionParams ) );
+            $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
 
             if ( $result ) {
                 $log = new WC_Logger();
-                $log->add( 
-                    "yapay-intermediador-transactions-save-", 
-                    "YAPAY NEW TRANSACTION SAVE : \n" . 
-                    print_r( $transactionParams, true ) ."\n\n" 
+                $log->add(
+                    "yapay-intermediador-transactions-save-",
+                    "YAPAY NEW TRANSACTION SAVE : \n" .
+                    print_r( $transactionParams, true ) ."\n\n"
                 );
             }
 
             $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | PIX copia e cola: ". $transactionParams["qrcode_original_path"] );
-            
+
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
             } else {
@@ -372,8 +372,8 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $this->add_error($errors);
         }
     }
-    
-    public function validate_fields() { 
+
+    public function validate_fields() {
         $errors = array();
         if($_POST["wc-yapay_intermediador-pix-payment-method"] == ""){
             $errors[] = "<strong>Tipo de Transferência</strong> não selecionada";
@@ -381,9 +381,9 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         if (count($errors)){
             $this->add_error($errors);
         }
-        return true; 
+        return true;
     }
-    
+
     public function thankyou_page( $order_id ) {
         global $woocommerce;
 
@@ -393,9 +393,9 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $html  = "";
         $html .= "<ul class='order_details'>";
         $html .= "<li>";
-        $html .= "<br><br>";                
+        $html .= "<br><br>";
 
-        $data = get_post_meta( $order_id, 'yapay_transaction_data', true );
+        $data = $order->get_meta('yapay_transaction_data', true);
 
         if ( is_serialized( $data ) ) {
             $data = unserialize( $data );
@@ -435,25 +435,25 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
                 <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
-                    <strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong> 
+                    <strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong>
                 </div>
             </div>
             ";
         }
 
         echo $html;
-        
+
     }
 
 
-    public function add_yapay_order_details( $order ) 
+    public function add_yapay_order_details( $order )
     {
         if ( array_intersect( [ 'wc_yapay_intermediador_pix' ], [ $order->get_payment_method() ] ) ) {
 
             $order_id = $order->get_id();
 
             $dados = $this->get_meta_data( $order_id );
-            
+
             extract($dados);
             ob_start();
 
@@ -465,9 +465,11 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         }
     }
 
-    private function get_meta_data( $order )
+    private function get_meta_data( $order_id )
     {
-        $data = get_post_meta( $order, 'yapay_transaction_data', true );
+		$order = wc_get_order($order_id);
+        $data = $order->get_meta('yapay_transaction_data', true);
+
         if ( is_serialized( $data ) ) {
             $data = unserialize( $data );
             if ( isset( $data['transaction_id'] ) && $data['transaction_id'] ) {

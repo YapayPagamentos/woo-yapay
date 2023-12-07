@@ -33,7 +33,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             $this->icon = plugins_url('woo-yapay/assets/images/', plugin_dir_path(__FILE__)) . "boleto-flag.svg";
         }
 
-        // Bool. Can be set to true if you want payment fields to show on the checkout 
+        // Bool. Can be set to true if you want payment fields to show on the checkout
         // if doing a direct integration, which we are doing in this case
         $this->has_fields = true;
 
@@ -317,7 +317,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             $transactionParams["typeful_line"]      = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
 
 
-            $result = update_post_meta($order_id, 'yapay_transaction_data', serialize($transactionParams));
+            $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
 
             if ($result) {
                 $log = new WC_Logger();
@@ -371,7 +371,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
         global $woocommerce;
 
         $order = new WC_Order($order_id);
-        $data  = get_post_meta($order_id, 'yapay_transaction_data', true);
+        $data  = $order->get_meta('yapay_transaction_data', true);
 
 
         if (is_serialized($data)) {
@@ -404,7 +404,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
                 <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
-                    <strong style='color: red'>Ocorreu um erro na geração do Boleto Bancário. Entre em contato com o administrador da Loja</strong> 
+                    <strong style='color: red'>Ocorreu um erro na geração do Boleto Bancário. Entre em contato com o administrador da Loja</strong>
                 </div>
             </div>
             ";
@@ -433,9 +433,11 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
     }
 
 
-    private function get_meta_data($order)
+    private function get_meta_data($order_id)
     {
-        $data = get_post_meta($order, 'yapay_transaction_data', true);
+		$order = wc_get_order($order_id);
+        $data = $order->get_meta('yapay_transaction_data', true);
+
         if (is_serialized($data)) {
             $data = unserialize($data);
             if (isset($data['transaction_id']) && $data['transaction_id']) {

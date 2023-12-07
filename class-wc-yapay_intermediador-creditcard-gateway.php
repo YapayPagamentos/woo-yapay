@@ -33,7 +33,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 $this->icon = plugins_url('woo-yapay/assets/images/', plugin_dir_path(__FILE__)) . "cc-flag.svg";
             }
 
-            // Bool. Can be set to true if you want payment fields to show on the checkout 
+            // Bool. Can be set to true if you want payment fields to show on the checkout
             // if doing a direct integration, which we are doing in this case
             $this->has_fields = true;
 
@@ -426,7 +426,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 $transactionParams["payment_method"]    = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
                 $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
 
-                $result = update_post_meta($order_id, 'yapay_transaction_data', serialize($transactionParams));
+                $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
 
                 if ($result) {
                     $log = new WC_Logger();
@@ -549,7 +549,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             include_once("includes/class-wc-yapay_intermediador-request.php");
             $tcRequest = new WC_Yapay_Intermediador_Request();
 
-            $data = get_post_meta($order_id, 'yapay_transaction_data', true);
+            $data = $order->get_meta($order_id, 'yapay_transaction_data', true);
 
             if (is_serialized($data)) {
                 $data = unserialize($data);
@@ -614,7 +614,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
                 <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
-                    <strong style='color: red'>Ocorreu um erro na geração da cobrança de crédito. Entre em contato com o administrador da Loja</strong> 
+                    <strong style='color: red'>Ocorreu um erro na geração da cobrança de crédito. Entre em contato com o administrador da Loja</strong>
                 </div>
             </div>
             ";
