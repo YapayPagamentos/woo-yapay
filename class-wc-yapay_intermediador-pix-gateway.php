@@ -408,7 +408,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                             <span>Pix Copia e Cola</span>
                             <div style='display: flex; align-items: center;'>
                                 <input style='width: 100%' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."' />
-                                <a class='copiaCola' onClick='copiarTexto()'>
+                                <a class='copiaCola' id='copiaCola'>
                                     <img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' />
                                 </a>
                             </div>

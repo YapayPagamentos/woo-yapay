@@ -65,7 +65,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             wp_enqueue_script('yapay_intermediador-imask', 'https://cdnjs.cloudflare.com/ajax/libs/imask/7.1.3/imask.min.js', array(), $version, true);
 
             wp_enqueue_style('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/css/styles.css', plugin_dir_path(__FILE__)), array(), $version);
-            wp_enqueue_script('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/js/index.js', plugin_dir_path(__FILE__)), array('yapay_intermediador', 'jquery'), $version, true);
+            wp_enqueue_script('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/js/index.js', plugin_dir_path(__FILE__)), array('jquery'), $version, true);
             wp_enqueue_script('yapay_intermediador-checkout-credit', plugins_url('woo-yapay/assets/js/credit.js', plugin_dir_path(__FILE__)), array('yapay_intermediador-imask', 'jquery'), $version, true);
 
         } // End __construct()

@@ -131,10 +131,23 @@ jQuery(document).ready(function () {
   });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.querySelector("#copiaCola");
+  const text = document.querySelector("#linhaDigitavel");
 
-function copiarTexto() {
-  var textoCopiado = document.getElementById("linhaDigitavel");
-  textoCopiado.select();
-  document.execCommand("copy");
-  document.getElementById("linhaDigitavel").blur();
-}
+  if (button && text) {
+    button.addEventListener('click', () => {
+      const line = text.value;
+      text.select();
+
+      document.execCommand("copy");
+      text.blur();
+      text.value = 'Texto Copiado!'
+
+      setInterval(() => {
+        text.value = line;
+      }, 500)
+    })
+  }
+
+})
