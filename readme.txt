@@ -2,8 +2,8 @@
 Contributors: Integração Yapay, aguiart0, apiki
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
-Tested up to: 6.3
-Stable tag: 0.6.7
+Tested up to: 6.4
+Stable tag: 0.6.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,14 +13,14 @@ O [Yapay Intermediador](https://www.yapay.com.br/) é um facilitador de pagament
 
 ### Plugin de Integração Yapay Intermediador - WooCommerce ###
 
-Yapay Intermediador is a payment facilitator that offers benefits to merchants and buyers. Focused on practicality and conversion, enables virtual stores offer many payments possibilites, no need contracts with financial operators. 
- 
-This module is able to do the integration with the Payment API of the Yapay Intermediador. In this case, the consumer isn't redirect to Yapay Intermediador environment. Every steps of the payment are made in the WooCommerce Checkout. 
+Yapay Intermediador is a payment facilitator that offers benefits to merchants and buyers. Focused on practicality and conversion, enables virtual stores offer many payments possibilites, no need contracts with financial operators.
+
+This module is able to do the integration with the Payment API of the Yapay Intermediador. In this case, the consumer isn't redirect to Yapay Intermediador environment. Every steps of the payment are made in the WooCommerce Checkout.
 
 ### Descrição em Português: ###
- 
-O Yapay Intermediador é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores. Focado em praticidade e conversão, possibilita que as lojas virtuais ofereçam diversas formas de pagamento, sem burocracia ou necessidade de contrato com operadoras financeiras. 
- 
+
+O Yapay Intermediador é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores. Focado em praticidade e conversão, possibilita que as lojas virtuais ofereçam diversas formas de pagamento, sem burocracia ou necessidade de contrato com operadoras financeiras.
+
 Este módulo é capaz de fazer a integração com a API do pagamento do Yapay Intermediador. Neste caso, o consumidor não é redirecionar para ambiente Yapay Intermediador. Todos os passos de o pagamento são feito no Checkout WooCommerce.
 
 
@@ -51,6 +51,12 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 2. Página de configuração do plugin
 
 == Changelog ==
+
+= 0.6.8 = 07/12/2023
+
+* Feat: Adaptação do plugin para o nova estrutura de banco de dados do WooCommerce(HPOS)
+* Fix: Bug de CPF não preenchido para compras com Cartão de Crédito
+* Fix: Erro de Javascript no console e interferência na aplicação das máscaras de campos
 
 = 0.6.7 = 13/09/2023
 
@@ -116,7 +122,7 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 = 0.5.7 = 13/03/2020
 
-* Correção bug de envio de Código de Rastreio para Yapay com PHP >7.x 
+* Correção bug de envio de Código de Rastreio para Yapay com PHP >7.x
 
 = 0.5.6 = 04/03/2020
 
