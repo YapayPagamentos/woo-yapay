@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.6.7
+ * Version: 0.6.8
  * Text Domain: woo-yapay
  */
 
@@ -19,9 +19,9 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'wc_gateway_ya
 
 
 function wc_gateway_yapay_intermediador_init() {
-    
+
     if ( ! class_exists( 'WC_Payment_Gateway' ) ) return;
-    
+
     // If we made it this far, then include our Gateway Class
     include_once( 'class-wc-yapay_intermediador-creditcard-gateway.php' );
     include_once( 'class-wc-yapay_intermediador-bankslip-gateway.php' );
@@ -57,13 +57,13 @@ function wc_gateway_yapay_intermediador_action_links( $links ) {
 }
 
 function get_splits() {
-    
+
     // Define a variável ajaxurl
     $script  = '<script>';
     $script .= 'var ajaxurl = "' . admin_url('admin-ajax.php') . '";';
     $script .= '</script>';
     echo $script;
-    
+
 }
 
 add_action( 'wp_footer', 'get_splits' );
@@ -81,7 +81,7 @@ function tc_get_splits() {
     $qs = intval($tcConfig->get_option("max_qtd_split"));
     $vs = floatval($tcConfig->get_option("min_value_split"));
     $fee = $tcConfig->get_option('show_installments_fees');
-        
+
     $tcRequest = new WC_Yapay_Intermediador_Request();
 
     $params["token_account"] = $token_account;
@@ -126,7 +126,7 @@ function wc_yapay_intermediador_template_redirect_intercept() {
     if( $wp_query->get('wc_yapay_intermediador') ) {
         include_once("includes/class-wc-yapay_intermediador-request.php");
         include_once("includes/class-wc-yapay_intermediador-auth.php");
-        
+
         $code = $_GET['code'];
         $customerKey = $_GET['CK'];
         $customerSecret = $_GET['CS'];
@@ -136,12 +136,12 @@ function wc_yapay_intermediador_template_redirect_intercept() {
         $tcAuth = new WC_Yapay_Intermediador_Auth();
 
         $tcAuth->doAuthorization( $customerKey, $customerSecret, $code, $environment);
-        
+
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $params["access_token"] = $tcAuth->access_token;
         $params["url"] = get_site_url();
-        
+
         $tcResponse = $tcRequest->requestData("v1/people/update",$params,$environment);
 
         if($tcResponse->message_response->message == "success"){
@@ -172,23 +172,23 @@ function wc_yapay_intermediador_template_redirect_intercept() {
 add_action( 'template_redirect', 'wc_yapay_intermediador_notification' );
 function wc_yapay_intermediador_notification() {
     global $wp_query;
-        
-    if( $wp_query->get( 'wc_yapay_intermediador_notification' ) && isset( $_GET['wc_yapay_intermediador_notification'] ) ) {  
-        
+
+    if( $wp_query->get( 'wc_yapay_intermediador_notification' ) && isset( $_GET['wc_yapay_intermediador_notification'] ) ) {
+
         $order_id = $_GET['order_id'];
 
         $log = new WC_Logger();
-        $log->add( 
-            "yapay-intermediador-notification", 
-            "YAPAY NEW NOTIFICATION : \n" . 
-            "ORDER ID: ". print_r( $order_id, true ) ."\n\n" 
+        $log->add(
+            "yapay-intermediador-notification",
+            "YAPAY NEW NOTIFICATION : \n" .
+            "ORDER ID: ". print_r( $order_id, true ) ."\n\n"
         );
-        
+
         include_once( "includes/class-wc-yapay_intermediador-request.php" );
-        
+
         $order = new WC_Order( $order_id );
-        
-        $tcTransaction = unserialize( get_post_meta( $order_id, "yapay_transaction_data", true ) );
+
+        $tcTransaction = unserialize( $order->get_meta("yapay_transaction_data", true));
 
         if ( is_array( $tcTransaction ) && ! empty( $tcTransaction ) ) {
 
@@ -202,56 +202,55 @@ function wc_yapay_intermediador_notification() {
                 case "wc_yapay_intermediador_pix": $tcPayment = new WC_Yapay_Intermediador_Pix_Gateway(); break;
                 default: $tcPayment                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
             }
-            
+
             $tcRequest = new WC_Yapay_Intermediador_Request();
 
             $params["token_transaction"] = $tcTransaction['token_transaction'];
             $params["token_account"]     = $tcPayment->get_option("token_account");
-            
+
             $tcResponse = $tcRequest->requestData( "v2/transactions/get_by_token", $params,$tcPayment->get_option( "environment" ) );
 
-            $log->add( 
-                "yapay-intermediador-notification", 
-                "YAPAY NEW NOTIFICATION : \n" . 
-                "REQUEST: ". print_r( $tcResponse, true ) ."\n\n" 
+            $log->add(
+                "yapay-intermediador-notification",
+                "YAPAY NEW NOTIFICATION : \n" .
+                "REQUEST: ". print_r( $tcResponse, true ) ."\n\n"
             );
-            
+
             if ( $tcResponse->message_response->message == "success" ) {
 
                 $codeStatus = intval( $tcResponse->data_response->transaction->status_id );
                 $comment    = $codeStatus . ' - ' . $tcResponse->data_response->transaction->status_name;
-                
 
                 switch ( $codeStatus ) {
-                    case 4: 
-                    case 5: 
-                    case 88: 
+                    case 4:
+                    case 5:
+                    case 88:
                             if($order->get_status() != "on-hold"){
                                 $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
                             }else{
                                 $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
                             }
                         break;
-                    case 6 : 
+                    case 6 :
                             $order->add_order_note( 'Yapay Intermediador - Aprovado. Pagamento confirmado automaticamente.' );
                             $order->payment_complete();
                         break;
-                    case 24 : 
+                    case 24 :
                             if($order->get_status() != "on-hold"){
                                 $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
                             }else{
                                 $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
                             }
                         break;
-                    case 7 : 
-                    case 89 :  
+                    case 7 :
+                    case 89 :
                             if($order->get_status() != "cancelled"){
                                 $order->update_status( 'cancelled', 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback). | ' );
                             }else{
                                 $order->add_order_note( 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback).'  );
                             }
                         break;
-                    case 87 :  
+                    case 87 :
                             if($order->get_status() != "on-hold"){
                                 $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
                             }else{
@@ -262,11 +261,11 @@ function wc_yapay_intermediador_notification() {
 
                 $message = "Status do pedido " . $order->get_id() ." alterado: " . $comment . ". Transação: " .$tcResponse->data_response->transaction->transaction_id." ! ";
                 echo $message;
-                
-                $log->add( 
-                    "yapay-intermediador-notification", 
-                    "YAPAY NEW NOTIFICATION : \n" . 
-                    "STATUS: ".print_r( $message, true ) ."\n\n" 
+
+                $log->add(
+                    "yapay-intermediador-notification",
+                    "YAPAY NEW NOTIFICATION : \n" .
+                    "STATUS: ".print_r( $message, true ) ."\n\n"
                 );
 
             } else {
@@ -297,17 +296,17 @@ function wc_yapay_intermediador_add_rewrite_rules() {
             'wc_yapay_intermediador_redirect_auth/([^/]+)/?',
             'index.php?wc_yapay_intermediador_redirect_auth=1',
             'top' );
-    
+
     add_rewrite_rule(
             'wc_yapay_intermediador_notification/([^/]+)/?',
             'index.php?wc_yapay_intermediador_notification=1',
             'top' );
-    
+
     add_rewrite_rule(
             'wc_yapay_intermediador_log/([^/]+)/?',
             'index.php?wc_yapay_intermediador_log=1',
             'top' );
-    
+
 }
 
 add_action( 'init', 'wc_yapay_intermediador_rewrites_init' );
@@ -317,7 +316,7 @@ function wc_yapay_intermediador_rewrites_init() {
 	add_rewrite_tag( '%wc_yapay_intermediador_redirect_auth%', '([0-9]+)' );
 	add_rewrite_tag( '%wc_yapay_intermediador_notification%', '([0-9]+)' );
 	add_rewrite_tag( '%wc_yapay_intermediador_log%', '([0-9]+)' );
-    
+
 
 	wc_yapay_intermediador_add_rewrite_rules();
 }
@@ -341,23 +340,24 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
     function mv_add_other_fields_for_packaging()
     {
         global $post;
+		$order = wc_get_order($post->ID);
 
         if ($post->post_status != 'wc-pending') {
-            $meta_field_data = get_post_meta( $post->ID, '_my_field_slug', true ) ? get_post_meta( $post->ID, '_my_field_slug', true ) : '';
-            $urlRastreio = get_post_meta( $post->ID, '_url_rastreio_yapay', true ) ? get_post_meta( $post->ID, '_url_rastreio_yapay', true ) : '';
+            $meta_field_data = $order->get_meta('_my_field_slug', true) ? $order->get_meta('_my_field_slug', true) : '';
+            $urlRastreio = $order->get_meta('_url_rastreio_yapay', true) ? $order->get_meta('_url_rastreio_yapay', true) : '';
 
             echo '
                 <div id="RastreioYapay" class="listaRastreioYapay">
                     <ul id="list">
                         <li>' . $meta_field_data . '  </li>
                     </ul>
-                
+
                     <input type="hidden" name="mv_other_meta_field_nonce" value="' . wp_create_nonce() . '">
                     <p style="border-bottom:solid 1px #eee;padding-bottom:15px;">
                     <p>Enviar código de rastreio:</p>
                         <span class="textRateio">Código<strong>*</strong>: </span><input type="text" id="inputYapayRastreio" maxlength="45" style="width:250px;" onkeyup="onkeyupYapay()" name="wp_woocommerce_rastreio">
 
-                        
+
                     </p>
                     <p>
                         <span class="textRateio">URL Transp.: </span><input type="text" id="inputYapayRastreioURL" onkeyup="onkeyupYapay()" maxlength="255" style="width:250px;" name="wp_woocommerce_rastreio" >
@@ -372,10 +372,10 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
                     <p><strong>Observação:</strong> É importante enviar a URL da Transportadora.</p>
                 </div>
                 ';
-                   
+
         }
         else {
-            echo 'Status não permite envio de código de rastreio'; 
+            echo 'Status não permite envio de código de rastreio';
         }
     }
 }
@@ -387,8 +387,8 @@ if ( ! function_exists( 'mv_add_other_fields_for_packaging' ) )
 function sendRastreioYapay() {
     $order_id = $_POST['order_id'];
     $code     = $_POST['code'];
-    
-    if ((strtolower($_POST["url"]) == "correios") OR (strtolower($_POST["url"]) == "correio") OR 
+
+    if ((strtolower($_POST["url"]) == "correios") OR (strtolower($_POST["url"]) == "correio") OR
         (strtolower($_POST["url"]) == "correios-sedex") OR (strtolower($_POST["url"]) == "correios-pac")) {
             $url = "http://www2.correios.com.br/sistemas/rastreamento/";
     } else {
@@ -400,7 +400,7 @@ function sendRastreioYapay() {
     include_once("includes/class-wc-yapay_intermediador-request.php");
 
     $paymentOrder = method_exists($order, 'get_payment_method') ? $order->get_payment_method() : $order->payment_method;
-    
+
     switch ($paymentOrder) {
         case "wc_yapay_intermediador_bs": $tcConfig  = new WC_Yapay_Intermediador_Bankslip_Gateway(); break;
         case "wc_yapay_intermediador_cc": $tcConfig  = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
@@ -409,29 +409,29 @@ function sendRastreioYapay() {
         default: $tcConfig                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
     }
 
-    $tcTransaction = unserialize(get_post_meta($order_id, "yapay_transaction_data", true));
+    $tcTransaction = unserialize($order->get_meta("yapay_transaction_data", true));
 
     if ($tcTransaction && is_array($tcTransaction)) {
         $token_transaction = $tcTransaction['token_transaction'];
         $idTransacao       = $tcTransaction['transaction_id'];
-    
+
         $token_account = $tcConfig->get_option( "token_account" );
         $environment   = $tcConfig->get_option( "environment" );
-    
+
         $params["token_account"]     = $token_account;
         $params["id"]                = $idTransacao;
         $params["transaction_token"] = $token_transaction;
         $params["code"]              = $code;
         $params["url"]               = $url;
         $params["posted_date"]       = time();
-        
-        $tcRequest = new WC_Yapay_Intermediador_Request();        
+
+        $tcRequest = new WC_Yapay_Intermediador_Request();
         $tcResponse = $tcRequest->requestData( "v3/sales/trace", $params, $environment );
-    
+
         $order->add_order_note( 'Enviado para Yapay o código de rastreio: ' . $code );
-    
-        update_post_meta( $order_id, '_my_field_slug', $_POST[ 'code' ] );
-        update_post_meta( $order_id, 'urlRastreio', $_POST[ 'url' ] );
+
+        $order->update_meta_data('_my_field_slug', $_POST['code']);
+		$order->update_meta_data('urlRastreio', $_POST['url'] );
     }
 }
 

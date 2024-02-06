@@ -33,7 +33,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 $this->icon = plugins_url('woo-yapay/assets/images/', plugin_dir_path(__FILE__)) . "cc-flag.svg";
             }
 
-            // Bool. Can be set to true if you want payment fields to show on the checkout 
+            // Bool. Can be set to true if you want payment fields to show on the checkout
             // if doing a direct integration, which we are doing in this case
             $this->has_fields = true;
 
@@ -62,8 +62,12 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
             }
 
+            wp_enqueue_script('yapay_intermediador-imask', 'https://cdnjs.cloudflare.com/ajax/libs/imask/7.1.3/imask.min.js', array(), $version, true);
+
             wp_enqueue_style('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/css/styles.css', plugin_dir_path(__FILE__)), array(), $version);
-            wp_enqueue_script('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/js/yapay_intermediador.js', plugin_dir_path(__FILE__)), array(), $version, true);
+            wp_enqueue_script('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/js/index.js', plugin_dir_path(__FILE__)), array('jquery'), $version, true);
+            wp_enqueue_script('yapay_intermediador-checkout-credit', plugins_url('woo-yapay/assets/js/credit.js', plugin_dir_path(__FILE__)), array('yapay_intermediador-imask', 'jquery'), $version, true);
+
         } // End __construct()
 
         // Build the administration fields for this specific Gateway
@@ -259,12 +263,9 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             $params["finger_print"] = $_POST["finger_print"];
 
             $params["token_account"] = $this->get_option("token_account");
-            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.6.7";
+            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.6.8";
             $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
-
-            if($_POST["billing_persontype"] == 1){
-                $params["customer[cpf]"] = $_POST["billing_cpf"];
-            }
+			$params["customer[cpf]"] = $_POST["billing_cpf"];
 
             if (!isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2) {
                 $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
@@ -422,7 +423,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 $transactionParams["payment_method"]    = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
                 $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
 
-                $result = update_post_meta($order_id, 'yapay_transaction_data', serialize($transactionParams));
+                $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
 
                 if ($result) {
                     $log = new WC_Logger();
@@ -545,7 +546,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             include_once("includes/class-wc-yapay_intermediador-request.php");
             $tcRequest = new WC_Yapay_Intermediador_Request();
 
-            $data = get_post_meta($order_id, 'yapay_transaction_data', true);
+            $data = $order->get_meta($order_id, 'yapay_transaction_data', true);
 
             if (is_serialized($data)) {
                 $data = unserialize($data);
@@ -610,7 +611,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
                 <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
-                    <strong style='color: red'>Ocorreu um erro na geração da cobrança de crédito. Entre em contato com o administrador da Loja</strong> 
+                    <strong style='color: red'>Ocorreu um erro na geração da cobrança de crédito. Entre em contato com o administrador da Loja</strong>
                 </div>
             </div>
             ";
