@@ -3,7 +3,7 @@ Contributors: Integração Yapay, aguiart0, apiki
 Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
 Requires at least: 3.5
 Tested up to: 6.4
-Stable tag: 0.6.8
+Stable tag: 0.6.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 2. Página de configuração do plugin
 
 == Changelog ==
+
+= 0.6.9 = 21/02/2024
+* Corrigindo a utilização da função get_meta na classe de gateway de cartão de crédito
 
 = 0.6.8 = 07/12/2023
 
