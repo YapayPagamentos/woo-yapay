@@ -546,7 +546,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             include_once("includes/class-wc-yapay_intermediador-request.php");
             $tcRequest = new WC_Yapay_Intermediador_Request();
 
-            $data = $order->get_meta($order_id, 'yapay_transaction_data', true);
+            $data = $order->get_meta('yapay_transaction_data', true);
 
             if (is_serialized($data)) {
                 $data = unserialize($data);
