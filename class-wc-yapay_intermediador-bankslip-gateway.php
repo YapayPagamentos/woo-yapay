@@ -317,16 +317,15 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             $transactionParams["typeful_line"]      = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
 
 
-            $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
+            $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
+            $order->save();
 
-            if ($result) {
-                $log = new WC_Logger();
-                $log->add(
-                    "yapay-intermediador-transactions-save-",
-                    "YAPAY NEW TRANSACTION SAVE : \n" .
-                        print_r($transactionParams, true) . "\n\n"
-                );
-            }
+            $log = new WC_Logger();
+            $log->add(
+                "yapay-intermediador-transactions-save-",
+                "YAPAY NEW TRANSACTION SAVE : \n" .
+                    print_r($transactionParams, true) . "\n\n"
+            );
 
             $order->update_status("on-hold", "Yapay Intermediador enviou automaticamente o status: \n | Linha digitável: " . $transactionParams["typeful_line"]);
 

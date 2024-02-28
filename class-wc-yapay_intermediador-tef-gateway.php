@@ -331,16 +331,15 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $transactionParams["url_payment"]       = (string)$tcResponse->data_response->transaction->payment->url_payment;
 
 
-            $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
+            $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
+            $order->save();
 
-            if ( $result ) {
-                $log = new WC_Logger();
-                $log->add(
-                    "yapay-intermediador-transactions-save-",
-                    "YAPAY NEW TRANSACTION SAVE : \n" .
-                    print_r( $transactionParams, true ) ."\n\n"
-                );
-            }
+            $log = new WC_Logger();
+            $log->add(
+                "yapay-intermediador-transactions-save-",
+                "YAPAY NEW TRANSACTION SAVE : \n" .
+                    print_r($transactionParams, true) . "\n\n"
+            );
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
