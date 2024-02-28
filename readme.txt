@@ -54,6 +54,7 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 = 0.6.9 = 21/02/2024
 * Corrigindo a utilização da função get_meta na classe de gateway de cartão de crédito
+* Corrigindo salvamento de dados de transação na classe de gateway de cartão de crédito
 
 = 0.6.8 = 07/12/2023
 
