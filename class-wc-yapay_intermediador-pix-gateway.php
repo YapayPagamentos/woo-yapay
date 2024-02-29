@@ -189,7 +189,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
 
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.8";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.9";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -329,16 +329,15 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             $transactionParams["qrcode_path"]          = (string)$tcResponse->data_response->transaction->payment->qrcode_path;
             $transactionParams["qrcode_original_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_original_path;
 
-            $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
+            $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
+            $order->save();
 
-            if ( $result ) {
-                $log = new WC_Logger();
-                $log->add(
-                    "yapay-intermediador-transactions-save-",
-                    "YAPAY NEW TRANSACTION SAVE : \n" .
-                    print_r( $transactionParams, true ) ."\n\n"
-                );
-            }
+            $log = new WC_Logger();
+            $log->add(
+                "yapay-intermediador-transactions-save-",
+                "YAPAY NEW TRANSACTION SAVE : \n" .
+                    print_r($transactionParams, true) . "\n\n"
+            );
 
             $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | PIX copia e cola: ". $transactionParams["qrcode_original_path"] );
 

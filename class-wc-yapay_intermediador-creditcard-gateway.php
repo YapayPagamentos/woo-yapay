@@ -263,7 +263,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             $params["finger_print"] = $_POST["finger_print"];
 
             $params["token_account"] = $this->get_option("token_account");
-            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.6.8";
+            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.6.9";
             $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
 			$params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -423,16 +423,16 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 $transactionParams["payment_method"]    = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
                 $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
 
-                $result = $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
 
-                if ($result) {
-                    $log = new WC_Logger();
-                    $log->add(
-                        "yapay-intermediador-transactions-save-",
-                        "YAPAY NEW TRANSACTION SAVE : \n" .
-                            print_r($transactionParams, true) . "\n\n"
-                    );
-                }
+                $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
+                $order->save();
+
+                $log = new WC_Logger();
+                $log->add(
+                    "yapay-intermediador-transactions-save-",
+                    "YAPAY NEW TRANSACTION SAVE : \n" .
+                        print_r($transactionParams, true) . "\n\n"
+                );
 
                 if (defined('WC_VERSION') && version_compare(WC_VERSION, '2.1', '>=')) {
                     WC()->cart->empty_cart();
@@ -546,7 +546,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             include_once("includes/class-wc-yapay_intermediador-request.php");
             $tcRequest = new WC_Yapay_Intermediador_Request();
 
-            $data = $order->get_meta($order_id, 'yapay_transaction_data', true);
+            $data = $order->get_meta('yapay_transaction_data', true);
 
             if (is_serialized($data)) {
                 $data = unserialize($data);
