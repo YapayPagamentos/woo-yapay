@@ -117,6 +117,12 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
                 'type'      => 'text',
                 'desc_tip'  => __('Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-bs'),
             ),
+            'reseller_token' => array(
+                'title'       => __('Reseller Token (Opcional)', 'wc-yapay_intermediador-cc'),
+                'type'        => 'text',
+                'description' => __('Entre em contato com o suporte Yapay para solicitar a configuração de Reseller Token.', 'wc-yapay_intermediador-cc'),
+                'desc_tip'    => __('Preencha este campo com o reseler token da sua conta.', 'wc-yapay_intermediador-cc'),
+            ),
             'consumer_key' => array(
                 'type'      => 'hidden'
             ),
@@ -176,6 +182,11 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
 
         $order = new WC_Order($order_id);
 
+        $reseller_token = $this->get_option("reseller_token");
+
+        if ($reseller_token) {
+            $params["reseller_token"] = $reseller_token;
+        }
 
         $params["token_account"] = $this->get_option("token_account");
         $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.6.9";
