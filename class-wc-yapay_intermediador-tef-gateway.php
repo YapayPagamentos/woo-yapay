@@ -282,7 +282,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
 
         if($shipping_type != ""){
             $params["transaction[shipping_type]"] = $shipping_type;
-            $params["transaction[shipping_price]"] = $order->order_shipping;
+            $params["transaction[shipping_price]"] = $order->get_shipping_total();
         }
 
         $discount = 0;
@@ -301,7 +301,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             }
         }
 
-        $discount += floatval( $order->discount_total );
+        $discount += floatval( $order->get_total_discount() );
 
         if ( $discount > 0 ) {
             $params["transaction[price_discount]"] = $discount;

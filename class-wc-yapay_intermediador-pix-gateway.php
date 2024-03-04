@@ -279,7 +279,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         if($shipping_type != ""){
             $params["transaction[shipping_type]"] = $shipping_type;
-            $params["transaction[shipping_price]"] = $order->order_shipping;
+            $params["transaction[shipping_price]"] = $order->get_shipping_total();
         }
 
         $discount = 0;
@@ -298,7 +298,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             }
         }
 
-        $discount += floatval( $order->discount_total );
+        $discount += floatval( $order->get_total_discount() );
 
         if ( $discount > 0 ) {
             $params["transaction[price_discount]"] = $discount;
@@ -325,7 +325,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-pix-payment-method"];
         $params["payment[split]"] = "1";
-        error_log( var_export( $params, true ) ); exit;
+
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);

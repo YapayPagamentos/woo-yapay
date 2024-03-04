@@ -360,7 +360,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
 
             if ($shipping_type != "") {
                 $params["transaction[shipping_type]"] = $shipping_type;
-                $params["transaction[shipping_price]"] = $order->order_shipping;
+                $params["transaction[shipping_price]"] = $order->get_shipping_total();
             }
 
             $discount = 0;
@@ -379,7 +379,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 }
             }
 
-            $discount += floatval($order->discount_total);
+            $discount += floatval($order->get_total_discount());
 
             if ($discount > 0) {
                 $params["transaction[price_discount]"] = $discount;
