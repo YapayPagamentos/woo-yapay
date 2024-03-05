@@ -29,7 +29,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             $this->title = __("Yapay Intermediador", 'wc-yapay_intermediador-cc');
 
             // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-            if ($this->get_option('show_icon')) {
+            if ($this->get_option('show_icon') === 'yes') {
                 $this->icon = plugins_url('woo-yapay/assets/images/', plugin_dir_path(__FILE__)) . "cc-flag.svg";
             }
 

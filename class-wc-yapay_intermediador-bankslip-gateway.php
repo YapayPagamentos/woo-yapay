@@ -29,7 +29,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
         $this->title = __("Yapay Intermediador", 'wc-yapay_intermediador-bs');
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-        if ($this->get_option('show_icon')) {
+        if ($this->get_option('show_icon') === 'yes') {
             $this->icon = plugins_url('woo-yapay/assets/images/', plugin_dir_path(__FILE__)) . "boleto-flag.svg";
         }
 
