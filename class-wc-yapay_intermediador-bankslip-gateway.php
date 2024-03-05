@@ -120,8 +120,8 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             'reseller_token' => array(
                 'title'       => __('Reseller Token (Opcional)', 'wc-yapay_intermediador-cc'),
                 'type'        => 'text',
-                'description' => __('Entre em contato com o suporte Yapay para solicitar a configuração de Reseller Token.', 'wc-yapay_intermediador-cc'),
-                'desc_tip'    => __('Preencha este campo com o reseler token da sua conta.', 'wc-yapay_intermediador-cc'),
+                'description' => __('Configurar este campo, apenas quando direcionado pelo seu consultor comercial ou pela sua agência de desenvolvimento.', 'wc-yapay_intermediador-cc'),
+                'desc_tip'    => __('Preencha este campo com o reseller token da sua conta.', 'wc-yapay_intermediador-cc'),
             ),
             'consumer_key' => array(
                 'type'      => 'hidden'
