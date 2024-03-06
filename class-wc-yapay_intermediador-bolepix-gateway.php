@@ -4,48 +4,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( class_exists( 'WC_Yapay_Intermediador_Pix_Gateway' ) ) return;
+if ( class_exists( 'WC_Yapay_Intermediador_Bolepix_Gateway' ) ) return;
 
 /**
  * WooCommerce Yapay Intermediador main class.
  */
-class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
+class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
 
     function __construct() {
 
-        $version = "0.1.0";
-        // The global ID for this Payment method
-        $this->id = "wc_yapay_intermediador_pix";
+        $this->id = "wc_yapay_intermediador_bolepix";
+        $this->method_title = __( "Yapay Intermediador - Bolepix", 'wc-yapay_intermediador-bolepix' );
+        $this->method_description = __( "Plugin Yapay Intermediador para WooCommerce", 'wc-yapay_intermediador-bolepix' );
+        $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-bolepix' );
 
-        // The Title shown on the top of the Payment Gateways Page next to all the other Payment Gateways
-        $this->method_title = __( "Yapay Intermediador - Pix", 'wc-yapay_intermediador-pix' );
-
-        // The description for this Payment Gateway, shown on the actual Payment options page on the backend
-        $this->method_description = __( "Plugin Yapay Intermediador para WooCommerce", 'wc-yapay_intermediador-pix' );
-
-        // The title to be used for the vertical tabs that can be ordered top to bottom
-        $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-pix' );
-
-        // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
         if ($this->get_option('show_icon') === 'yes') {
-            $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "pix-flag.svg";
+            $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "bolepix-flag.svg";
         }
 
-        // Bool. Can be set to true if you want payment fields to show on the checkout
-        // if doing a direct integration, which we are doing in this case
         $this->has_fields = true;
-
-        // Supports the default credit card form
         $this->supports = array( 'default_credit_card_form' );
 
-        // This basically defines your settings which are then loaded with init_settings()
         $this->init_form_fields();
 
-        // After init_settings() is called, you can get the settings and load them into variables, e.g:
-        // $this->title = $this->get_option( 'title' );
         $this->init_settings();
 
-        // Turn these settings into variables we can use
         foreach ( $this->settings as $setting_key => $value ) {
             $this->$setting_key = $value;
         }
@@ -65,30 +48,30 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         $this->form_fields = array(
             'enabled' => array(
-                'title'     => __( 'Ativar / Desativar', 'wc-yapay_intermediador-pix' ),
-                'label'     => __( 'Ativar Yapay Intermediador', 'wc-yapay_intermediador-pix' ),
+                'title'     => __( 'Ativar / Desativar', 'wc-yapay_intermediador-bolepix' ),
+                'label'     => __( 'Ativar Yapay Intermediador', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'checkbox',
                 'default'   => 'no',
-                'description'     => __( 'Ativar / Desativar pagamento por Yapay Intermediador', 'wc-yapay_intermediador-pix' ),
+                'description'     => __( 'Ativar / Desativar pagamento por Yapay Intermediador', 'wc-yapay_intermediador-bolepix' ),
             ),
             'title' => array(
-                'title'     => __( 'Titulo', 'wc-yapay_intermediador-pix' ),
+                'title'     => __( 'Titulo', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-pix' ),
-                'default'   => __( 'Yapay Intermediador - Pix', 'wc-yapay_intermediador-pix' ),
+                'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-bolepix' ),
+                'default'   => __( 'Yapay Intermediador - Bolepix', 'wc-yapay_intermediador-bolepix' ),
             ),
             'description' => array(
-                'title'     => __( 'Descrição', 'wc-yapay_intermediador-pix' ),
+                'title'     => __( 'Descrição', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'textarea',
-                'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-pix' ),
-                'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-pix' ),
+                'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-bolepix' ),
+                'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-bolepix' ),
                 'css'       => 'max-width:350px;'
             ),
             'environment' => array(
-                'title'     => __( 'Sandbox', 'wc-yapay_intermediador-pix' ),
-                'label'     => __( 'Ativar Sandbox', 'wc-yapay_intermediador-pix' ),
+                'title'     => __( 'Sandbox', 'wc-yapay_intermediador-bolepix' ),
+                'label'     => __( 'Ativar Sandbox', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'checkbox',
-                'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-pix' ),
+                'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-bolepix' ),
                 'default'   => 'no',
             ),
             'not_require_cpf' => array(
@@ -106,14 +89,14 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 'default'   => 'on',
             ),
             'token_account' => array(
-                'title'     => __( 'Token da Conta', 'wc-yapay_intermediador-pix' ),
+                'title'     => __( 'Token da Conta', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Token de Integração utilizado para identificação da loja.', 'wc-yapay_intermediador-pix' ),
+                'desc_tip'  => __( 'Token de Integração utilizado para identificação da loja.', 'wc-yapay_intermediador-bolepix' ),
             ),
             'prefixo' => array(
-                'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-pix' ),
+                'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-pix' ),
+                'desc_tip'  => __( 'Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-bolepix' ),
             ),
             'reseller_token' => array(
                 'title'       => __('Reseller Token (Opcional)', 'wc-yapay_intermediador-cc'),
@@ -293,7 +276,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
 
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
-        $params["transaction[available_payment_methods]"] = "27";
+        $params["transaction[available_payment_methods]"] = "28";
 
         if ( 0 < sizeof( $order->get_items() ) ) {
             $i = 0;
@@ -306,7 +289,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             }
         }
 
-        $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-pix-payment-method"];
+        $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-bolepix-payment-method"];
         $params["payment[split]"] = "1";
 
         $tcRequest = new WC_Yapay_Intermediador_Request();
@@ -334,7 +317,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                     print_r($transactionParams, true) . "\n\n"
             );
 
-            $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | PIX copia e cola: ". $transactionParams["qrcode_original_path"] );
+            $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | Bolepix copia e cola: ". $transactionParams["qrcode_original_path"] );
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -368,6 +351,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
     }
 
     public function validate_fields() {
+
         return true;
     }
 
@@ -392,7 +376,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                     <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
                         <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                         <div style='margin: 20px 0'>
-                            <span>Pix Copia e Cola</span>
+                            <span>Bolepix Copia e Cola</span>
                             <div style='display: flex; align-items: center;'>
                                 <input style='width: 100%' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."' />
                                 <a class='copiaCola' id='copiaCola'>
@@ -408,7 +392,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                         </div>
                         <hr/>
                         <div style='margin: 20px 0'>
-                            <span>Após realizar o pagamento do PIX no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</span>
+                            <span>Após realizar o pagamento do Bolepix no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</span>
                         </div>
                     </div>
                 ";
@@ -422,7 +406,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
                 <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
-                    <strong style='color: red'>Ocorreu um erro na geração do QR Code PIX. Entre em contato com o administrador da Loja</strong>
+                    <strong style='color: red'>Ocorreu um erro na geração do QR Code Bolepix. Entre em contato com o administrador da Loja</strong>
                 </div>
             </div>
             ";
@@ -435,7 +419,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
     public function add_yapay_order_details( $order )
     {
-        if ( array_intersect( [ 'wc_yapay_intermediador_pix' ], [ $order->get_payment_method() ] ) ) {
+        if ( array_intersect( [ 'wc_yapay_intermediador_bolepix' ], [ $order->get_payment_method() ] ) ) {
 
             $order_id = $order->get_id();
 
@@ -444,7 +428,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             extract($dados);
             ob_start();
 
-            require __DIR__ . '/templates/orders/wc_yapay_intermediador_pix_order.php';
+            require __DIR__ . '/templates/orders/wc_yapay_intermediador_bolepix_order.php';
 
             $html = ob_get_clean();
 
