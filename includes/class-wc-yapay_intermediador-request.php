@@ -3,7 +3,7 @@
 if ( ! class_exists( 'WC_Yapay_Intermediador_Request' ) ) :
 
 /**
- * WooCommerce Yapay Intermediador main class.
+ * WooCommerce Vindi Intermediador main class.
  */
 include_once("class-wc-yapay_intermediador-requests.php");    
 include_once("class-wc-yapay_intermediador-responses.php");    
@@ -21,7 +21,7 @@ class WC_Yapay_Intermediador_Request{
         
         $log->add( 
             "yapay-intermediador-request-response-", 
-            "YAPAY NEW REQUEST : \n" . 
+            "Vindi NEW REQUEST : \n" . 
             "URL : $urlPost \n" . 
             print_r( $dataRequest, true ) ."\n\n" 
         );
@@ -52,7 +52,7 @@ class WC_Yapay_Intermediador_Request{
 
         $log->add( 
             "yapay-intermediador-request-response-", 
-            "YAPAY NEW RESPONSE : \n" . 
+            "Vindi NEW RESPONSE : \n" . 
             "URL : $urlPost \n" . 
             print_r( $response, true )
         );

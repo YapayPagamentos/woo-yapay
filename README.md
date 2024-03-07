@@ -1,7 +1,7 @@
 # WooCommerce
 
 
-Para disponibilizar a Yapay como facilitador de pagamento na plataforma WooCommerce, basta baixar o pacote disponível, extrair a pasta com o plugin, copiar para o diretório padrão e configurar o plugin.
+Para disponibilizar a Vindi como facilitador de pagamento na plataforma WooCommerce, basta baixar o pacote disponível, extrair a pasta com o plugin, copiar para o diretório padrão e configurar o plugin.
 
 Fique atento que sua versão de instalação, a plataforma WooCommerce deve ser compatível com o plugin Yapay.
 
@@ -13,7 +13,7 @@ Para instalar o plugin acesse o menu lateral `PLUGIN` e pesquise por `YAPAY` ins
 ![WooCommerce, instalação WordPress](https://intermediador.dev.yapay.com.br/images/woocommerce/install_woocommerce_6.png "WooCommerce, instalação")
 
 
-> Instalação do Plúgin Yapay Intermediador via arquivo
+> Instalação do Plúgin Vindi Intermediador via arquivo
 
 
 Para instalar plugin é necessário baixar esse repositório e instalar o arquivo **woo-yapay.zip**
@@ -40,7 +40,7 @@ Após a instalação, basta ativar o plugin e irá visualizar as 3 opções de c
 
 Para acessar as configurações do plugin, clique no menu **WooCommerce > Configurações**, e clique na aba **Checkout**.
 
-Clique em uma das opções de configuração da Yapay que será carregada a página do plugin com as opções de configuração abaixo:
+Clique em uma das opções de configuração da Vindi que será carregada a página do plugin com as opções de configuração abaixo:
 
 ![WooCommerce, instalação](https://intermediador.dev.yapay.com.br/images/woocommerce/install_woocommerce_5.png "WooCommerce, instalação")
 
@@ -54,7 +54,7 @@ Clique em uma das opções de configuração da Yapay que será carregada a pág
 
 **Descrição:** Descrição que será exibida no checkout do WooCommerce.
 
-**Sandbox:** Ambiente utilizado pela loja para realizar **testes de integração** com o Yapay – muita atenção para não manter este ambiente habilitado quando a loja estiver efetivamente vendendo.
+**Sandbox:** Ambiente utilizado pela loja para realizar **testes de integração** com o Vindi – muita atenção para não manter este ambiente habilitado quando a loja estiver efetivamente vendendo.
 
 **Configuração Yapay:** Botão para a configuração automática do Yapay.
 

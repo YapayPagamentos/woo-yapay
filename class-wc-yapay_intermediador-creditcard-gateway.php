@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
 
     /**
-     * WooCommerce Yapay Intermediador main class.
+     * WooCommerce Vindi Intermediador main class.
      */
     class WC_Yapay_Intermediador_Creditcard_Gateway extends WC_Payment_Gateway
     {
@@ -20,13 +20,13 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             $this->id = "wc_yapay_intermediador_cc";
 
             // The Title shown on the top of the Payment Gateways Page next to all the other Payment Gateways
-            $this->method_title = __("Yapay Intermediador - Cartões de Crédito", 'wc-yapay_intermediador-cc');
+            $this->method_title = __("Vindi Intermediador - Cartões de Crédito", 'wc-yapay_intermediador-cc');
 
             // The description for this Payment Gateway, shown on the actual Payment options page on the backend
-            $this->method_description = __("Plugin Yapay Intermediador para WooCommerce", 'wc-yapay_intermediador-cc');
+            $this->method_description = __("Plugin Vindi Intermediador para WooCommerce", 'wc-yapay_intermediador-cc');
 
             // The title to be used for the vertical tabs that can be ordered top to bottom
-            $this->title = __("Yapay Intermediador", 'wc-yapay_intermediador-cc');
+            $this->title = __("Vindi Intermediador", 'wc-yapay_intermediador-cc');
 
             // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
             if ($this->get_option('show_icon')) {
@@ -92,16 +92,16 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             $this->form_fields = array(
                 'enabled' => array(
                     'title'     => __('Ativar / Desativar', 'wc-yapay_intermediador-cc'),
-                    'label'     => __('Ativar Yapay Intermediador', 'wc-yapay_intermediador-cc'),
+                    'label'     => __('Ativar Vindi Intermediador', 'wc-yapay_intermediador-cc'),
                     'type'      => 'checkbox',
                     'default'   => 'no',
-                    'description'     => __('Ativar / Desativar pagamento por Yapay Intermediador', 'wc-yapay_intermediador-cc'),
+                    'description'     => __('Ativar / Desativar pagamento por Vindi Intermediador', 'wc-yapay_intermediador-cc'),
                 ),
                 'title' => array(
                     'title'     => __('Titulo', 'wc-yapay_intermediador-cc'),
                     'type'      => 'text',
                     'desc_tip'  => __('Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-cc'),
-                    'default'   => __('Yapay - Cartões de Crédito', 'wc-yapay_intermediador-cc'),
+                    'default'   => __('Vindi - Cartões de Crédito', 'wc-yapay_intermediador-cc'),
                 ),
                 'description' => array(
                     'title'     => __('Descrição', 'wc-yapay_intermediador-cc'),
@@ -176,7 +176,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 'prefixo' => array(
                     'title'     => __('Prefixo do Pedido', 'wc-yapay_intermediador-cc'),
                     'type'      => 'text',
-                    'desc_tip'  => __('Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-cc'),
+                    'desc_tip'  => __('Prefixo do pedido enviado para o Vindi Intermediador.', 'wc-yapay_intermediador-cc'),
                 ),
                 'consumer_key' => array(
                     'type'      => 'hidden'
@@ -430,7 +430,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 $log = new WC_Logger();
                 $log->add(
                     "yapay-intermediador-transactions-save-",
-                    "YAPAY NEW TRANSACTION SAVE : \n" .
+                    "Vindi NEW TRANSACTION SAVE : \n" .
                         print_r($transactionParams, true) . "\n\n"
                 );
 
@@ -591,7 +591,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
 
                 $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                 <hr/>
                 <div style='margin: 20px 0'>
                     <span>Número da Transação: <strong>" . $data['transaction_id'] . "</strong></span>
@@ -605,11 +605,11 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             </div>
             ";
 
-                $order->add_order_note('Pedido registrado no Yapay Intermediador. Transação: ' . $data['transaction_id']);
+                $order->add_order_note('Pedido registrado no Vindi Intermediador. Transação: ' . $data['transaction_id']);
             } else {
                 $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
                     <strong style='color: red'>Ocorreu um erro na geração da cobrança de crédito. Entre em contato com o administrador da Loja</strong>
                 </div>

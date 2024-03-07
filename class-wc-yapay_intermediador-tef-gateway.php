@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'WC_Yapay_Intermediador_Tef_Gateway' ) ) :
 
 /**
- * WooCommerce Yapay Intermediador main class.
+ * WooCommerce Vindi Intermediador main class.
  */
 class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
 
@@ -18,13 +18,13 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         $this->id = "wc_yapay_intermediador_tef";
 
         // The Title shown on the top of the Payment Gateways Page next to all the other Payment Gateways
-        $this->method_title = __( "Yapay Intermediador - Transferência Online", 'wc-yapay_intermediador-tef' );
+        $this->method_title = __( "Vindi Intermediador - Transferência Online", 'wc-yapay_intermediador-tef' );
 
         // The description for this Payment Gateway, shown on the actual Payment options page on the backend
-        $this->method_description = __( "Plugin Yapay Intermediador para WooCommerce", 'wc-yapay_intermediador-tef' );
+        $this->method_description = __( "Plugin Vindi Intermediador para WooCommerce", 'wc-yapay_intermediador-tef' );
 
         // The title to be used for the vertical tabs that can be ordered top to bottom
-        $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-tef' );
+        $this->title = __( "Vindi Intermediador", 'wc-yapay_intermediador-tef' );
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
         if ($this->get_option('show_icon')) {
@@ -72,16 +72,16 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         $this->form_fields = array(
             'enabled' => array(
                 'title'     => __( 'Ativar / Desativar', 'wc-yapay_intermediador-tef' ),
-                'label'     => __( 'Ativar Yapay Intermediador', 'wc-yapay_intermediador-tef' ),
+                'label'     => __( 'Ativar Vindi Intermediador', 'wc-yapay_intermediador-tef' ),
                 'type'      => 'checkbox',
                 'default'   => 'no',
-                'description'     => __( 'Ativar / Desativar pagamento por Yapay Intermediador', 'wc-yapay_intermediador-tef' ),
+                'description'     => __( 'Ativar / Desativar pagamento por Vindi Intermediador', 'wc-yapay_intermediador-tef' ),
             ),
             'title' => array(
                 'title'     => __( 'Titulo', 'wc-yapay_intermediador-tef' ),
                 'type'      => 'text',
                 'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-tef' ),
-                'default'   => __( 'Yapay - Transferência Online', 'wc-yapay_intermediador-tef' ),
+                'default'   => __( 'Vindi - Transferência Online', 'wc-yapay_intermediador-tef' ),
             ),
             'description' => array(
                 'title'     => __( 'Descrição', 'wc-yapay_intermediador-tef' ),
@@ -132,7 +132,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             'prefixo' => array(
                 'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-tef' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-tef' ),
+                'desc_tip'  => __( 'Prefixo do pedido enviado para o Vindi Intermediador.', 'wc-yapay_intermediador-tef' ),
             ),
             'consumer_key' => array(
                 'type'      => 'hidden'
@@ -337,7 +337,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $log = new WC_Logger();
             $log->add(
                 "yapay-intermediador-transactions-save-",
-                "YAPAY NEW TRANSACTION SAVE : \n" .
+                "Vindi NEW TRANSACTION SAVE : \n" .
                     print_r($transactionParams, true) . "\n\n"
             );
 
@@ -411,7 +411,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             if ( isset( $data['transaction_id'] ) && $data['transaction_id'] ) {
                 $html = "
                 <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                    <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                    <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                     <div style='margin: 20px 0'>
                         <span>Número da Transação:<strong>". $data['transaction_id'] ."</strong></span>
                     </div>
@@ -425,13 +425,13 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
                 </div>
                 ";
 
-                $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '. $data->transaction_id );
+                $order->add_order_note( 'Pedido registrado no Vindi Intermediador. Transação: '. $data->transaction_id );
             }
 
         } else {
             $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
                     <strong style='color: red'>Ocorreu um erro na geração da transferência bancária. Entre em contato com o administrador da Loja</strong>
                 </div>
