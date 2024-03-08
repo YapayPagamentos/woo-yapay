@@ -3,12 +3,12 @@
 
 Para disponibilizar a Vindi como facilitador de pagamento na plataforma WooCommerce, basta baixar o pacote disponível, extrair a pasta com o plugin, copiar para o diretório padrão e configurar o plugin.
 
-Fique atento que sua versão de instalação, a plataforma WooCommerce deve ser compatível com o plugin Yapay.
+Fique atento que sua versão de instalação, a plataforma WooCommerce deve ser compatível com o plugin Vindi.
 
 > Instalação do Plúgin WooCommerce via Wordpress
 
 
-Para instalar o plugin acesse o menu lateral `PLUGIN` e pesquise por `YAPAY` instale e ative o plugin:
+Para instalar o plugin acesse o menu lateral `PLUGIN` e pesquise por `Vindi` instale e ative o plugin:
 
 ![WooCommerce, instalação WordPress](https://intermediador.dev.yapay.com.br/images/woocommerce/install_woocommerce_6.png "WooCommerce, instalação")
 
@@ -45,7 +45,7 @@ Clique em uma das opções de configuração da Vindi que será carregada a pág
 ![WooCommerce, instalação](https://intermediador.dev.yapay.com.br/images/woocommerce/install_woocommerce_5.png "WooCommerce, instalação")
 
 
-> Opções de configuração Yapay:
+> Opções de configuração Vindi:
 
 
 **Ativar / Desativar:** Opção para ativar / desativar a opção de pagamento no checkout do WooCommerce.
@@ -56,10 +56,10 @@ Clique em uma das opções de configuração da Vindi que será carregada a pág
 
 **Sandbox:** Ambiente utilizado pela loja para realizar **testes de integração** com o Vindi – muita atenção para não manter este ambiente habilitado quando a loja estiver efetivamente vendendo.
 
-**Configuração Yapay:** Botão para a configuração automática do Yapay.
+**Configuração Vindi:** Botão para a configuração automática do Vindi.
 
-**Token da Conta:** Token utilizado para a integração com o Yapay.
+**Token da Conta:** Token utilizado para a integração com o Vindi.
 
 **Meios de Pagamento Disponíveis:** Seleção dos meios de pagamento que estarão disponíveis no checkout do WooCommerce (Opção somente na configuração de Cartão de Crédito e Transferência Online).
 
-**Prefixo do Pedido:** Prefixo enviado para o Yapay.
+**Prefixo do Pedido:** Prefixo enviado para o Vindi.
