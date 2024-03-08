@@ -8,7 +8,7 @@ Fique atento que sua versão de instalação, a plataforma WooCommerce deve ser 
 Para instalar o plugin acesse o menu lateral `PLUGIN` e pesquise por `Vindi` instale e ative o plugin:
 
 
-Para instalar plugin é necessário baixar esse repositório e instalar o arquivo **woo-yapay.zip**
+Para instalar plugin é necessário baixar esse repositório e instalar o arquivo **vindi-intermediador.zip**
 
 Acesse a área administrativa da plataforma e clique em **Plugins > Adicionar Novo**.
 
