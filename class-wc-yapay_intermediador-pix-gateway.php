@@ -27,7 +27,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-pix' );
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
-        if ($this->get_option('show_icon')) {
+        if ($this->get_option('show_icon') === 'yes') {
             $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "pix-flag.svg";
         }
 
@@ -131,6 +131,12 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 'type'      => 'text',
                 'desc_tip'  => __( 'Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-pix' ),
             ),
+            'reseller_token' => array(
+                'title'       => __('Reseller Token (Opcional)', 'wc-yapay_intermediador-cc'),
+                'type'        => 'text',
+                'description' => __('Configurar este campo, apenas quando direcionado pelo seu consultor comercial ou pela sua agência de desenvolvimento.', 'wc-yapay_intermediador-cc'),
+                'desc_tip'    => __('Preencha este campo com o reseller token da sua conta.', 'wc-yapay_intermediador-cc'),
+            ),
             'consumer_key' => array(
                 'type'      => 'hidden'
             ),
@@ -188,8 +194,14 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         $order = new WC_Order( $order_id );
 
 
+        $reseller_token = $this->get_option("reseller_token");
+
+        if ($reseller_token) {
+            $params["reseller_token"] = $reseller_token;
+        }
+        
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.6.9";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.0";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -267,7 +279,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         if($shipping_type != ""){
             $params["transaction[shipping_type]"] = $shipping_type;
-            $params["transaction[shipping_price]"] = $order->order_shipping;
+            $params["transaction[shipping_price]"] = $order->get_shipping_total();
         }
 
         $discount = 0;
@@ -286,7 +298,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
             }
         }
 
-        $discount += floatval( $order->discount_total );
+        $discount += floatval( $order->get_total_discount() );
 
         if ( $discount > 0 ) {
             $params["transaction[price_discount]"] = $discount;
