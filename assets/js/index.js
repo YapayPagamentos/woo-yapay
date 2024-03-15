@@ -132,22 +132,25 @@ jQuery(document).ready(function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const button = document.querySelector("#copiaCola");
-  const text = document.querySelector("#linhaDigitavel");
+  const fields = document.querySelectorAll(".copiaCola");
+  fields.forEach((field) => {
+    const button = field.querySelector("a");
+    const text = field.querySelector("input");  
 
-  if (button && text) {
-    button.addEventListener('click', () => {
-      const line = text.value;
-      text.select();
-
-      document.execCommand("copy");
-      text.blur();
-      text.value = 'Texto Copiado!'
-
-      setInterval(() => {
-        text.value = line;
-      }, 500)
-    })
-  }
+    if (button && text) {
+      button.addEventListener('click', () => {
+        const line = text.value;
+        text.select();
+  
+        document.execCommand("copy");
+        text.blur();
+        text.value = 'Texto Copiado!'
+  
+        setInterval(() => {
+          text.value = line;
+        }, 500)
+      })
+    }
+  });
 
 })

@@ -168,7 +168,7 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
         
         $params["token_account"] = $this->get_option("token_account");
 		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.0";
-        $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
+        $params["customer[name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 500);
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
         if ( !isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2 ) {
@@ -294,7 +294,9 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
 
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
-        $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
+        // $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
+        $tcResponse = '{"message_response":{"message":"success"},"data_response":{"transaction":{"order_number":"000000070","free":"MAGENTO_API_1.2.0","transaction_id":866623,"status_name":"Aguardando Pagamento","status_id":4,"token_transaction":"1c143a26cc558e9c9cf6d204e9d7850b","payment":{"price_payment":"105.0","price_original":"105.0","payment_response":"","payment_response_code":"","url_payment":"https:\/\/intermediador-sandbox.yapay.com.br\/orders\/bolepix\/1c143a26cc558e9c9cf6d204e9d7850b","qrcode_path":"https:\/\/d3qiiqeqvrl56p.cloudfront.net\/sandbox\/2024\/03\/01\/itau\/N100459983_qrcode.svg","qrcode_original_path":"00020101021226860014BR.GOV.BCB.PIX2564spi-h.itau.com.br\/pix\/qr\/v2\/e8772e8f-3e31-4766-831c-c3ce8f453b635204000053039865802BR5920CARVALHEIRA GERALDES6009SAO PAULO62070503***63048DAC","tid":"68955","brand_tid":"","split":1,"payment_method_id":28,"payment_method_name":"Bolepix","linha_digitavel":"34191090084599842293085334580009196440000010500","card_token":""},"customer":{"name":"JOAO PAULO RAMOS","company_name":"","trade_name":"","cpf":"04978281970","cnpj":""}}}}';
+        $tcResponse = json_decode($tcResponse);
 
         if($tcResponse->message_response->message == "success"){
 
@@ -306,6 +308,8 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
             $transactionParams["url_payment"]          = (string)$tcResponse->data_response->transaction->payment->url_payment;
             $transactionParams["qrcode_path"]          = (string)$tcResponse->data_response->transaction->payment->qrcode_path;
             $transactionParams["qrcode_original_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_original_path;
+            $transactionParams["url_payment"]          = (string)$tcResponse->data_response->transaction->payment->url_payment;
+            $transactionParams["typeful_line"]         = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
 
             $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
             $order->save();
@@ -356,63 +360,9 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
     }
 
     public function thankyou_page( $order_id ) {
-        global $woocommerce;
-
-        $url_image = (WP_PLUGIN_URL . '/'. str_replace( basename( __FILE__ ), "", plugin_basename(__FILE__) ));
         $order     = new WC_Order( $order_id );
+        $this->add_yapay_order_details($order);
 
-        $html  = "";
-        $html .= "<ul class='order_details'>";
-        $html .= "<li>";
-        $html .= "<br><br>";
-
-        $data = $order->get_meta('yapay_transaction_data', true);
-
-        if ( is_serialized( $data ) ) {
-            $data = unserialize( $data );
-
-            if ( isset( $data['qrcode_original_path'] ) && $data['qrcode_original_path'] ) {
-                $html = "
-                    <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                        <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
-                        <div style='margin: 20px 0'>
-                            <span>Bolepix Copia e Cola</span>
-                            <div style='display: flex; align-items: center;'>
-                                <input style='width: 100%' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."' />
-                                <a class='copiaCola' id='copiaCola'>
-                                    <img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' />
-                                </a>
-                            </div>
-                        </div>
-                        <div style='margin: 20px 0'>
-                            <span><strong>Escaneie o QR Code:</strong></span>
-                            <div>
-                                <object class='qrCodeYapay' data='". $data['qrcode_path'] ."' ></object>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div style='margin: 20px 0'>
-                            <span>Após realizar o pagamento do Bolepix no seu aplicativo,você receberá a confirmação do pagamento em seu e-mail.</span>
-                        </div>
-                    </div>
-                ";
-
-                $order->add_order_note( 'Pedido registrado no Yapay Intermediador. Transação: '. $data['transaction_id'] );
-            }
-
-        } else {
-
-            $html = "
-            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
-                <div style='margin: 20px 0'>
-                    <strong style='color: red'>Ocorreu um erro na geração do QR Code Bolepix. Entre em contato com o administrador da Loja</strong>
-                </div>
-            </div>
-            ";
-        }
-
-        echo $html;
 
     }
 
@@ -424,7 +374,8 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
             $order_id = $order->get_id();
 
             $dados = $this->get_meta_data( $order_id );
-
+            $dados['url_image'] = (WP_PLUGIN_URL . '/'. str_replace( basename( __FILE__ ), "", plugin_basename(__FILE__) ));
+            
             extract($dados);
             ob_start();
 
