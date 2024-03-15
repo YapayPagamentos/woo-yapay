@@ -172,8 +172,8 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
         if ( !isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2 ) {
-            $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
-            $params["customer[company_name]"] = $_POST["billing_company"];
+            $params["customer[trade_name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 500);
+            $params["customer[company_name]"] = substr($_POST["billing_company"], 0 , 500);
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
 
             if (isset( $_POST["yapay_cpfP"]) && $_POST["yapay_cpfP"] !== "" ) {
