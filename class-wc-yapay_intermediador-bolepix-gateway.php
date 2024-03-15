@@ -294,9 +294,7 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
 
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
-        // $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
-        $tcResponse = '{"message_response":{"message":"success"},"data_response":{"transaction":{"order_number":"000000070","free":"MAGENTO_API_1.2.0","transaction_id":866623,"status_name":"Aguardando Pagamento","status_id":4,"token_transaction":"1c143a26cc558e9c9cf6d204e9d7850b","payment":{"price_payment":"105.0","price_original":"105.0","payment_response":"","payment_response_code":"","url_payment":"https:\/\/intermediador-sandbox.yapay.com.br\/orders\/bolepix\/1c143a26cc558e9c9cf6d204e9d7850b","qrcode_path":"https:\/\/d3qiiqeqvrl56p.cloudfront.net\/sandbox\/2024\/03\/01\/itau\/N100459983_qrcode.svg","qrcode_original_path":"00020101021226860014BR.GOV.BCB.PIX2564spi-h.itau.com.br\/pix\/qr\/v2\/e8772e8f-3e31-4766-831c-c3ce8f453b635204000053039865802BR5920CARVALHEIRA GERALDES6009SAO PAULO62070503***63048DAC","tid":"68955","brand_tid":"","split":1,"payment_method_id":28,"payment_method_name":"Bolepix","linha_digitavel":"34191090084599842293085334580009196440000010500","card_token":""},"customer":{"name":"JOAO PAULO RAMOS","company_name":"","trade_name":"","cpf":"04978281970","cnpj":""}}}}';
-        $tcResponse = json_decode($tcResponse);
+        $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
 
         if($tcResponse->message_response->message == "success"){
 
