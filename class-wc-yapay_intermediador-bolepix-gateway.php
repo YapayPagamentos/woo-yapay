@@ -176,8 +176,8 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
             $params["customer[company_name]"] = substr($_POST["billing_company"], 0 , 500);
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
 
-            if (isset( $_POST["yapay_cpfP"]) && $_POST["yapay_cpfP"] !== "" ) {
-                $params["customer[cpf]"] = $_POST["yapay_cpfP"];
+            if (isset( $_POST["yapay_cpfBP"]) && $_POST["yapay_cpfBP"] !== "" ) {
+                $params["customer[cpf]"] = $_POST["yapay_cpfBP"];
             }
         }
 
@@ -295,7 +295,7 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
-
+        error_log( var_export( $params, true ) );
         if($tcResponse->message_response->message == "success"){
 
             $transactionParams["order_id"]             = (string)$tcResponse->data_response->transaction->order_number;
