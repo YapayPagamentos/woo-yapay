@@ -1,32 +1,32 @@
-=== WooCommerce Yapay Intermediador ===
-Contributors: Integração Yapay, aguiart0, apiki
-Tags: woocommerce, yapay, intermediador, yapay intermediador, payment
+=== WooCommerce Vindi Pagamento ===
+Contributors: Integração Vindi, aguiart0, apiki
+Tags: woocommerce, vindi, intermediador, Vindi Pagamento, payment
 Requires at least: 3.5
 Tested up to: 6.4
 Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-O [Yapay Intermediador](https://www.yapay.com.br/) é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores.
+O [Vindi Pagamento](https://vindi.com.br/formas-de-pagamentos/) é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores.
 
 == Description ==
 
-### Plugin de Integração Yapay Intermediador - WooCommerce ###
+### Plugin de Integração Vindi Pagamento - WooCommerce ###
 
-Yapay Intermediador is a payment facilitator that offers benefits to merchants and buyers. Focused on practicality and conversion, enables virtual stores offer many payments possibilites, no need contracts with financial operators.
+Vindi Pagamento is a payment facilitator that offers benefits to merchants and buyers. Focused on practicality and conversion, enables virtual stores offer many payments possibilites, no need contracts with financial operators.
 
-This module is able to do the integration with the Payment API of the Yapay Intermediador. In this case, the consumer isn't redirect to Yapay Intermediador environment. Every steps of the payment are made in the WooCommerce Checkout.
+This module is able to do the integration with the Payment API of the Vindi Pagamento. In this case, the consumer isn't redirect to Vindi Pagamento environment. Every steps of the payment are made in the WooCommerce Checkout.
 
 ### Descrição em Português: ###
 
-O Yapay Intermediador é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores. Focado em praticidade e conversão, possibilita que as lojas virtuais ofereçam diversas formas de pagamento, sem burocracia ou necessidade de contrato com operadoras financeiras.
+O Vindi Pagamento é um facilitador de pagamento que oferece benefícios aos lojistas e aos compradores. Focado em praticidade e conversão, possibilita que as lojas virtuais ofereçam diversas formas de pagamento, sem burocracia ou necessidade de contrato com operadoras financeiras.
 
-Este módulo é capaz de fazer a integração com a API do pagamento do Yapay Intermediador. Neste caso, o consumidor não é redirecionar para ambiente Yapay Intermediador. Todos os passos de o pagamento são feito no Checkout WooCommerce.
+Este módulo é capaz de fazer a integração com a API do pagamento do Vindi Pagamento. Neste caso, o consumidor não é redirecionar para ambiente Vindi Pagamento. Todos os passos de o pagamento são feito no Checkout WooCommerce.
 
 
 = Compatibilidade =
 
-O Yapay Intermediador é compatível desde a versão 2.x até 3.x do WooCommerce.
+O Vindi Pagamento é compatível desde a versão 2.x até 3.x do WooCommerce.
 
 
 = Dependência =
@@ -39,7 +39,7 @@ Este plugin depende dos campos do plugin [WooCommerce Extra Checkout Fields for 
 * Baixe o plugin e coloque os arquivos do plugin para a pasta wp-content/plugins. Ou você pode realizar a instalação diretamente pelo instalador de plugins do WordPress.
 * É necessário ativar o plugin.
 
-Para mais informações sobre a instalação e configuração do módulo acesse [Instalação WooCommerce Módulo Yapay Intermediador](http://dev.yapay.com.br/intermediador/modulos-integracao-intermediador/#woocommerce).
+Para mais informações sobre a instalação e configuração do módulo acesse [Instalação WooCommerce Módulo Vindi Pagamento](http://dev.yapay.com.br/intermediador/modulos-integracao-intermediador/#woocommerce).
 
 = Dúvidas =
 
@@ -131,7 +131,7 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 = 0.5.7 = 13/03/2020
 
-* Correção bug de envio de Código de Rastreio para Yapay com PHP >7.x
+* Correção bug de envio de Código de Rastreio para Vindi com PHP >7.x
 
 = 0.5.6 = 04/03/2020
 

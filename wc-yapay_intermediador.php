@@ -180,7 +180,7 @@ function wc_yapay_intermediador_notification() {
         $log = new WC_Logger();
         $log->add(
             "yapay-intermediador-notification",
-            "YAPAY NEW NOTIFICATION : \n" .
+            "Vindi NEW NOTIFICATION : \n" .
             "ORDER ID: ". print_r( $order_id, true ) ."\n\n"
         );
 
@@ -212,7 +212,7 @@ function wc_yapay_intermediador_notification() {
 
             $log->add(
                 "yapay-intermediador-notification",
-                "YAPAY NEW NOTIFICATION : \n" .
+                "Vindi NEW NOTIFICATION : \n" .
                 "REQUEST: ". print_r( $tcResponse, true ) ."\n\n"
             );
 
@@ -226,35 +226,35 @@ function wc_yapay_intermediador_notification() {
                     case 5:
                     case 88:
                             if($order->get_status() != "on-hold"){
-                                $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+                                $order->update_status( 'on-hold', 'Vindi Intermediador enviou automaticamente o status: '.$comment .". | " );
                             }else{
-                                $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+                                $order->add_order_note( 'Vindi Intermediador enviou automaticamente o status: '.$comment  );
                             }
                         break;
                     case 6 :
-                            $order->add_order_note( 'Yapay Intermediador - Aprovado. Pagamento confirmado automaticamente.' );
+                            $order->add_order_note( 'Vindi Intermediador - Aprovado. Pagamento confirmado automaticamente.' );
                             $order->payment_complete();
                         break;
                     case 24 :
                             if($order->get_status() != "on-hold"){
-                                $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+                                $order->update_status( 'on-hold', 'Vindi Intermediador enviou automaticamente o status: '.$comment .". | " );
                             }else{
-                                $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+                                $order->add_order_note( 'Vindi Intermediador enviou automaticamente o status: '.$comment  );
                             }
                         break;
                     case 7 :
                     case 89 :
                             if($order->get_status() != "cancelled"){
-                                $order->update_status( 'cancelled', 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback). | ' );
+                                $order->update_status( 'cancelled', 'Vindi Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback). | ' );
                             }else{
-                                $order->add_order_note( 'Yapay Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback).'  );
+                                $order->add_order_note( 'Vindi Intermediador - Cancelado. Pedido cancelado automaticamente (transação foi cancelada, pagamento foi negado, pagamento foi estornado ou ocorreu um chargeback).'  );
                             }
                         break;
                     case 87 :
                             if($order->get_status() != "on-hold"){
-                                $order->update_status( 'on-hold', 'Yapay Intermediador enviou automaticamente o status: '.$comment .". | " );
+                                $order->update_status( 'on-hold', 'Vindi Intermediador enviou automaticamente o status: '.$comment .". | " );
                             }else{
-                                $order->add_order_note( 'Yapay Intermediador enviou automaticamente o status: '.$comment  );
+                                $order->add_order_note( 'Vindi Intermediador enviou automaticamente o status: '.$comment  );
                             }
                         break;
                 }
@@ -264,7 +264,7 @@ function wc_yapay_intermediador_notification() {
 
                 $log->add(
                     "yapay-intermediador-notification",
-                    "YAPAY NEW NOTIFICATION : \n" .
+                    "Vindi NEW NOTIFICATION : \n" .
                     "STATUS: ".print_r( $message, true ) ."\n\n"
                 );
 
@@ -330,7 +330,7 @@ if ( ! function_exists( 'mv_add_meta_boxes' ) )
 {
     function mv_add_meta_boxes()
     {
-        add_meta_box( 'mv_other_fields', __('Yapay - Código de Rastreio','woocommerce'), 'mv_add_other_fields_for_packaging', 'shop_order', 'side', 'core' );
+        add_meta_box( 'mv_other_fields', __('Vindi - Código de Rastreio','woocommerce'), 'mv_add_other_fields_for_packaging', 'shop_order', 'side', 'core' );
     }
 }
 
@@ -428,7 +428,7 @@ function sendRastreioYapay() {
         $tcRequest = new WC_Yapay_Intermediador_Request();
         $tcResponse = $tcRequest->requestData( "v3/sales/trace", $params, $environment );
 
-        $order->add_order_note( 'Enviado para Yapay o código de rastreio: ' . $code );
+        $order->add_order_note( 'Enviado para Vindi o código de rastreio: ' . $code );
 
         $order->update_meta_data('_my_field_slug', $_POST['code']);
 		$order->update_meta_data('urlRastreio', $_POST['url'] );

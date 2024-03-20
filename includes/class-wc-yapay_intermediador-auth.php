@@ -7,7 +7,7 @@ endif;
 if ( ! class_exists( 'WC_Yapay_Intermediador_Auth' ) ) :
 
 /**
- * WooCommerce Yapay Intermediador main class.
+ * WooCommerce Vindi Intermediador main class.
  */
 class WC_Yapay_Intermediador_Auth{
     

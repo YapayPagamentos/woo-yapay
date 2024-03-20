@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 if (class_exists('WC_Yapay_Intermediador_Bankslip_Gateway')) return;
 
 /**
- * WooCommerce Yapay Intermediador main class.
+ * WooCommerce Vindi Intermediador main class.
  */
 class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
 {
@@ -20,13 +20,13 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
         $this->id = "wc_yapay_intermediador_bs";
 
         // The Title shown on the top of the Payment Gateways Page next to all the other Payment Gateways
-        $this->method_title = __("Yapay Intermediador - Boleto Bancário", 'wc-yapay_intermediador-bs');
+        $this->method_title = __("Vindi Intermediador - Boleto Bancário", 'wc-yapay_intermediador-bs');
 
         // The description for this Payment Gateway, shown on the actual Payment options page on the backend
-        $this->method_description = __("Plugin Yapay Intermediador para WooCommerce", 'wc-yapay_intermediador-bs');
+        $this->method_description = __("Plugin Vindi Intermediador para WooCommerce", 'wc-yapay_intermediador-bs');
 
         // The title to be used for the vertical tabs that can be ordered top to bottom
-        $this->title = __("Yapay Intermediador", 'wc-yapay_intermediador-bs');
+        $this->title = __("Vindi Intermediador", 'wc-yapay_intermediador-bs');
 
         // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
         if ($this->get_option('show_icon') === 'yes') {
@@ -68,16 +68,16 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
         $this->form_fields = array(
             'enabled' => array(
                 'title'     => __('Ativar / Desativar', 'wc-yapay_intermediador-bs'),
-                'label'     => __('Ativar Yapay Intermediador', 'wc-yapay_intermediador-bs'),
+                'label'     => __('Ativar Vindi Intermediador', 'wc-yapay_intermediador-bs'),
                 'type'      => 'checkbox',
                 'default'   => 'no',
-                'description'     => __('Ativar / Desativar pagamento por Yapay Intermediador', 'wc-yapay_intermediador-bs'),
+                'description'     => __('Ativar / Desativar pagamento por Vindi Intermediador', 'wc-yapay_intermediador-bs'),
             ),
             'title' => array(
                 'title'     => __('Titulo', 'wc-yapay_intermediador-bs'),
                 'type'      => 'text',
                 'desc_tip'  => __('Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-bs'),
-                'default'   => __('Yapay - Boleto Bancário', 'wc-yapay_intermediador-bs'),
+                'default'   => __('Vindi - Boleto Bancário', 'wc-yapay_intermediador-bs'),
             ),
             'description' => array(
                 'title'     => __('Descrição', 'wc-yapay_intermediador-bs'),
@@ -115,7 +115,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             'prefixo' => array(
                 'title'     => __('Prefixo do Pedido', 'wc-yapay_intermediador-bs'),
                 'type'      => 'text',
-                'desc_tip'  => __('Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-bs'),
+                'desc_tip'  => __('Prefixo do pedido enviado para o Vindi Intermediador.', 'wc-yapay_intermediador-bs'),
             ),
             'reseller_token' => array(
                 'title'       => __('Reseller Token (Opcional)', 'wc-yapay_intermediador-cc'),
@@ -334,11 +334,11 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             $log = new WC_Logger();
             $log->add(
                 "yapay-intermediador-transactions-save-",
-                "YAPAY NEW TRANSACTION SAVE : \n" .
+                "Vindi NEW TRANSACTION SAVE : \n" .
                     print_r($transactionParams, true) . "\n\n"
             );
 
-            $order->update_status("on-hold", "Yapay Intermediador enviou automaticamente o status: \n | Linha digitável: " . $transactionParams["typeful_line"]);
+            $order->update_status("on-hold", "Vindi Intermediador enviou automaticamente o status: \n | Linha digitável: " . $transactionParams["typeful_line"]);
 
             if (defined('WC_VERSION') && version_compare(WC_VERSION, '2.1', '>=')) {
                 WC()->cart->empty_cart();
@@ -390,7 +390,7 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
             if (isset($data['url_payment']) && $data['url_payment']) {
                 $html = "
                     <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                        <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                        <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                         <div style='margin: 20px 0'>
                             <span>Número da Transação: <strong>" . $data['transaction_id'] . "</strong></span>
                         </div>
@@ -407,12 +407,12 @@ class WC_Yapay_Intermediador_Bankslip_Gateway extends WC_Payment_Gateway
                     </div>
                 ";
 
-                $order->add_order_note('Pedido registrado no Yapay Intermediador. Transação: ' . $data['transaction_id']);
+                $order->add_order_note('Pedido registrado no Vindi Intermediador. Transação: ' . $data['transaction_id']);
             }
         } else {
             $html = "
             <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
+                <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                 <div style='margin: 20px 0'>
                     <strong style='color: red'>Ocorreu um erro na geração do Boleto Bancário. Entre em contato com o administrador da Loja</strong>
                 </div>

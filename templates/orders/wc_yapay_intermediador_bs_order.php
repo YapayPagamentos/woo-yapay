@@ -1,13 +1,13 @@
 <div class="order-view-section">
     <div id="yapay-order-container">
-        <h2 class="section-title"><?php echo __( "Yapay Intermediador","wc-yapay_intermediador-bs" ); ?></h2>
+        <h2 class="section-title"><?php echo __( "Vindi Pagamento","wc-yapay_intermediador-bs" ); ?></h2>
         <p>
             <div class="section-row">
                 <strong><?php echo __( "Método de pagamento: ", "wc-yapay_intermediador-bs" ) ;?></strong>
-                <span><?php echo esc_html( "Boleto Bancário - Yapay Intermediador" ); ?></span>
+                <span><?php echo esc_html( "Boleto Bancário - Vindi Pagamento" ); ?></span>
             </div>
             <div class="section-row">
-                <strong><?php echo __( "Yapay transaction ID:  ", "wc-yapay_intermediador-bs" ); ?></strong>
+                <strong><?php echo __( "Vindi transaction ID:  ", "wc-yapay_intermediador-bs" ); ?></strong>
                 <span><?php echo esc_html( $transaction_id ); ?></span>
             </div>
             <div class="section-row">

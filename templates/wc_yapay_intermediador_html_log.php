@@ -24,7 +24,7 @@ add_thickbox();
         	$responses = new WC_Yapay_Intermediador_Responses();
         ?>
     
-    	<h2>Logs Yapay Intermediador</h2>
+    	<h2>Logs Vindi Intermediador</h2>
 
     	<h4>Requests</h4>
     	<table class="wp-list-table widefat fixed striped pages">
