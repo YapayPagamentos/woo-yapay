@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: WooCommerce Yapay
- * Plugin URI: http://www.yapay.com.br
- * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
- * Author: Integração Yapay Intermediador
- * Author URI: http://dev.yapay.com.br/
+ * Plugin Name: Vindi Pagamento WooCommerce
+ * Plugin URI: https://vindi.com.br/formas-de-pagamentos/
+ * Description: Intermediador de pagamento Vindi para a plataforma WooCommerce.
+ * Author: Integração Vindi Intermediador
+ * Author URI: https://vindi.com.br/
  * Version: 0.7.1
- * Text Domain: woo-yapay
+ * Text Domain: vindi-pagamento
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
