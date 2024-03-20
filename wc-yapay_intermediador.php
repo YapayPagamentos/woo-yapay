@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Yapay para a plataforma WooCommerce.
  * Author: Integração Yapay Intermediador
  * Author URI: http://dev.yapay.com.br/
- * Version: 0.7.0
+ * Version: 0.7.1
  * Text Domain: woo-yapay
  */
 
@@ -27,6 +27,7 @@ function wc_gateway_yapay_intermediador_init() {
     include_once( 'class-wc-yapay_intermediador-bankslip-gateway.php' );
     include_once( 'class-wc-yapay_intermediador-tef-gateway.php' );
     include_once( 'class-wc-yapay_intermediador-pix-gateway.php' );
+    include_once( 'class-wc-yapay_intermediador-bolepix-gateway.php' );
 
     // Now that we have successfully included our class,
     // Lets add it too WooCommerce
@@ -36,6 +37,7 @@ function wc_gateway_yapay_intermediador_init() {
         $methods[] = 'WC_Yapay_Intermediador_Tef_Gateway';
         $methods[] = 'WC_Yapay_Intermediador_Bankslip_Gateway';
         $methods[] = 'WC_Yapay_Intermediador_Pix_Gateway';
+        $methods[] = 'WC_Yapay_Intermediador_Bolepix_Gateway';
         return $methods;
     }
 }
@@ -200,6 +202,7 @@ function wc_yapay_intermediador_notification() {
                 case "wc_yapay_intermediador_cc": $tcPayment  = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
                 case "wc_yapay_intermediador_tef": $tcPayment = new WC_Yapay_Intermediador_Tef_Gateway(); break;
                 case "wc_yapay_intermediador_pix": $tcPayment = new WC_Yapay_Intermediador_Pix_Gateway(); break;
+                case "wc_yapay_intermediador_bolepix": $tcPayment = new WC_Yapay_Intermediador_Bolepix_Gateway(); break;
                 default: $tcPayment                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
             }
 

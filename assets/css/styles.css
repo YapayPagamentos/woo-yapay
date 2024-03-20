@@ -121,14 +121,14 @@ ul li img.tcPaymentFlag:hover{
     margin-top: 15px;
 }
 
-.copiaCola {
+.copiaCola > a {
   border: solid 1px black;
   border-radius: 3px;
   padding: 10px;
   margin-left: 10px;
 }
 
-.copiaCola:hover {
+.copiaCola > a:hover {
   cursor: pointer;
 }
 

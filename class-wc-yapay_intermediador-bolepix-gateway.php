@@ -4,54 +4,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WC_Yapay_Intermediador_Tef_Gateway' ) ) :
+if ( class_exists( 'WC_Yapay_Intermediador_Bolepix_Gateway' ) ) return;
 
 /**
- * WooCommerce Vindi Intermediador main class.
+ * WooCommerce Yapay Intermediador main class.
  */
-class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
+class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
 
     function __construct() {
 
-        $version = "0.1.0";
-        // The global ID for this Payment method
-        $this->id = "wc_yapay_intermediador_tef";
+        $this->id = "wc_yapay_intermediador_bolepix";
+        $this->method_title = __( "Yapay Intermediador - Bolepix", 'wc-yapay_intermediador-bolepix' );
+        $this->method_description = __( "Plugin Yapay Intermediador para WooCommerce", 'wc-yapay_intermediador-bolepix' );
+        $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-bolepix' );
 
-        // The Title shown on the top of the Payment Gateways Page next to all the other Payment Gateways
-        $this->method_title = __( "Vindi Intermediador - Transferência Online", 'wc-yapay_intermediador-tef' );
-
-        // The description for this Payment Gateway, shown on the actual Payment options page on the backend
-        $this->method_description = __( "Plugin Vindi Intermediador para WooCommerce", 'wc-yapay_intermediador-tef' );
-
-        // The title to be used for the vertical tabs that can be ordered top to bottom
-        $this->title = __( "Vindi Intermediador", 'wc-yapay_intermediador-tef' );
-
-        // If you want to show an image next to the gateway's name on the frontend, enter a URL to an image.
         if ($this->get_option('show_icon') === 'yes') {
-            $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "transfer-flag.svg";
+            $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "bolepix-flag.svg";
         }
 
-        // Bool. Can be set to true if you want payment fields to show on the checkout
-        // if doing a direct integration, which we are doing in this case
         $this->has_fields = true;
-
-        // Supports the default credit card form
         $this->supports = array( 'default_credit_card_form' );
 
-        // This basically defines your settings which are then loaded with init_settings()
         $this->init_form_fields();
 
-        // After init_settings() is called, you can get the settings and load them into variables, e.g:
-        // $this->title = $this->get_option( 'title' );
         $this->init_settings();
 
-        // Turn these settings into variables we can use
         foreach ( $this->settings as $setting_key => $value ) {
             $this->$setting_key = $value;
         }
 
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
         add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
+        add_action( 'woocommerce_order_details_after_order_table', [ $this, 'add_yapay_order_details' ], 10, 1 );
 
         if ( is_admin() ) {
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -61,40 +45,33 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
     // Build the administration fields for this specific Gateway
     public function init_form_fields() {
         add_thickbox();
-        $payment_methods = array();
-
-        $payment_methods["7"] = "Itaú Shopline (Transferência)";
-        $payment_methods["14"] = "Peela";
-        $payment_methods["21"] = "Transf. Online HSBC";
-        $payment_methods["22"] = "Transf. Online Bradesco";
-        $payment_methods["23"] = "Transf. Online Banco do Brasil";
 
         $this->form_fields = array(
             'enabled' => array(
-                'title'     => __( 'Ativar / Desativar', 'wc-yapay_intermediador-tef' ),
-                'label'     => __( 'Ativar Vindi Intermediador', 'wc-yapay_intermediador-tef' ),
+                'title'     => __( 'Ativar / Desativar', 'wc-yapay_intermediador-bolepix' ),
+                'label'     => __( 'Ativar Yapay Intermediador', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'checkbox',
                 'default'   => 'no',
-                'description'     => __( 'Ativar / Desativar pagamento por Vindi Intermediador', 'wc-yapay_intermediador-tef' ),
+                'description'     => __( 'Ativar / Desativar pagamento por Yapay Intermediador', 'wc-yapay_intermediador-bolepix' ),
             ),
             'title' => array(
-                'title'     => __( 'Titulo', 'wc-yapay_intermediador-tef' ),
+                'title'     => __( 'Titulo', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-tef' ),
-                'default'   => __( 'Vindi - Transferência Online', 'wc-yapay_intermediador-tef' ),
+                'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-bolepix' ),
+                'default'   => __( 'Yapay Intermediador - Bolepix', 'wc-yapay_intermediador-bolepix' ),
             ),
             'description' => array(
-                'title'     => __( 'Descrição', 'wc-yapay_intermediador-tef' ),
+                'title'     => __( 'Descrição', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'textarea',
-                'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-tef' ),
-                'default'   => __( 'A maneira mais fácil e segura de comprar pela internet.', 'wc-yapay_intermediador-tef' ),
+                'desc_tip'  => __( 'Descrição do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-bolepix' ),
+                'default'   => __( 'A maneira mais fácil e segura e comprar pela internet.', 'wc-yapay_intermediador-bolepix' ),
                 'css'       => 'max-width:350px;'
             ),
             'environment' => array(
-                'title'     => __( 'Sandbox', 'wc-yapay_intermediador-tef' ),
-                'label'     => __( 'Ativar Sandbox', 'wc-yapay_intermediador-tef' ),
+                'title'     => __( 'Sandbox', 'wc-yapay_intermediador-bolepix' ),
+                'label'     => __( 'Ativar Sandbox', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'checkbox',
-                'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-tef' ),
+                'description' => __( 'Ativar / Desativar o ambiente de teste (sandbox)', 'wc-yapay_intermediador-bolepix' ),
                 'default'   => 'no',
             ),
             'not_require_cpf' => array(
@@ -112,27 +89,14 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
                 'default'   => 'on',
             ),
             'token_account' => array(
-                'title'     => __( 'Token da Conta', 'wc-yapay_intermediador-tef' ),
+                'title'     => __( 'Token da Conta', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Token de Integração utilizado para identificação da loja.', 'wc-yapay_intermediador-tef' ),
-            ),
-            'payment_methods' => array(
-                    'title'             => __( 'Meios de Pagamento Disponíveis', 'wc-yapay_intermediador-tef' ),
-                    'type'              => 'multiselect',
-                    'class'             => 'wc-enhanced-select',
-                    'css'               => 'width: 450px;',
-                    'default'           => array("7","14","21","22","23"),
-                    'description'       => __( 'Selecione todos os meios de pagamento disponíveis na loja.', 'wc-yapay_intermediador-tef' ),
-                    'options'           => $payment_methods,
-                    'desc_tip'          => true,
-                    'custom_attributes' => array(
-                            'data-placeholder' => __( 'Selecione os meios de pagamento', 'wc-yapay_intermediador-tef' )
-                    )
+                'desc_tip'  => __( 'Token de Integração utilizado para identificação da loja.', 'wc-yapay_intermediador-bolepix' ),
             ),
             'prefixo' => array(
-                'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-tef' ),
+                'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Prefixo do pedido enviado para o Vindi Intermediador.', 'wc-yapay_intermediador-tef' ),
+                'desc_tip'  => __( 'Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-bolepix' ),
             ),
             'reseller_token' => array(
                 'title'       => __('Reseller Token (Opcional)', 'wc-yapay_intermediador-cc'),
@@ -158,8 +122,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
 
         wc_get_template( $this->id.'_form.php', array(
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
-                'payment_methods'      => $this->get_option("payment_methods"),
-                'not_require_cpf'          => $this->get_option("not_require_cpf")
+                'not_require_cpf'      => $this->get_option("not_require_cpf")
         ), 'woocommerce/'.$this->id.'/', plugin_dir_path( __FILE__ ) . 'templates/' );
     }
 
@@ -196,27 +159,27 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
 
         $order = new WC_Order( $order_id );
 
+
         $reseller_token = $this->get_option("reseller_token");
-        
+
         if ($reseller_token) {
             $params["reseller_token"] = $reseller_token;
         }
-
+        
         $params["token_account"] = $this->get_option("token_account");
 		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.1";
-        $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
+        $params["customer[name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 500);
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
-        if (!isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2 ) {
-            $params["customer[trade_name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
-            $params["customer[company_name]"] = $_POST["billing_company"];
+        if ( !isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2 ) {
+            $params["customer[trade_name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 500);
+            $params["customer[company_name]"] = substr($_POST["billing_company"], 0 , 500);
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
 
-            if ($_POST["yapay_cpfT"] !== "" ) {
-                $params["customer[cpf]"] = $_POST["yapay_cpfT"];
+            if (isset( $_POST["yapay_cpfBP"]) && $_POST["yapay_cpfBP"] !== "" ) {
+                $params["customer[cpf]"] = $_POST["yapay_cpfBP"];
             }
         }
-
 
 
         $params["customer[inscricao_municipal]"] = "";
@@ -311,8 +274,9 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $params["transaction[fee]"] = $fee;
         }
 
+
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
-        $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
+        $params["transaction[available_payment_methods]"] = "28";
 
         if ( 0 < sizeof( $order->get_items() ) ) {
             $i = 0;
@@ -325,22 +289,25 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             }
         }
 
-        $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-tef-payment-method"];
+        $params["payment[payment_method_id]"] = $_POST["wc-yapay_intermediador-bolepix-payment-method"];
         $params["payment[split]"] = "1";
 
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
-
+        error_log( var_export( $params, true ) );
         if($tcResponse->message_response->message == "success"){
 
-            $transactionParams["order_id"]          = (string)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["transaction_id"]    = (int)$tcResponse->data_response->transaction->transaction_id;
-            $transactionParams["split_number"]      = (int)$tcResponse->data_response->transaction->order_number;
-            $transactionParams["payment_method"]    = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
-            $transactionParams["token_transaction"] = (string)$tcResponse->data_response->transaction->token_transaction;
-            $transactionParams["url_payment"]       = (string)$tcResponse->data_response->transaction->payment->url_payment;
-
+            $transactionParams["order_id"]             = (string)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["transaction_id"]       = (int)$tcResponse->data_response->transaction->transaction_id;
+            $transactionParams["split_number"]         = (string)$tcResponse->data_response->transaction->order_number;
+            $transactionParams["payment_method"]       = (int)$tcResponse->data_response->transaction->payment->payment_method_id;
+            $transactionParams["token_transaction"]    = (string)$tcResponse->data_response->transaction->token_transaction;
+            $transactionParams["url_payment"]          = (string)$tcResponse->data_response->transaction->payment->url_payment;
+            $transactionParams["qrcode_path"]          = (string)$tcResponse->data_response->transaction->payment->qrcode_path;
+            $transactionParams["qrcode_original_path"] = (string)$tcResponse->data_response->transaction->payment->qrcode_original_path;
+            $transactionParams["url_payment"]          = (string)$tcResponse->data_response->transaction->payment->url_payment;
+            $transactionParams["typeful_line"]         = (string)$tcResponse->data_response->transaction->payment->linha_digitavel;
 
             $order->update_meta_data('yapay_transaction_data', serialize($transactionParams));
             $order->save();
@@ -348,9 +315,11 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             $log = new WC_Logger();
             $log->add(
                 "yapay-intermediador-transactions-save-",
-                "Vindi NEW TRANSACTION SAVE : \n" .
+                "YAPAY NEW TRANSACTION SAVE : \n" .
                     print_r($transactionParams, true) . "\n\n"
             );
+
+            $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | Bolepix copia e cola: ". $transactionParams["qrcode_original_path"] );
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
@@ -360,19 +329,11 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
             if(!isset($use_shipping)){
                 $use_shipping = isset($use_shipping);
             }
-            if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
-                return array(
-                    'result'   => 'success',
-                    'redirect' => $this->get_return_url( $order )
-                    // 'redirect' => add_query_arg( array( 'use_shipping' => $use_shipping ), $order->get_checkout_payment_url( true ) )
-                );
-            } else {
-                return array(
-                    'result'   => 'success',
-                    'redirect' => $this->get_return_url( $order )
-                    // 'redirect' => add_query_arg( array( 'order' => $order->id, 'key' => $order->order_key, 'use_shipping' => $use_shipping ), get_permalink( woocommerce_get_page_id( 'pay' ) ) )
-                );
-            }
+
+            return array(
+                'result'   => 'success',
+                'redirect' => $this->get_return_url( $order )
+            );
 
         }else{
             $errors = array();
@@ -392,65 +353,49 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
     }
 
     public function validate_fields() {
-        $errors = array();
-        if($_POST["wc-yapay_intermediador-tef-payment-method"] == ""){
-            $errors[] = "<strong>Tipo de Transferência</strong> não selecionada";
-        }
-        if (count($errors)){
-            $this->add_error($errors);
-        }
+
         return true;
     }
 
     public function thankyou_page( $order_id ) {
+        $order     = new WC_Order( $order_id );
+        $this->add_yapay_order_details($order);
 
-        $order = new WC_Order( $order_id );
-        $data  = $order->get_meta('yapay_transaction_data', true);
 
-        $strPaymentMethod = "";
-        switch ( intval( $data['payment_method'] ) ) {
-            case 7: $strPaymentMethod  = "Itaú";break;
-            case 14: $strPaymentMethod = "Peela";break;
-            case 21: $strPaymentMethod = "HSBC";break;
-            case 22: $strPaymentMethod = "Bradesco";break;
-            case 23: $strPaymentMethod = "Banco do Brasil";break;
+    }
+
+
+    public function add_yapay_order_details( $order )
+    {
+        if ( array_intersect( [ 'wc_yapay_intermediador_bolepix' ], [ $order->get_payment_method() ] ) ) {
+
+            $order_id = $order->get_id();
+
+            $dados = $this->get_meta_data( $order_id );
+            $dados['url_image'] = (WP_PLUGIN_URL . '/'. str_replace( basename( __FILE__ ), "", plugin_basename(__FILE__) ));
+            
+            extract($dados);
+            ob_start();
+
+            require __DIR__ . '/templates/orders/wc_yapay_intermediador_bolepix_order.php';
+
+            $html = ob_get_clean();
+
+            echo $html;
         }
+    }
+
+    private function get_meta_data( $order_id )
+    {
+		$order = wc_get_order($order_id);
+        $data = $order->get_meta('yapay_transaction_data', true);
 
         if ( is_serialized( $data ) ) {
             $data = unserialize( $data );
-
             if ( isset( $data['transaction_id'] ) && $data['transaction_id'] ) {
-                $html = "
-                <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                    <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
-                    <div style='margin: 20px 0'>
-                        <span>Número da Transação:<strong>". $data['transaction_id'] ."</strong></span>
-                    </div>
-                    <div style='margin: 20px 0'>
-                        <span>Transferência Online: <strong>$strPaymentMethod</strong></span>
-                    </div>
-                    <hr/>
-                    <div style='margin: 20px 0'>
-                        <a href='". $data['url_payment'] ." target='_blank' class='button'>Efetuar Transferência Online</a>
-                    </div>
-                </div>
-                ";
-
-                $order->add_order_note( 'Pedido registrado no Vindi Intermediador. Transação: '. $data->transaction_id );
+                return $data;
             }
-
-        } else {
-            $html = "
-            <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
-                <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
-                <div style='margin: 20px 0'>
-                    <strong style='color: red'>Ocorreu um erro na geração da transferência bancária. Entre em contato com o administrador da Loja</strong>
-                </div>
-            </div>
-            ";
         }
-
-        echo $html;
     }
 }
-endif;
+

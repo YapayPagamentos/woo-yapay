@@ -3,7 +3,7 @@ Contributors: Integração Vindi, aguiart0, apiki
 Tags: woocommerce, vindi, intermediador, Vindi Pagamento, payment
 Requires at least: 3.5
 Tested up to: 6.4
-Stable tag: 0.7.0
+Stable tag: 0.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 2. Página de configuração do plugin
 
 == Changelog ==
+
+= 0.7.1 = 15/03/2024
+* Feat: Adicionando o método de pagamento 'BolePix'
 
 = 0.7.0 = 04/03/2024
 * Feat: Adicionando a configuração de reseller token para os métodos de pagamentos

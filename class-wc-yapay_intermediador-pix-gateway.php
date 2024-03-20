@@ -62,9 +62,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
     // Build the administration fields for this specific Gateway
     public function init_form_fields() {
         add_thickbox();
-        $payment_methods = array();
-
-        $payment_methods["27"] = "Pix";
 
         $this->form_fields = array(
             'enabled' => array(
@@ -113,19 +110,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                 'type'      => 'text',
                 'desc_tip'  => __( 'Token de Integração utilizado para identificação da loja.', 'wc-yapay_intermediador-pix' ),
             ),
-            'payment_methods' => array(
-                    'title'             => __( 'Meios de Pagamento Disponíveis', 'wc-yapay_intermediador-pix' ),
-                    'type'              => 'multiselect',
-                    'class'             => 'wc-enhanced-select',
-                    'css'               => 'width: 450px;',
-                    'default'           => array("27"),
-                    'description'       => __( 'Selecione todos os meios de pagamento disponíveis na loja.', 'wc-yapay_intermediador-pix' ),
-                    'options'           => $payment_methods,
-                    'desc_tip'          => true,
-                    'custom_attributes' => array(
-                            'data-placeholder' => __( 'Selecione os meios de pagamento', 'wc-yapay_intermediador-pix' )
-                    )
-            ),
             'prefixo' => array(
                 'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-pix' ),
                 'type'      => 'text',
@@ -155,7 +139,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         wc_get_template( $this->id.'_form.php', array(
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
-                'payment_methods'      => $this->get_option("payment_methods"),
                 'not_require_cpf'      => $this->get_option("not_require_cpf")
         ), 'woocommerce/'.$this->id.'/', plugin_dir_path( __FILE__ ) . 'templates/' );
     }
@@ -201,7 +184,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         }
         
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.0";
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.1";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -310,7 +293,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
 
         $params["transaction[url_notification]"] = $this->get_wc_request_url($order_id);
-        $params["transaction[available_payment_methods]"] = implode(",",$this->get_option("payment_methods"));
+        $params["transaction[available_payment_methods]"] = "27";
 
         if ( 0 < sizeof( $order->get_items() ) ) {
             $i = 0;
@@ -385,13 +368,6 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
     }
 
     public function validate_fields() {
-        $errors = array();
-        if($_POST["wc-yapay_intermediador-pix-payment-method"] == ""){
-            $errors[] = "<strong>Tipo de Transferência</strong> não selecionada";
-        }
-        if (count($errors)){
-            $this->add_error($errors);
-        }
         return true;
     }
 
