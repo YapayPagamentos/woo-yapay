@@ -3,7 +3,7 @@ Contributors: Integração Vindi, aguiart0, apiki
 Tags: woocommerce, vindi, intermediador, Vindi Pagamento, payment
 Requires at least: 3.5
 Tested up to: 6.4
-Stable tag: 0.6.9
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,9 +52,14 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 == Changelog ==
 
+= 0.7.0 = 04/03/2024
+* Feat: Adicionando a configuração de reseller token para os métodos de pagamentos
+* Fix: Alterando a utilização da propriedade order_discount do objeto de pedido para a utilização da função get_total_discount()
+* Fix: Alterando a utilização da propriedade order_shipping do objeto de pedido para a utilização da função get_shipping_total()
+
 = 0.6.9 = 21/02/2024
-* Corrigindo a utilização da função get_meta na classe de gateway de cartão de crédito
-* Corrigindo salvamento de dados de transação na classe de gateway de cartão de crédito
+* Fix: Corrigindo a utilização da função get_meta na classe de gateway de cartão de crédito
+* Fix: Corrigindo salvamento de dados de transação na classe de gateway de cartão de crédito
 
 = 0.6.8 = 07/12/2023
 
