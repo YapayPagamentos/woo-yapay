@@ -167,13 +167,13 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
         }
         
         $params["token_account"] = $this->get_option("token_account");
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.1";
-        $params["customer[name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 500);
+		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.2";
+        $params["customer[name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 50);
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
         if ( !isset($_POST["billing_persontype"]) && !isset($_POST["billing_cpf"]) || $_POST["billing_persontype"] == 2 ) {
-            $params["customer[trade_name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 500);
-            $params["customer[company_name]"] = substr($_POST["billing_company"], 0 , 500);
+            $params["customer[trade_name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 50);
+            $params["customer[company_name]"] = substr($_POST["billing_company"], 0 , 50);
             $params["customer[cnpj]"] = $_POST["billing_cnpj"];
 
             if (isset( $_POST["yapay_cpfBP"]) && $_POST["yapay_cpfBP"] !== "" ) {
