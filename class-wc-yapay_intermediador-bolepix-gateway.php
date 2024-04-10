@@ -7,16 +7,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( class_exists( 'WC_Yapay_Intermediador_Bolepix_Gateway' ) ) return;
 
 /**
- * WooCommerce Yapay Intermediador main class.
+ * WooCommerce Vindi Intermediador main class.
  */
 class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
 
     function __construct() {
 
         $this->id = "wc_yapay_intermediador_bolepix";
-        $this->method_title = __( "Yapay Intermediador - Bolepix", 'wc-yapay_intermediador-bolepix' );
-        $this->method_description = __( "Plugin Yapay Intermediador para WooCommerce", 'wc-yapay_intermediador-bolepix' );
-        $this->title = __( "Yapay Intermediador", 'wc-yapay_intermediador-bolepix' );
+        $this->method_title = __( "Vindi Intermediador - Bolepix", 'wc-yapay_intermediador-bolepix' );
+        $this->method_description = __( "Plugin Vindi Intermediador para WooCommerce", 'wc-yapay_intermediador-bolepix' );
+        $this->title = __( "Vindi Intermediador", 'wc-yapay_intermediador-bolepix' );
 
         if ($this->get_option('show_icon') === 'yes') {
             $this->icon = plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ) . "bolepix-flag.svg";
@@ -49,16 +49,16 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
         $this->form_fields = array(
             'enabled' => array(
                 'title'     => __( 'Ativar / Desativar', 'wc-yapay_intermediador-bolepix' ),
-                'label'     => __( 'Ativar Yapay Intermediador', 'wc-yapay_intermediador-bolepix' ),
+                'label'     => __( 'Ativar Vindi Intermediador', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'checkbox',
                 'default'   => 'no',
-                'description'     => __( 'Ativar / Desativar pagamento por Yapay Intermediador', 'wc-yapay_intermediador-bolepix' ),
+                'description'     => __( 'Ativar / Desativar pagamento por Vindi Intermediador', 'wc-yapay_intermediador-bolepix' ),
             ),
             'title' => array(
                 'title'     => __( 'Titulo', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
                 'desc_tip'  => __( 'Titulo do meio de pagamento que os compradores visualizarão durante o processo de finalização de compra.', 'wc-yapay_intermediador-bolepix' ),
-                'default'   => __( 'Yapay Intermediador - Bolepix', 'wc-yapay_intermediador-bolepix' ),
+                'default'   => __( 'Vindi Intermediador - Bolepix', 'wc-yapay_intermediador-bolepix' ),
             ),
             'description' => array(
                 'title'     => __( 'Descrição', 'wc-yapay_intermediador-bolepix' ),
@@ -96,7 +96,7 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
             'prefixo' => array(
                 'title'     => __( 'Prefixo do Pedido', 'wc-yapay_intermediador-bolepix' ),
                 'type'      => 'text',
-                'desc_tip'  => __( 'Prefixo do pedido enviado para o Yapay Intermediador.', 'wc-yapay_intermediador-bolepix' ),
+                'desc_tip'  => __( 'Prefixo do pedido enviado para o Vindi Intermediador.', 'wc-yapay_intermediador-bolepix' ),
             ),
             'reseller_token' => array(
                 'title'       => __('Reseller Token (Opcional)', 'wc-yapay_intermediador-cc'),
@@ -319,7 +319,7 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
                     print_r($transactionParams, true) . "\n\n"
             );
 
-            $order->update_status( "on-hold", "Yapay Intermediador enviou automaticamente o status: \n | Bolepix copia e cola: ". $transactionParams["qrcode_original_path"] );
+            $order->update_status( "on-hold", "Vindi Intermediador enviou automaticamente o status: \n | Bolepix copia e cola: ". $transactionParams["qrcode_original_path"] );
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1', '>=' ) ) {
                 WC()->cart->empty_cart();
