@@ -315,7 +315,7 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
             $log = new WC_Logger();
             $log->add(
                 "yapay-intermediador-transactions-save-",
-                "YAPAY NEW TRANSACTION SAVE : \n" .
+                "VINDI NEW TRANSACTION SAVE : \n" .
                     print_r($transactionParams, true) . "\n\n"
             );
 
