@@ -76,7 +76,7 @@ class Credit
           IMask(owner, mask);
         }
 
-        owner.addEventListener('keydown', () => {
+        owner.addEventListener('change', () => {
             let text = owner.value;
             owner.value = text.toUpperCase();
         })
