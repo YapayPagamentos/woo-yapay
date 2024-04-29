@@ -90,13 +90,14 @@ function tc_get_splits() {
     $params["price"] = $price;
     $params["type_response"] = "J";
 
+
     $tcResponse = $tcRequest->requestData("v1/transactions/simulate_splitting",$params,$environment);
 
     if($tcResponse['message_response']['message'] == "success"){
         $simulate_splitting = $tcResponse['data_response']['payment_methods'];
 
         $simulate_splitting = $tcResponse['data_response']['payment_methods'];
-
+        error_log(var_export($simulate_splitting, true));
         foreach($simulate_splitting as $payment_method){
             if(intval($payment_method['payment_method_id']) == intval($paymentId)){
                 for($i = 0 ; $i < $qs ; $i ++){
@@ -112,6 +113,7 @@ function tc_get_splits() {
 
                 $results['splittings']['fees'] = $fee;
                 echo json_encode($results['splittings']);
+                // error_log(var_export($results['splittings'], true));
             }
         }
     }

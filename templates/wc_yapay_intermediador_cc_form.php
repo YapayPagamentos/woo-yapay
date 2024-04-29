@@ -20,7 +20,6 @@ if (!defined('ABSPATH')) {
             $imgSrc = "";
             foreach ($payment_methods as $idTcPayment) {
                 switch (intval($idTcPayment)) {
-                        // case 2: $imgSrc = "diners-club-international";break;
                     case 3:
                         $imgSrc = "visa";
                         break;
@@ -30,14 +29,8 @@ if (!defined('ABSPATH')) {
                     case 5:
                         $imgSrc = "american-express";
                         break;
-                    case 15:
-                        $imgSrc = "discover";
-                        break;
                     case 16:
                         $imgSrc = "elo";
-                        break;
-                    case 18:
-                        $imgSrc = "aura";
                         break;
                     case 19:
                         $imgSrc = "jcb";
@@ -91,17 +84,19 @@ if (!defined('ABSPATH')) {
         </p>
         <input type="hidden" name="finger_print" id="finger_print">
         <div class="clear"></div>
-
         <p class="form-row form-row-wide">
             <label for="wc-yapay_intermediador-cc-card-installments"><?php _e('Parcelamento', 'woocommerce-wc-yapay_intermediador-cc'); ?> <span class="required">*</span></label>
             <select id="wc-yapay_intermediador-cc-card-installments" name="wc-yapay_intermediador-cc_card_installments" style="font-size: 1.5em; padding: 4px; width: 100%;" disabled="disabled">
                 <option value="0" disabled selected>--</option>
             </select>
         </p>
+        <div class="form-error-message-cc" style="padding: 5px; background-color: lightpink; border-radius: 5px; color: black; display: none;">
+            <p><?php _e('Infelizmente, não foi possível obter os dados da bandeira do cartão.', 'woocommerce-wc-yapay_intermediador-cc'); ?></p>
+        </div>
         <?php if ($not_require_cpf == 'no') : ?>
             <div id="cpf_yapayC" class="cpf_yapay cpf_yapay_cc" style="display: none; ">
                 <label>CPF titular cartão<strong style="color: red;">*</strong> (somente números)</label>
-                <input type="text" class="input-text yapay_cpf" type="text" id="yapay_cpfC" name="yapay_cpfC"  required>
+                <input type="text" class="input-text yapay_cpf" type="text" id="yapay_cpfC" name="yapay_cpfC" required>
             </div>
         <?php endif; ?>
 
