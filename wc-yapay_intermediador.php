@@ -97,6 +97,7 @@ function tc_get_splits() {
         $simulate_splitting = $tcResponse['data_response']['payment_methods'];
 
         $simulate_splitting = $tcResponse['data_response']['payment_methods'];
+        
         foreach($simulate_splitting as $payment_method){
             if(intval($payment_method['payment_method_id']) == intval($paymentId)){
                 for($i = 0 ; $i < $qs ; $i ++){
