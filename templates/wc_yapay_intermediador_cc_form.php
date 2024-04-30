@@ -91,7 +91,7 @@ if (!defined('ABSPATH')) {
             </select>
         </p>
         <div class="form-error-message-cc" style="padding: 5px; background-color: lightpink; border-radius: 5px; color: black; display: none;">
-            <p><?php _e('Infelizmente, não foi possível obter os dados da bandeira do cartão.', 'woocommerce-wc-yapay_intermediador-cc'); ?></p>
+            <p><?php _e('Parece que o número do cartão que você inseriu não é aceito pelo nosso sistema. Por favor, verifique se digitou corretamente ou tente usar um cartão diferente.', 'woocommerce-wc-yapay_intermediador-cc'); ?></p>
         </div>
         <?php if ($not_require_cpf == 'no') : ?>
             <div id="cpf_yapayC" class="cpf_yapay cpf_yapay_cc" style="display: none; ">
