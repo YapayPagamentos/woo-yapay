@@ -93,7 +93,7 @@ add_thickbox();
 					<td id="cb" class="manage-column column-cb check-column">
 						Parâmetros
 					</td>
-				</tr>	
+				</tr>
 			</tr>
 			</tfoot>
 
@@ -119,7 +119,7 @@ add_thickbox();
 			</thead>
 
 			<tbody id="the-list">
-				<?php 
+				<?php
 					$responsesData = $responses->getResponses();
 					foreach ($responsesData as $responseData) {	
 					
@@ -163,7 +163,7 @@ add_thickbox();
 					<td id="cb" class="manage-column column-cb check-column">
 						Parâmetros
 					</td>
-				</tr>	
+				</tr>
 			</tfoot>
 
 		</table>

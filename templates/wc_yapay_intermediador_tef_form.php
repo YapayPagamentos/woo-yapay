@@ -5,8 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
+<script src="https://static.traycheckout.com.br/js/finger_print.js" type="text/javascript"></script>
 
-<fieldset id="wc-yapay_intermediador-tef-payment-form" class="wc_yapay_intermediador_gateway">
+
+<fieldset id="wc-yapay_intermediador-tef-payment-form" class="wc_yapay_intermediador_gateway" data-yapay="payment-form">
     
     <input type="hidden" id="tctPaymentMethod" name="wc-yapay_intermediador-tef-payment-method" class="required-entry" autocomplete="off">
     <label for="tctPaymentMethod">Selecione a bandeira do seu banco <span class="required">*</span></label>
@@ -44,3 +46,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 </fieldset>
 
+<script>
+    var fp = window.yapay.FingerPrint({
+        env: 'production'
+    });
+    document.getElementById('finger_print').value = fp.getFingerPrint();
+</script>
