@@ -75,7 +75,7 @@ class Credit {
             IMask(owner, mask);
         }
 
-        owner.addEventListener('change', () => {
+        owner.addEventListener('input', () => {
             let text = owner.value;
             owner.value = text.toUpperCase();
         })
@@ -87,11 +87,7 @@ class Credit {
 
         if (!card) return;
 
-        card.addEventListener('keyup', () => {
-            this.setCardBrand(card);
-        });
-
-        card.addEventListener('change', () => {
+        card.addEventListener('input', () => {
             this.setCardBrand(card);
             this.getSplits();
         });
