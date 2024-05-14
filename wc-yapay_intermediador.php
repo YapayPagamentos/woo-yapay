@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Vindi para a plataforma WooCommerce.
  * Author: Integração Vindi Intermediador
  * Author URI: https://vindi.com.br/
- * Version: 0.7.2
+ * Version: 0.7.3
  * Text Domain: vindi-pagamento
  */
 
@@ -90,13 +90,14 @@ function tc_get_splits() {
     $params["price"] = $price;
     $params["type_response"] = "J";
 
+
     $tcResponse = $tcRequest->requestData("v1/transactions/simulate_splitting",$params,$environment);
 
     if($tcResponse['message_response']['message'] == "success"){
         $simulate_splitting = $tcResponse['data_response']['payment_methods'];
 
         $simulate_splitting = $tcResponse['data_response']['payment_methods'];
-
+        
         foreach($simulate_splitting as $payment_method){
             if(intval($payment_method['payment_method_id']) == intval($paymentId)){
                 for($i = 0 ; $i < $qs ; $i ++){

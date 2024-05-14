@@ -76,13 +76,10 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             add_thickbox();
             $payment_methods = array();
 
-            // $payment_methods["2"] = "Diners Club International";
             $payment_methods["3"] = "Visa";
             $payment_methods["4"] = "Mastercard";
             $payment_methods["5"] = "American Express";
-            $payment_methods["15"] = "Discovery";
             $payment_methods["16"] = "Elo";
-            $payment_methods["18"] = "Aura";
             $payment_methods["19"] = "JCB";
             $payment_methods["20"] = "Hipercard";
             $payment_methods["25"] = "Hiper";
@@ -141,7 +138,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                     'type'              => 'multiselect',
                     'class'             => 'wc-enhanced-select',
                     'css'               => 'width: 450px;',
-                    'default'           => array("2", "3", "4", "5", "15", "16", "18", "19", "20", "25"),
+                    'default'           => array_keys($payment_methods),
                     'description'       => __('Selecione todos os meios de pagamento disponíveis na loja.', 'wc-yapay_intermediador-cc'),
                     'options'           => $payment_methods,
                     'desc_tip'          => true,
@@ -273,7 +270,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             
             $params["token_account"] = $this->get_option("token_account");
             $params["finger_print"] = $_POST["finger_print"];
-            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.7.2";
+            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.7.3";
             $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
 			$params["customer[cpf]"] = $_POST["billing_cpf"];
 

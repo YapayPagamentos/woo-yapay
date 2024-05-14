@@ -52,6 +52,13 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 == Changelog ==
 
+= 0.7.3 = 30/04/2024
+* Fix: Remoção de bandeiras não utilizadas pela plataforma Vindi
+* Fix: Melhoria no regex das bandeiras
+* Fix: Melhoria na remoção da classe da bandeira selecionada
+* Fix: Adição do catch na requisição das parcerlas para evitar loop
+* Fix: Adição de mensagem de erro caso a bandeira não seja permetida
+
 = 0.7.2 = 20/03/2024
 * Fix: Nomenclatura de yapay para vindi
 * Fix: Diminuição de caracteres permitidos de 500 para 50
