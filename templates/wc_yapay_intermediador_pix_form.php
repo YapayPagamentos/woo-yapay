@@ -5,7 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<fieldset id="wc-yapay_intermediador-pix-payment-form" class="wc_yapay_intermediador_gateway">
+<script src="https://static.traycheckout.com.br/js/finger_print.js" type="text/javascript"></script>
+
+
+<fieldset id="wc-yapay_intermediador-pix-payment-form" class="wc_yapay_intermediador_gateway" data-yapay="payment-form">
 
     <input type="hidden" id="tcbPaymentMethod" name="wc-yapay_intermediador-pix-payment-method" class="required-entry" value="27" autocomplete="off">
     <?php if ($not_require_cpf == 'no') : ?>
@@ -19,3 +22,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 </fieldset>
 
+<script>
+    var fp = window.yapay.FingerPrint({
+        env: 'production'
+    });
+    document.getElementById('finger_print').value = fp.getFingerPrint();
+</script>

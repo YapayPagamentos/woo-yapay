@@ -52,7 +52,9 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 == Changelog ==
 
-= 0.7.3 = 30/04/2024
+= 0.7.4 = 09/05/2024
+* Feat: Adição do Fingerprint ao sistema
+* Feat: Alteração de change para input nos eventos do credit.js
 * Fix: Remoção de bandeiras não utilizadas pela plataforma Vindi
 * Fix: Melhoria no regex das bandeiras
 * Fix: Melhoria na remoção da classe da bandeira selecionada
