@@ -152,5 +152,19 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     }
   });
-
 })
+
+jQuery(document).on("ready updated_checkout", () => {
+
+  const elements = document.querySelectorAll('.yapay_finger_print');
+
+  elements.forEach(element => {
+    const enviroment = element.getAttribute('data-enviroment') || 'sandbox';
+    
+    const fp = window.yapay.FingerPrint({
+      env: enviroment
+    });
+
+    element.value = fp.getFingerPrint();
+  });
+});
