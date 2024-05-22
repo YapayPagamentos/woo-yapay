@@ -78,7 +78,7 @@ if (!defined('ABSPATH')) {
             <label for="wc-yapay_intermediador-cc-card-cvc"><?php _e('Código de Segurança', 'woocommerce-wc-yapay_intermediador-cc'); ?> <span class="required">*</span></label>
             <input id="wc-yapay_intermediador-cc-card-cvc" name="wc-yapay_intermediador-cc_card_cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" maxlength="4" placeholder="<?php _e('CVV', 'woocommerce-wc-yapay_intermediador-cc'); ?>" style="font-size: 1.5em; padding: 8px;" />
         </p>
-        <input type="hidden" name="finger_print" class="yapay_finger_print" data-enviroment="<?php echo esc_attr($sandbox) ?>">
+        <input type="hidden" name="finger_print" class="yapay_finger_print" data-enviroment="<?php echo esc_attr($enviroment); ?>">
         <div class="clear"></div>
         <p class="form-row form-row-wide">
             <label for="wc-yapay_intermediador-cc-card-installments"><?php _e('Parcelamento', 'woocommerce-wc-yapay_intermediador-cc'); ?> <span class="required">*</span></label>

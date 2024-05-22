@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <fieldset id="wc-yapay_intermediador-tef-payment-form" class="wc_yapay_intermediador_gateway" data-yapay="payment-form">
     
     <input type="hidden" id="tctPaymentMethod" name="wc-yapay_intermediador-tef-payment-method" class="required-entry" autocomplete="off">
-    <input type="hidden" name="finger_print" class="yapay_finger_print" data-enviroment="<?php echo esc_attr($sandbox) ?>">
+    <input type="hidden" name="finger_print" class="yapay_finger_print" data-enviroment="<?php echo esc_attr($enviroment); ?>">
     <label for="tctPaymentMethod">Selecione a bandeira do seu banco <span class="required">*</span></label>
     <ul>
         <?php
