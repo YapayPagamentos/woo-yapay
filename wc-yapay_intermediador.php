@@ -441,3 +441,22 @@ function sendRastreioYapay() {
 
 add_action( 'wp_ajax_sendRastreioYapay', 'sendRastreioYapay' );
 add_action( 'wp_ajax_nopriv_sendRastreioYapay', 'sendRastreioYapay' );
+
+
+add_action('wp_enqueue_scripts', 'yapay_enqueue_scripts');
+
+function yapay_enqueue_scripts() {
+    if (!is_admin()) {
+        wp_enqueue_script('yapay_intermediador-imask', 'https://cdnjs.cloudflare.com/ajax/libs/imask/7.1.3/imask.min.js', array());
+
+        wp_enqueue_style('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/css/styles.css', plugin_dir_path(__FILE__)), array());
+        wp_enqueue_script('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/js/index.js', plugin_dir_path(__FILE__)), array('jquery'));
+        wp_enqueue_script('yapay_intermediador-checkout-credit', plugins_url('woo-yapay/assets/js/credit.js', plugin_dir_path(__FILE__)), array('yapay_intermediador-imask', 'jquery'));
+    
+        wp_enqueue_script(
+            'yapay_intermediador-fingerprint',
+            'https://static.traycheckout.com.br/js/finger_print.js',
+            ['jquery', 'yapay_intermediador-checkout'],
+        );
+    }
+}

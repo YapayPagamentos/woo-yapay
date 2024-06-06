@@ -139,7 +139,8 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
 
         wc_get_template( $this->id.'_form.php', array(
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
-                'not_require_cpf'      => $this->get_option("not_require_cpf")
+                'not_require_cpf'      => $this->get_option("not_require_cpf"),
+                'enviroment'           => $this->get_option("environment") === 'yes' ? 'sandbox' : 'production',
         ), 'woocommerce/'.$this->id.'/', plugin_dir_path( __FILE__ ) . 'templates/' );
     }
 
