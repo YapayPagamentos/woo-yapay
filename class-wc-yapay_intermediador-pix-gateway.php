@@ -394,9 +394,9 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                         <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                         <div style='margin: 20px 0'>
                             <span>Pix Copia e Cola</span>
-                            <div style='display: flex; align-items: center;'>
-                                <input style='width: 100%' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."' />
-                                <a class='copiaCola' id='copiaCola'>
+                            <div style='display: flex; align-items: flex-end; flex-direction: column;'>
+                                <input style='width: 100%; margin-bottom:10px;' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."'/>
+                                <a style='cursor: pointer;' class='copiaCola' id='copiaCola'>
                                     <img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' />
                                 </a>
                             </div>

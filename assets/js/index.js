@@ -36,7 +36,7 @@ function sendRastreio(order_id, code, url) {
           code: jQuery("#inputYapayRastreio").val(),
           url: jQuery("#inputYapayRastreioURL").val(),
         },
-        success: function (response) {},
+        success: function (response) { },
       });
       document.getElementById("inputYapayRastreio").value = "";
       document.getElementById("inputYapayRastreioURL").value = "";
@@ -132,25 +132,28 @@ jQuery(document).ready(function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const fields = document.querySelectorAll(".copiaCola");
-  fields.forEach((field) => {
-    const button = field.querySelector("a");
-    const text = field.querySelector("input");  
+  const buttons = document.querySelectorAll(".copiaCola");
+  buttons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      const input = button.previousElementSibling;
+      if (input) {
+        const textToCopy = input.value;
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        document.body.appendChild(textarea);
 
-    if (button && text) {
-      button.addEventListener('click', () => {
-        const line = text.value;
-        text.select();
-  
-        document.execCommand("copy");
-        text.blur();
-        text.value = 'Texto Copiado!'
-  
-        setInterval(() => {
-          text.value = line;
-        }, 500)
-      })
-    }
+        textarea.select();
+        document.execCommand('copy');
+
+        document.body.removeChild(textarea);
+
+        const originalText = button.innerHTML;
+        button.innerHTML = 'Copiado!';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+        }, 1000);
+      }
+    });
   });
-
-})
+});

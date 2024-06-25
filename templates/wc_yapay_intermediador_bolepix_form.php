@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <script>
     var fp = window.yapay.FingerPrint({
-        env: 'production'
+        env: 'sandbox'
     });
     document.getElementById('finger_print').value = fp.getFingerPrint();
 </script>
