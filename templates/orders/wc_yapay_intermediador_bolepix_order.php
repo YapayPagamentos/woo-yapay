@@ -1,4 +1,3 @@
-
 <div class='woocommerce-order-overview woocommerce-thankyou-order-details order_details' style='padding:20px; margin-bottom:30px;'>
     <h3><strong style='color: #6d6d6d'>Yapay Intermediador</strong></h3>
     <div>
@@ -7,9 +6,9 @@
         </div>
         <div style='margin: 20px 0'>
             <span><strong>Pix Copia e Cola</strong></span>
-            <div style='display: flex; align-items: center;' class="copiaCola">
-                <input style='width: 100%' type='text' value="<?php echo $qrcode_original_path ?>" />
-                <a>
+            <div style='display: flex; align-items: flex-end; flex-direction: column;'>
+                <input style='width: 100%; margin-bottom:10px;' type='text' value="<?php echo $qrcode_original_path ?>" />
+                <a style='cursor: pointer;' class='copiaCola' id='copiaCola'>
                     <img style='max-width: 20px' name='imgCopy' src='<?php echo esc_url("$url_image/assets/images/copy.svg"); ?>' />
                 </a>
             </div>
@@ -20,7 +19,7 @@
                 <object class='qrCodeYapay' data="<?php echo $qrcode_path ?>"></object>
             </div>
         </div>
-        <hr/>
+        <hr />
     </div>
     <div>
         <div>
@@ -31,9 +30,9 @@
         </div>
         <div style='margin: 20px 0'>
             <span><strong>Digitável do Boleto:</strong></span>
-            <div style='display: flex; align-items: center;' class='copiaCola'>
-                <input style='width: 100%' type='text' id='linhaDigitavel' value="<?php echo $typeful_line ?>" />
-                <a>
+            <div style='display: flex; align-items: flex-end; flex-direction: column;'>
+                <input style='width: 100%; margin-bottom:10px;' type='text' id='linhaDigitavel' value="<?php echo $typeful_line ?>" />
+                <a style='cursor: pointer;' class='copiaCola' id='copiaCola'>
                     <img style='max-width: 20px' name='imgCopy' src='<?php echo esc_url("$url_image/assets/images/copy.svg"); ?>' />
                 </a>
             </div>
