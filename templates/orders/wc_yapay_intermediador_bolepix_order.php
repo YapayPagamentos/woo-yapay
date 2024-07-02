@@ -6,9 +6,9 @@
         </div>
         <div style='margin: 20px 0'>
             <span><strong>Pix Copia e Cola</strong></span>
-            <div style='display: flex; align-items: flex-end; flex-direction: column;'>
-                <input style='width: 100%; margin-bottom:10px;' type='text' value="<?php echo $qrcode_original_path ?>" />
-                <a style='cursor: pointer;' class='copiaCola' id='copiaCola'>
+            <div style='display: flex; align-items: center; gap:10px;'>
+                <input style='width: 100%;' type='text' value="<?php echo $qrcode_original_path ?>" />
+                <a style='cursor: pointer; border: 1px solid #b8b8b8;padding: 12px; border-radius:3px; color:#111;' class='copiaCola' id='copiaCola'>
                     <img style='max-width: 20px' name='imgCopy' src='<?php echo esc_url("$url_image/assets/images/copy.svg"); ?>' />
                 </a>
             </div>
@@ -30,9 +30,9 @@
         </div>
         <div style='margin: 20px 0'>
             <span><strong>Digitável do Boleto:</strong></span>
-            <div style='display: flex; align-items: flex-end; flex-direction: column;'>
-                <input style='width: 100%; margin-bottom:10px;' type='text' id='linhaDigitavel' value="<?php echo $typeful_line ?>" />
-                <a style='cursor: pointer;' class='copiaCola' id='copiaCola'>
+            <div style='display: flex; align-items: center; gap:10px;'>
+                <input style='width: 100%;' type='text' id='linhaDigitavel' value="<?php echo $typeful_line ?>" />
+                <a style='cursor: pointer; border: 1px solid #b8b8b8;padding: 12px;border-radius: 3px; color:#111;' class='copiaCola' id='copiaCola'>
                     <img style='max-width: 20px' name='imgCopy' src='<?php echo esc_url("$url_image/assets/images/copy.svg"); ?>' />
                 </a>
             </div>

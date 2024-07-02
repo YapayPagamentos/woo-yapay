@@ -54,6 +54,7 @@ Para dúvidas envie um e-mail para nosso time de Integração: integracao@yapay.
 
 = 0.7.5 = 01/07/2024
 * Fix: Botão copia e cola corrigidos
+* Fix: Código de rastreio sendo salvo no banco de dados
 
 = 0.7.4 = 09/05/2024
 * Feat: Adição do Fingerprint ao sistema
