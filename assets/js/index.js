@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const textarea = document.createElement('textarea');
         textarea.value = textToCopy;
         document.body.appendChild(textarea);
-
+        
         textarea.select();
         document.execCommand('copy');
 

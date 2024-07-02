@@ -62,12 +62,6 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
             }
 
-            wp_enqueue_script('yapay_intermediador-imask', 'https://cdnjs.cloudflare.com/ajax/libs/imask/7.1.3/imask.min.js', array(), $version, true);
-
-            wp_enqueue_style('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/css/styles.css', plugin_dir_path(__FILE__)), array(), $version);
-            wp_enqueue_script('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/js/index.js', plugin_dir_path(__FILE__)), array('jquery'), $version, true);
-            wp_enqueue_script('yapay_intermediador-checkout-credit', plugins_url('woo-yapay/assets/js/credit.js', plugin_dir_path(__FILE__)), array('yapay_intermediador-imask', 'jquery'), $version, true);
-
         } // End __construct()
 
         // Build the administration fields for this specific Gateway
@@ -221,8 +215,8 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
                 'url_images'           => plugins_url('woo-yapay/assets/images/', plugin_dir_path(__FILE__)),
                 'payment_methods'      => $this->get_option("payment_methods"),
                 'ta'                   => $this->get_option("token_account"),
-                'ev'                   => $this->get_option("environment"),
-                'not_require_cpf'          => $this->get_option("not_require_cpf")
+                'enviroment'           => $this->get_option("environment") === 'yes' ? 'sandbox' : 'production',
+                'not_require_cpf'      => $this->get_option("not_require_cpf")
             ), 'woocommerce/' . $this->id . '/', plugin_dir_path(__FILE__) . 'templates/');
         }
 
