@@ -186,7 +186,7 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
         
         $params["token_account"] = $this->get_option("token_account");
         $params["finger_print"] = $_POST["finger_print"];
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.4";
+		    $params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.5";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -395,9 +395,9 @@ class WC_Yapay_Intermediador_Pix_Gateway extends WC_Payment_Gateway {
                         <h3><strong style='color: #6d6d6d'>Vindi Intermediador</strong></h3>
                         <div style='margin: 20px 0'>
                             <span>Pix Copia e Cola</span>
-                            <div style='display: flex; align-items: center;'>
-                                <input style='width: 100%' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."' />
-                                <a class='copiaCola' id='copiaCola'>
+                            <div style='display: flex; align-items: center; gap:10px;'>
+                                <input style='width: 100%;' type='text' id='linhaDigitavel' value='". $data['qrcode_original_path'] ."'/>
+                                <a style='cursor: pointer; border: 1px solid #b8b8b8;padding: 12px; border-radius:3px; color:#111;' class='copiaCola' id='copiaCola'>
                                     <img style='max-width: 20px' name='imgCopy' src='{$url_image}/assets/images/copy.svg' />
                                 </a>
                             </div>

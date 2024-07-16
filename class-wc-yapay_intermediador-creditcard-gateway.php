@@ -264,7 +264,7 @@ if (!class_exists('WC_Yapay_Intermediador_Creditcard_Gateway')) :
             
             $params["token_account"] = $this->get_option("token_account");
             $params["finger_print"] = $_POST["finger_print"];
-            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.7.4";
+            $params['transaction[free]'] = "WOOCOMMERCE_INTERMEDIADOR_v0.7.5";
             $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
 			$params["customer[cpf]"] = $_POST["billing_cpf"];
 

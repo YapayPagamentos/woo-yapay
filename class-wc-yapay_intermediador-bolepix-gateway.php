@@ -169,7 +169,7 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
         
         $params["token_account"] = $this->get_option("token_account");
         $params["finger_print"] = $_POST["finger_print"];
-		$params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.4";
+		    $params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.5";
         $params["customer[name]"] = substr($_POST["billing_first_name"] . " " . $_POST["billing_last_name"], 0 , 50);
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
@@ -297,7 +297,6 @@ class WC_Yapay_Intermediador_Bolepix_Gateway extends WC_Payment_Gateway {
         $tcRequest = new WC_Yapay_Intermediador_Request();
 
         $tcResponse = $tcRequest->requestData("v2/transactions/pay_complete",$params,$this->get_option("environment"),false);
-        error_log( var_export( $params, true ) );
         if($tcResponse->message_response->message == "success"){
 
             $transactionParams["order_id"]             = (string)$tcResponse->data_response->transaction->order_number;

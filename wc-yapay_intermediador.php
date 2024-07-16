@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Vindi para a plataforma WooCommerce.
  * Author: Integração Vindi Intermediador
  * Author URI: https://vindi.com.br/
- * Version: 0.7.4
+ * Version: 0.7.5
  * Text Domain: vindi-pagamento
  */
 
@@ -410,6 +410,7 @@ function sendRastreioYapay() {
         case "wc_yapay_intermediador_cc": $tcConfig  = new WC_Yapay_Intermediador_Creditcard_Gateway(); break;
         case "wc_yapay_intermediador_tef": $tcConfig = new WC_Yapay_Intermediador_Tef_Gateway(); break;
         case "wc_yapay_intermediador_pix": $tcConfig = new WC_Yapay_Intermediador_Pix_Gateway(); break;
+        case "wc_yapay_intermediador_bolepix": $tcConfig = new WC_Yapay_Intermediador_Bolepix_Gateway(); break;
         default: $tcConfig                           = new WC_Yapay_Intermediador_Creditcard_Gateway();break;
     }
 
@@ -436,6 +437,7 @@ function sendRastreioYapay() {
 
         $order->update_meta_data('_my_field_slug', $_POST['code']);
 		$order->update_meta_data('urlRastreio', $_POST['url'] );
+        $order->save();
     }
 }
 
