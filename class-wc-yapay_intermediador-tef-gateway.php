@@ -159,7 +159,8 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
         wc_get_template( $this->id.'_form.php', array(
                 'url_images'           => plugins_url( 'woo-yapay/assets/images/', plugin_dir_path( __FILE__ ) ),
                 'payment_methods'      => $this->get_option("payment_methods"),
-                'not_require_cpf'          => $this->get_option("not_require_cpf")
+                'not_require_cpf'      => $this->get_option("not_require_cpf"),
+                'enviroment'           => $this->get_option("environment") === 'yes' ? 'sandbox' : 'production',
         ), 'woocommerce/'.$this->id.'/', plugin_dir_path( __FILE__ ) . 'templates/' );
     }
 
@@ -204,7 +205,7 @@ class WC_Yapay_Intermediador_Tef_Gateway extends WC_Payment_Gateway {
 
         $params["token_account"] = $this->get_option("token_account");
         $params["finger_print"] = $_POST["finger_print"];
-		    $params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v6";
+		    $params['transaction[free]']= "WOOCOMMERCE_INTERMEDIADOR_v0.7.6";
         $params["customer[name]"] = $_POST["billing_first_name"] . " " . $_POST["billing_last_name"];
         $params["customer[cpf]"] = $_POST["billing_cpf"];
 
