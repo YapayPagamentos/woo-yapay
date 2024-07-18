@@ -436,7 +436,7 @@ function sendRastreioYapay() {
         $order->add_order_note( 'Enviado para Vindi o código de rastreio: ' . $code );
 
         $order->update_meta_data('_my_field_slug', $_POST['code']);
-		$order->update_meta_data('urlRastreio', $_POST['url'] );
+		$order->update_meta_data('_url_rastreio_yapay', $_POST['url'] );
         $order->save();
     }
 }
