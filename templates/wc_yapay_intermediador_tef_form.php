@@ -4,6 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 ?>
+
 <fieldset id="wc-yapay_intermediador-tef-payment-form" class="wc_yapay_intermediador_gateway" data-yapay="payment-form">
     
     <input type="hidden" id="tctPaymentMethod" name="wc-yapay_intermediador-tef-payment-method" class="required-entry" autocomplete="off">

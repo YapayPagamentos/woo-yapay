@@ -4,6 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 ?>
+
 <fieldset id="wc-yapay_intermediador-bolepix-payment-form" class="wc_yapay_intermediador_gateway" data-yapay="payment-form">
 
     <input type="hidden" id="tcbPaymentMethod" name="wc-yapay_intermediador-bolepix-payment-method" class="required-entry" value="28" autocomplete="off">

@@ -5,7 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-
 <fieldset id="wc-yapay_intermediador-bs-payment-form" class="wc_yapay_intermediador_gateway" data-yapay="payment-form">
     <input type="hidden" id="tcbPaymentMethod" name="wc-yapay_intermediador-bs-payment-method" class="required-entry" value="" autocomplete="off">
     <input type="hidden" name="finger_print" class="yapay_finger_print" data-enviroment="<?php echo esc_attr($enviroment); ?>">
@@ -20,4 +19,3 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="clear"></div>
 
 </fieldset>
-

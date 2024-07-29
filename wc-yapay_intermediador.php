@@ -5,7 +5,7 @@
  * Description: Intermediador de pagamento Vindi para a plataforma WooCommerce.
  * Author: Integração Vindi Intermediador
  * Author URI: https://vindi.com.br/
- * Version: 0.7.5
+ * Version: 0.7.6
  * Text Domain: vindi-pagamento
  */
 
@@ -436,7 +436,7 @@ function sendRastreioYapay() {
         $order->add_order_note( 'Enviado para Vindi o código de rastreio: ' . $code );
 
         $order->update_meta_data('_my_field_slug', $_POST['code']);
-		$order->update_meta_data('urlRastreio', $_POST['url'] );
+		$order->update_meta_data('_url_rastreio_yapay', $_POST['url'] );
         $order->save();
     }
 }
@@ -444,17 +444,15 @@ function sendRastreioYapay() {
 add_action( 'wp_ajax_sendRastreioYapay', 'sendRastreioYapay' );
 add_action( 'wp_ajax_nopriv_sendRastreioYapay', 'sendRastreioYapay' );
 
-
-add_action('wp_enqueue_scripts', 'yapay_enqueue_scripts');
-
 function yapay_enqueue_scripts() {
+    wp_enqueue_style('yapay_intermediador', plugins_url('woo-yapay/assets/css/styles.css', plugin_dir_path(__FILE__)), array(),time());
+    wp_enqueue_script('yapay_intermediador', plugins_url('woo-yapay/assets/js/index.js', plugin_dir_path(__FILE__)), array('jquery'), time());
+
     if (!is_admin()) {
         wp_enqueue_script('yapay_intermediador-imask', 'https://cdnjs.cloudflare.com/ajax/libs/imask/7.1.3/imask.min.js', array());
 
-        wp_enqueue_style('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/css/styles.css', plugin_dir_path(__FILE__)), array());
-        wp_enqueue_script('yapay_intermediador-checkout', plugins_url('woo-yapay/assets/js/index.js', plugin_dir_path(__FILE__)), array('jquery'));
         wp_enqueue_script('yapay_intermediador-checkout-credit', plugins_url('woo-yapay/assets/js/credit.js', plugin_dir_path(__FILE__)), array('yapay_intermediador-imask', 'jquery'));
-    
+
         wp_enqueue_script(
             'yapay_intermediador-fingerprint',
             'https://static.traycheckout.com.br/js/finger_print.js',
@@ -462,3 +460,4 @@ function yapay_enqueue_scripts() {
         );
     }
 }
+add_action('init', 'yapay_enqueue_scripts');

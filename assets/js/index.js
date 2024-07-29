@@ -142,10 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const textarea = document.createElement('textarea');
         textarea.value = textToCopy;
         document.body.appendChild(textarea);
-        
         textarea.select();
         document.execCommand('copy');
-
         document.body.removeChild(textarea);
 
         const originalText = button.innerHTML;
