@@ -201,6 +201,7 @@ class Credit {
         })
             .then((response) => response.json())
             .then((data) => {
+                jQuery("#wc-yapay_intermediador-cc-card-installments").empty()
                 this.renderSplits(data);
                 jQuery("form.checkout").removeClass("processing").unblock();
             })
