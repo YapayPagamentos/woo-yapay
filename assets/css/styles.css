@@ -132,10 +132,8 @@ ul li img.tcPaymentFlag:hover{
 }
 
 .qrCodeYapay {
-    margin-left: -75px;
     margin-top: 10px;
-    max-height: 150px;
-    max-width: 300px;
+    max-height: 200px;
 }
 
 /** Order view page */
