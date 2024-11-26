@@ -89,11 +89,11 @@ class WC_Yapay_Intermediador_Request{
             $response = json_decode($response, 1);
         } else if (!$strResponse AND $pathPost == 'v2/transactions/get_by_token') {
             $response = simplexml_load_string($response);
-        } else if (!$strResponse AND $pathPost == 'v2/transactions/pay_complete') { 
+        } else if (!$strResponse AND $pathPost == 'v2/transactions/pay_complete') {
             $response = simplexml_load_string($response);
-        } else if (!$strResponse AND $pathPost == 'v3/sales/trace') { 
+        } else if (!$strResponse AND $pathPost == 'v3/sales/trace') {
             $response = simplexml_load_string($response);
-        } else if (!$strResponse AND $pathPost == 'v1/seller_splits/simulate_split') { 
+        } else if (!$strResponse AND $pathPost == 'v1/seller_splits/simulate_split') {
             $response = simplexml_load_string($response);
         }
         
