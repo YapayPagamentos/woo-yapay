@@ -162,7 +162,8 @@ ul li img.tcPaymentFlag:hover{
 }
 
 #yapay-order-container #yapay-pix-qr > object{
-    margin-left: -75px;
+    margin-top: 10px;
+    max-height: 200px;
 }
 
 #payment .payment_method_wc_yapay_intermediador_cc img,
